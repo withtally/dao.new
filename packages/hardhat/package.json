@@ -4,9 +4,10 @@
   "license": "MIT",
   "version": "1.0.0",
   "scripts": {
-    "chain": "npx hardhat node",
+    "chain": "npx hardhat node --network hardhat",
     "compile": "npx hardhat compile",
-    "deploy": "npx hardhat run scripts/deploy.ts --network localhost"
+    "deploy": "npx hardhat --network hardhat run scripts/deploy.ts",
+    "test": "npx hardhat test --network hardhat"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
