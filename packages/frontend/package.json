@@ -33,7 +33,7 @@
     "@web3-react/walletconnect-connector": "^6.2.4",
     "blockies-ts": "^1.0.0",
     "deepmerge": "^4.2.2",
-    "ethers": "^5.4.5",
+    "ethers": "^5.0.0",
     "framer-motion": "^4",
     "graphql": "^15.3.0",
     "lodash": "4.17.20",
