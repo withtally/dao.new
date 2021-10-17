@@ -33,6 +33,30 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PaymentSplitterUpgradeable__factory>;
     getContractFactory(
+      name: "GovernorCountingSimpleUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.GovernorCountingSimpleUpgradeable__factory>;
+    getContractFactory(
+      name: "GovernorTimelockControlUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.GovernorTimelockControlUpgradeable__factory>;
+    getContractFactory(
+      name: "IGovernorTimelockUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IGovernorTimelockUpgradeable__factory>;
+    getContractFactory(
+      name: "GovernorUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.GovernorUpgradeable__factory>;
+    getContractFactory(
+      name: "IGovernorUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IGovernorUpgradeable__factory>;
+    getContractFactory(
+      name: "TimelockControllerUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TimelockControllerUpgradeable__factory>;
+    getContractFactory(
       name: "ERC721Upgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721Upgradeable__factory>;
@@ -73,9 +97,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721DAOToken__factory>;
     getContractFactory(
+      name: "ERC721Governor",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC721Governor__factory>;
+    getContractFactory(
       name: "FixedPriceMinter",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FixedPriceMinter__factory>;
+    getContractFactory(
+      name: "GovernorVotesERC721Upgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.GovernorVotesERC721Upgradeable__factory>;
     getContractFactory(
       name: "Multicall",
       signerOrOptions?: ethers.Signer | FactoryOptions
