@@ -11,12 +11,16 @@ contract ERC721DAOToken is
     ERC721CheckpointableUpgradable,
     AccessControlEnumerableUpgradeable
 {
-    event BaseURIChanged(string newURI);
-    event ContractInfoFilenameChanged(string newFilename);
+    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
+    bytes32 public constant BASE_URI_ROLE = keccak256("BASE_URI_ROLE");
 
     string public baseURI = "";
     string private contractInfoFilename = "project.json";
 
+    event BaseURIChanged(string newURI);
+    event ContractInfoFilenameChanged(string newFilename);
 
     function supportsInterface(bytes4 interfaceId)
         public
@@ -31,7 +35,32 @@ contract ERC721DAOToken is
         return super.supportsInterface(interfaceId);
     }
 
-    function mint(address to, uint256 tokenId) public {
+    function initialize(
+        string memory name_,
+        string memory symbol_,
+        bytes32[] memory roles,
+        address[] memory rolesAssignees
+    ) public {
+        require(
+            roles.length == rolesAssignees.length,
+            "ERC721DAOToken::initializer: roles assignment arity mismatch"
+        );
+
+        __ERC721_init(name_, symbol_);
+
+        // set roles administrator
+        _setRoleAdmin(ADMIN_ROLE, ADMIN_ROLE);
+        _setRoleAdmin(MINTER_ROLE, ADMIN_ROLE);
+        _setRoleAdmin(BURNER_ROLE, ADMIN_ROLE);
+        _setRoleAdmin(BASE_URI_ROLE, ADMIN_ROLE);
+
+        // assign roles
+        for (uint256 i = 0; i < roles.length; i++) {
+            _setupRole(roles[i], rolesAssignees[i]);
+        }
+    }
+
+    function mint(address to, uint256 tokenId) public onlyRole(MINTER_ROLE) {
         _mint(to, tokenId);
     }
 
@@ -41,16 +70,15 @@ contract ERC721DAOToken is
      * - the project metadata JSON, e.g. ipfs://QmZi1n79FqWt2tTLwCqiy6nLM6xLGRsEPQ5JmReJQKNNzX
      * - all the asset descriptors and media files
      */
-    function setBaseURI(string memory baseURI_) public {
+    function setBaseURI(string memory baseURI_) public onlyRole(BASE_URI_ROLE) {
         baseURI = baseURI_;
         emit BaseURIChanged(baseURI_);
     }
 
-    function _baseURI() internal view override returns (string memory) {
-        return baseURI;
-    }
-
-    function setContractInfoFilename(string memory contractInfoFilename_) public {
+    function setContractInfoFilename(string memory contractInfoFilename_)
+        public
+        onlyRole(BASE_URI_ROLE)
+    {
         contractInfoFilename = contractInfoFilename_;
         emit ContractInfoFilenameChanged(contractInfoFilename_);
     }
@@ -60,5 +88,9 @@ contract ERC721DAOToken is
      */
     function contractInfoURI() public view returns (string memory) {
         return string(abi.encodePacked(baseURI, contractInfoFilename));
+    }
+
+    function _baseURI() internal view override returns (string memory) {
+        return baseURI;
     }
 }

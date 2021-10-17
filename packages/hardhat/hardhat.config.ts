@@ -21,7 +21,15 @@ task('accounts', 'Prints the list of accounts', async (_args, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 const config: HardhatUserConfig = {
-  solidity: '0.8.6',
+  solidity: {
+    version: '0.8.6',
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 10_000,
+      },
+    },
+  },
   paths: {
     artifacts: '../frontend/artifacts',
   },
