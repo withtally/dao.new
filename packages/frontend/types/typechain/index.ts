@@ -5,6 +5,7 @@ export type { AccessControlEnumerableUpgradeable } from "./AccessControlEnumerab
 export type { AccessControlUpgradeable } from "./AccessControlUpgradeable";
 export type { IAccessControlEnumerableUpgradeable } from "./IAccessControlEnumerableUpgradeable";
 export type { IAccessControlUpgradeable } from "./IAccessControlUpgradeable";
+export type { PaymentSplitterUpgradeable } from "./PaymentSplitterUpgradeable";
 export type { ERC721Upgradeable } from "./ERC721Upgradeable";
 export type { ERC721EnumerableUpgradeable } from "./ERC721EnumerableUpgradeable";
 export type { IERC721EnumerableUpgradeable } from "./IERC721EnumerableUpgradeable";
@@ -15,6 +16,7 @@ export type { ERC165Upgradeable } from "./ERC165Upgradeable";
 export type { IERC165Upgradeable } from "./IERC165Upgradeable";
 export type { ERC721CheckpointableUpgradable } from "./ERC721CheckpointableUpgradable";
 export type { ERC721DAOToken } from "./ERC721DAOToken";
+export type { FixedPriceMinter } from "./FixedPriceMinter";
 export type { Multicall } from "./Multicall";
 export type { YourContract } from "./YourContract";
 
@@ -22,6 +24,7 @@ export { AccessControlEnumerableUpgradeable__factory } from "./factories/AccessC
 export { AccessControlUpgradeable__factory } from "./factories/AccessControlUpgradeable__factory";
 export { IAccessControlEnumerableUpgradeable__factory } from "./factories/IAccessControlEnumerableUpgradeable__factory";
 export { IAccessControlUpgradeable__factory } from "./factories/IAccessControlUpgradeable__factory";
+export { PaymentSplitterUpgradeable__factory } from "./factories/PaymentSplitterUpgradeable__factory";
 export { ERC721Upgradeable__factory } from "./factories/ERC721Upgradeable__factory";
 export { ERC721EnumerableUpgradeable__factory } from "./factories/ERC721EnumerableUpgradeable__factory";
 export { IERC721EnumerableUpgradeable__factory } from "./factories/IERC721EnumerableUpgradeable__factory";
@@ -32,5 +35,6 @@ export { ERC165Upgradeable__factory } from "./factories/ERC165Upgradeable__facto
 export { IERC165Upgradeable__factory } from "./factories/IERC165Upgradeable__factory";
 export { ERC721CheckpointableUpgradable__factory } from "./factories/ERC721CheckpointableUpgradable__factory";
 export { ERC721DAOToken__factory } from "./factories/ERC721DAOToken__factory";
+export { FixedPriceMinter__factory } from "./factories/FixedPriceMinter__factory";
 export { Multicall__factory } from "./factories/Multicall__factory";
 export { YourContract__factory } from "./factories/YourContract__factory";
