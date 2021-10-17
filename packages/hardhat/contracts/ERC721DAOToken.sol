@@ -11,6 +11,13 @@ contract ERC721DAOToken is
     ERC721CheckpointableUpgradable,
     AccessControlEnumerableUpgradeable
 {
+    event BaseURIChanged(string newURI);
+    event ContractInfoFilenameChanged(string newFilename);
+
+    string public baseURI = "";
+    string private contractInfoFilename = "project.json";
+
+
     function supportsInterface(bytes4 interfaceId)
         public
         view
@@ -26,5 +33,32 @@ contract ERC721DAOToken is
 
     function mint(address to, uint256 tokenId) public {
         _mint(to, tokenId);
+    }
+
+    /**
+     * @notice Should be an IPFS link to the project folder, which should contain everything the
+     * project needs, including:
+     * - the project metadata JSON, e.g. ipfs://QmZi1n79FqWt2tTLwCqiy6nLM6xLGRsEPQ5JmReJQKNNzX
+     * - all the asset descriptors and media files
+     */
+    function setBaseURI(string memory baseURI_) public {
+        baseURI = baseURI_;
+        emit BaseURIChanged(baseURI_);
+    }
+
+    function _baseURI() internal view override returns (string memory) {
+        return baseURI;
+    }
+
+    function setContractInfoFilename(string memory contractInfoFilename_) public {
+        contractInfoFilename = contractInfoFilename_;
+        emit ContractInfoFilenameChanged(contractInfoFilename_);
+    }
+
+    /**
+     * @notice The IPFS URI of the project's metadata.
+     */
+    function contractInfoURI() public view returns (string memory) {
+        return string(abi.encodePacked(baseURI, contractInfoFilename));
     }
 }
