@@ -26,6 +26,7 @@ interface CloneFactoryInterface extends ethers.utils.Interface {
     "clone(uint256,bytes)": FunctionFragment;
     "cloneDeterministic(address,bytes32,bytes)": FunctionFragment;
     "implementations(uint256)": FunctionFragment;
+    "initialize()": FunctionFragment;
     "owner()": FunctionFragment;
     "predictDeterministicAddress(address,bytes32)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -47,6 +48,10 @@ interface CloneFactoryInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "implementations",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -75,6 +80,7 @@ interface CloneFactoryInterface extends ethers.utils.Interface {
     functionFragment: "implementations",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "predictDeterministicAddress",
@@ -168,6 +174,10 @@ export class CloneFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    initialize(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     predictDeterministicAddress(
@@ -210,6 +220,10 @@ export class CloneFactory extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  initialize(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   owner(overrides?: CallOverrides): Promise<string>;
 
   predictDeterministicAddress(
@@ -251,6 +265,8 @@ export class CloneFactory extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    initialize(overrides?: CallOverrides): Promise<void>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -313,6 +329,10 @@ export class CloneFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    initialize(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     predictDeterministicAddress(
@@ -354,6 +374,10 @@ export class CloneFactory extends BaseContract {
     implementations(
       arg0: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;

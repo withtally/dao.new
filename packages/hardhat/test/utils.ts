@@ -1,6 +1,11 @@
-import { ethers, network } from 'hardhat';
-import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { ERC721DAOToken, ERC721DAOToken__factory } from '../../frontend/types/typechain'
+import { ethers, network } from "hardhat";
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import {
+  ERC721DAOToken,
+  ERC721DAOToken__factory,
+  CloneFactory,
+  CloneFactory__factory,
+} from "../../frontend/types/typechain";
 
 const keccak256 = ethers.utils.keccak256;
 const toUtf8Bytes = ethers.utils.toUtf8Bytes;
@@ -8,6 +13,8 @@ const MINTER_ROLE = keccak256(toUtf8Bytes("MINTER_ROLE"));
 const BURNER_ROLE = keccak256(toUtf8Bytes("BURNER_ROLE"));
 const ADMIN_ROLE = keccak256(toUtf8Bytes("ADMIN_ROLE"));
 const BASE_URI_ROLE = keccak256(toUtf8Bytes("BASE_URI_ROLE"));
+
+export const roles = [ADMIN_ROLE, MINTER_ROLE, BURNER_ROLE, BASE_URI_ROLE];
 
 export type TestSigners = {
   deployer: SignerWithAddress;
@@ -33,15 +40,38 @@ export const deployDAOToken = async (
   burner?: SignerWithAddress,
   baseURIer?: SignerWithAddress
 ): Promise<ERC721DAOToken> => {
-  const actualAdmin = await (admin || deployer).getAddress()
-  const actualMinter = await (minter || deployer).getAddress()
-  const actualBurner = await (burner || deployer).getAddress()
-  const actualBaseURIer = await (baseURIer || deployer).getAddress()
+  const actualAdmin = await (admin || deployer).getAddress();
+  const actualMinter = await (minter || deployer).getAddress();
+  const actualBurner = await (burner || deployer).getAddress();
+  const actualBaseURIer = await (baseURIer || deployer).getAddress();
 
-  const roles = [ADMIN_ROLE, MINTER_ROLE, BURNER_ROLE, BASE_URI_ROLE];
-  const rolesAssignees = [actualAdmin, actualMinter, actualBurner, actualBaseURIer];
+  const rolesAssignees = [
+    actualAdmin,
+    actualMinter,
+    actualBurner,
+    actualBaseURIer,
+  ];
 
   const token = await new ERC721DAOToken__factory(deployer).deploy();
-  await token.initialize("AwesomeToken", "ASM", roles, rolesAssignees)
-  return token
+  await token.initialize("AwesomeToken", "ASM", roles, rolesAssignees);
+  return token;
+};
+
+export const attachToken = (deployer: SignerWithAddress, instance: string) => {
+  return new ERC721DAOToken__factory(deployer).attach(instance);
+};
+
+export const deployCloneFactory = async (
+  deployer: SignerWithAddress
+): Promise<CloneFactory> => {
+  const factory = await new CloneFactory__factory(deployer).deploy();
+  await factory.initialize();
+  return factory;
+};
+
+export const defaultAssignees = async (
+  deployer: SignerWithAddress
+): Promise<string[]> => {
+  const addr = await deployer.getAddress();
+  return [addr, addr, addr, addr];
 };

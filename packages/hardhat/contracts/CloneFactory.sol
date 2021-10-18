@@ -15,6 +15,10 @@ contract CloneFactory is OwnableUpgradeable {
     event NewImplementationAdded(address implementation, string details);
     event NewClone(address instance);
 
+    function initialize() public initializer {
+        __Ownable_init();
+    }
+
     function addImplementation(address _implementation, string memory _details) public onlyOwner {
         require(AddressUpgradeable.isContract(_implementation), "Err: Implementation address not a contract");
         implementations.push(_implementation);

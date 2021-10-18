@@ -7,10 +7,7 @@ pragma solidity ^0.8.6;
 import "./ERC721CheckpointableUpgradable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
-contract ERC721DAOToken is
-    ERC721CheckpointableUpgradable,
-    AccessControlEnumerableUpgradeable
-{
+contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerableUpgradeable {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
@@ -26,10 +23,7 @@ contract ERC721DAOToken is
         public
         view
         virtual
-        override(
-            ERC721EnumerableUpgradeable,
-            AccessControlEnumerableUpgradeable
-        )
+        override(ERC721EnumerableUpgradeable, AccessControlEnumerableUpgradeable)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
@@ -40,11 +34,8 @@ contract ERC721DAOToken is
         string memory symbol_,
         bytes32[] memory roles,
         address[] memory rolesAssignees
-    ) public {
-        require(
-            roles.length == rolesAssignees.length,
-            "ERC721DAOToken::initializer: roles assignment arity mismatch"
-        );
+    ) public initializer {
+        require(roles.length == rolesAssignees.length, "ERC721DAOToken::initializer: roles assignment arity mismatch");
 
         __ERC721_init(name_, symbol_);
 
@@ -75,10 +66,7 @@ contract ERC721DAOToken is
         emit BaseURIChanged(baseURI_);
     }
 
-    function setContractInfoFilename(string memory contractInfoFilename_)
-        public
-        onlyRole(BASE_URI_ROLE)
-    {
+    function setContractInfoFilename(string memory contractInfoFilename_) public onlyRole(BASE_URI_ROLE) {
         contractInfoFilename = contractInfoFilename_;
         emit ContractInfoFilenameChanged(contractInfoFilename_);
     }
