@@ -4,15 +4,15 @@
 
 pragma solidity ^0.8.6;
 
-import {ERC721DAOToken} from "./ERC721DAOToken.sol";
-import {GovernorVotesERC721Upgradeable} from "./GovernorVotesERC721Upgradeable.sol";
-import {GovernorCountingSimpleUpgradeable} from "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorCountingSimpleUpgradeable.sol";
-import {GovernorTimelockControlUpgradeable} from "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorTimelockControlUpgradeable.sol";
-import {GovernorUpgradeable} from "@openzeppelin/contracts-upgradeable/governance/GovernorUpgradeable.sol";
-import {TimelockControllerUpgradeable} from "@openzeppelin/contracts-upgradeable/governance/TimelockControllerUpgradeable.sol";
+import { ERC721DAOToken } from "./ERC721DAOToken.sol";
+import { GovernorVotesERC721QuorumFractionUpgradeable } from "./GovernorVotesERC721QuorumFractionUpgradeable.sol";
+import { GovernorCountingSimpleUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorCountingSimpleUpgradeable.sol";
+import { GovernorTimelockControlUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorTimelockControlUpgradeable.sol";
+import { GovernorUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/GovernorUpgradeable.sol";
+import { TimelockControllerUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/TimelockControllerUpgradeable.sol";
 
 contract ERC721Governor is
-    GovernorVotesERC721Upgradeable,
+    GovernorVotesERC721QuorumFractionUpgradeable,
     GovernorCountingSimpleUpgradeable,
     GovernorTimelockControlUpgradeable
 {
@@ -22,28 +22,18 @@ contract ERC721Governor is
     function initialize(
         string memory name_,
         ERC721DAOToken token_,
-        TimelockControllerUpgradeable timelockAddress,
+        TimelockControllerUpgradeable timelock_,
         uint256 votingDelay_,
-        uint256 votingPeriod_
+        uint256 votingPeriod_,
+        uint256 quorumNumerator_
     ) public initializer {
         __Governor_init(name_);
         __GovernorVotesERC721Upgradeable_init(token_);
-        __GovernorTimelockControl_init(timelockAddress);
+        __GovernorTimelockControl_init(timelock_);
+        __GovernorVotesERC721QuorumFractionUpgradeable_init(quorumNumerator_);
 
         _votingDelay = votingDelay_;
         _votingPeriod = votingPeriod_;
-    }
-
-    // TODO solve the following overrides
-
-    function quorum(uint256 blockNumber)
-        public
-        view
-        virtual
-        override
-        returns (uint256)
-    {
-        return 0;
     }
 
     function votingDelay() public view virtual override returns (uint256) {
@@ -69,10 +59,7 @@ contract ERC721Governor is
         uint256[] memory values,
         bytes[] memory calldatas,
         bytes32 descriptionHash
-    )
-        internal
-        override(GovernorUpgradeable, GovernorTimelockControlUpgradeable)
-    {
+    ) internal override(GovernorUpgradeable, GovernorTimelockControlUpgradeable) {
         super._execute(proposalId, targets, values, calldatas, descriptionHash);
     }
 
@@ -81,11 +68,7 @@ contract ERC721Governor is
         uint256[] memory values,
         bytes[] memory calldatas,
         bytes32 descriptionHash
-    )
-        internal
-        override(GovernorUpgradeable, GovernorTimelockControlUpgradeable)
-        returns (uint256)
-    {
+    ) internal override(GovernorUpgradeable, GovernorTimelockControlUpgradeable) returns (uint256) {
         return super._cancel(targets, values, calldatas, descriptionHash);
     }
 

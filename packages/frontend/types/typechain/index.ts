@@ -24,6 +24,7 @@ export type { ERC721CheckpointableUpgradable } from "./ERC721CheckpointableUpgra
 export type { ERC721DAOToken } from "./ERC721DAOToken";
 export type { ERC721Governor } from "./ERC721Governor";
 export type { FixedPriceMinter } from "./FixedPriceMinter";
+export type { GovernorVotesERC721QuorumFractionUpgradeable } from "./GovernorVotesERC721QuorumFractionUpgradeable";
 export type { GovernorVotesERC721Upgradeable } from "./GovernorVotesERC721Upgradeable";
 export type { Multicall } from "./Multicall";
 export type { YourContract } from "./YourContract";
@@ -51,6 +52,7 @@ export { ERC721CheckpointableUpgradable__factory } from "./factories/ERC721Check
 export { ERC721DAOToken__factory } from "./factories/ERC721DAOToken__factory";
 export { ERC721Governor__factory } from "./factories/ERC721Governor__factory";
 export { FixedPriceMinter__factory } from "./factories/FixedPriceMinter__factory";
+export { GovernorVotesERC721QuorumFractionUpgradeable__factory } from "./factories/GovernorVotesERC721QuorumFractionUpgradeable__factory";
 export { GovernorVotesERC721Upgradeable__factory } from "./factories/GovernorVotesERC721Upgradeable__factory";
 export { Multicall__factory } from "./factories/Multicall__factory";
 export { YourContract__factory } from "./factories/YourContract__factory";

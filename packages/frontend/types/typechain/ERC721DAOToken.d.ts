@@ -39,6 +39,7 @@ interface ERC721DAOTokenInterface extends ethers.utils.Interface {
     "delegates(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getCurrentVotes(address)": FunctionFragment;
+    "getPastTotalSupply(uint256)": FunctionFragment;
     "getPriorVotes(address,uint256)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "getRoleMember(bytes32,uint256)": FunctionFragment;
@@ -131,6 +132,10 @@ interface ERC721DAOTokenInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getCurrentVotes",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getPastTotalSupply",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getPriorVotes",
@@ -278,6 +283,10 @@ interface ERC721DAOTokenInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getCurrentVotes",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPastTotalSupply",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -488,6 +497,11 @@ export class ERC721DAOToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    getPastTotalSupply(
+      blockNumber: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     getPriorVotes(
       account: string,
       blockNumber: BigNumberish,
@@ -692,6 +706,11 @@ export class ERC721DAOToken extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  getPastTotalSupply(
+    blockNumber: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getPriorVotes(
     account: string,
     blockNumber: BigNumberish,
@@ -884,6 +903,11 @@ export class ERC721DAOToken extends BaseContract {
 
     getCurrentVotes(
       account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getPastTotalSupply(
+      blockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1165,6 +1189,11 @@ export class ERC721DAOToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getPastTotalSupply(
+      blockNumber: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getPriorVotes(
       account: string,
       blockNumber: BigNumberish,
@@ -1380,6 +1409,11 @@ export class ERC721DAOToken extends BaseContract {
 
     getCurrentVotes(
       account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getPastTotalSupply(
+      blockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

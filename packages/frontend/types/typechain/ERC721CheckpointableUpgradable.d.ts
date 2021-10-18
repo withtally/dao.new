@@ -33,6 +33,7 @@ interface ERC721CheckpointableUpgradableInterface
     "delegates(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getCurrentVotes(address)": FunctionFragment;
+    "getPastTotalSupply(uint256)": FunctionFragment;
     "getPriorVotes(address,uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
@@ -89,6 +90,10 @@ interface ERC721CheckpointableUpgradableInterface
   encodeFunctionData(
     functionFragment: "getCurrentVotes",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getPastTotalSupply",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getPriorVotes",
@@ -173,6 +178,10 @@ interface ERC721CheckpointableUpgradableInterface
   ): Result;
   decodeFunctionResult(
     functionFragment: "getCurrentVotes",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPastTotalSupply",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -331,6 +340,11 @@ export class ERC721CheckpointableUpgradable extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    getPastTotalSupply(
+      blockNumber: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     getPriorVotes(
       account: string,
       blockNumber: BigNumberish,
@@ -460,6 +474,11 @@ export class ERC721CheckpointableUpgradable extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  getPastTotalSupply(
+    blockNumber: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getPriorVotes(
     account: string,
     blockNumber: BigNumberish,
@@ -577,6 +596,11 @@ export class ERC721CheckpointableUpgradable extends BaseContract {
 
     getCurrentVotes(
       account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getPastTotalSupply(
+      blockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -751,6 +775,11 @@ export class ERC721CheckpointableUpgradable extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getPastTotalSupply(
+      blockNumber: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getPriorVotes(
       account: string,
       blockNumber: BigNumberish,
@@ -886,6 +915,11 @@ export class ERC721CheckpointableUpgradable extends BaseContract {
 
     getCurrentVotes(
       account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getPastTotalSupply(
+      blockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

@@ -12,6 +12,10 @@
     "clean": "yarn workspace nextjs-ethereum-starter-hardhat clean",
     "test": "yarn workspace nextjs-ethereum-starter-hardhat test"
   },
+  "devDependencies": {
+    "prettier": "^2.4.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.18"
+  },
   "workspaces": {
     "packages": [
       "packages/*"

@@ -55,6 +55,9 @@ abstract contract ERC721CheckpointableUpgradable is ERC721EnumerableUpgradeable 
     /// @notice The number of checkpoints for each account
     mapping(address => uint32) public numCheckpoints;
 
+    /// @notice A record of total token supply checkpoints
+    Checkpoint[] private _totalSupplyCheckpoints;
+
     /// @notice The EIP-712 typehash for the contract's domain
     bytes32 public constant DOMAIN_TYPEHASH =
         keccak256("EIP712Domain(string name,uint256 chainId,address verifyingContract)");
@@ -103,6 +106,11 @@ abstract contract ERC721CheckpointableUpgradable is ERC721EnumerableUpgradeable 
 
         /// @notice Differs from `_transferTokens()` to use `delegates` override method to simulate auto-delegation
         _moveDelegates(delegates(from), delegates(to), 1);
+
+        // mint or burn
+        if (from == address(0) || to == address(0)) {
+            _writeTotalSupplyCheckpoint();
+        }
     }
 
     /**
@@ -194,6 +202,40 @@ abstract contract ERC721CheckpointableUpgradable is ERC721EnumerableUpgradeable 
         return checkpoints[account][lower].votes;
     }
 
+    function getPastTotalSupply(uint256 blockNumber) public view returns (uint256) {
+        require(blockNumber < block.number, "ERC721Checkpointable::getPriorTotalSupply: block not yet mined");
+
+        uint256 nCheckpoints = _totalSupplyCheckpoints.length;
+        if (nCheckpoints == 0) {
+            return 0;
+        }
+
+        // First check most recent balance
+        if (_totalSupplyCheckpoints[nCheckpoints - 1].fromBlock <= blockNumber) {
+            return _totalSupplyCheckpoints[nCheckpoints - 1].votes;
+        }
+
+        // Next check implicit zero balance
+        if (_totalSupplyCheckpoints[0].fromBlock > blockNumber) {
+            return 0;
+        }
+
+        uint256 lower = 0;
+        uint256 upper = nCheckpoints - 1;
+        while (upper > lower) {
+            uint256 center = upper - (upper - lower) / 2; // ceil, avoiding overflow
+            Checkpoint memory cp = _totalSupplyCheckpoints[center];
+            if (cp.fromBlock == blockNumber) {
+                return cp.votes;
+            } else if (cp.fromBlock < blockNumber) {
+                lower = center;
+            } else {
+                upper = center - 1;
+            }
+        }
+        return _totalSupplyCheckpoints[lower].votes;
+    }
+
     function _delegate(address delegator, address delegatee) internal {
         /// @notice differs from `_delegate()` in `Comp.sol` to use `delegates` override method to simulate auto-delegation
         address currentDelegate = delegates(delegator);
@@ -248,6 +290,25 @@ abstract contract ERC721CheckpointableUpgradable is ERC721EnumerableUpgradeable 
         }
 
         emit DelegateVotesChanged(delegatee, oldVotes, newVotes);
+    }
+
+    function _writeTotalSupplyCheckpoint() internal {
+        uint32 blockNumber = safe32(
+            block.number,
+            "ERC721Checkpointable::_writeCheckpoint: block number exceeds 32 bits"
+        );
+        uint96 newTotalSupply = safe96(
+            totalSupply(),
+            "ERC721Checkpointable::_writeTotalSupplyCheckpoint: total supply excceds 96 bits"
+        );
+
+        uint256 nCheckpoints = _totalSupplyCheckpoints.length;
+
+        if (nCheckpoints > 0 && _totalSupplyCheckpoints[nCheckpoints - 1].fromBlock == blockNumber) {
+            _totalSupplyCheckpoints[nCheckpoints - 1].votes = newTotalSupply;
+        } else {
+            _totalSupplyCheckpoints.push(Checkpoint(blockNumber, newTotalSupply));
+        }
     }
 
     function safe32(uint256 n, string memory errorMessage) internal pure returns (uint32) {

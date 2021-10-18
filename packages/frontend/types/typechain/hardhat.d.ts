@@ -105,6 +105,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FixedPriceMinter__factory>;
     getContractFactory(
+      name: "GovernorVotesERC721QuorumFractionUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.GovernorVotesERC721QuorumFractionUpgradeable__factory>;
+    getContractFactory(
       name: "GovernorVotesERC721Upgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.GovernorVotesERC721Upgradeable__factory>;
