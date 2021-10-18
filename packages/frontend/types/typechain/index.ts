@@ -5,6 +5,7 @@ export type { AccessControlEnumerableUpgradeable } from "./AccessControlEnumerab
 export type { AccessControlUpgradeable } from "./AccessControlUpgradeable";
 export type { IAccessControlEnumerableUpgradeable } from "./IAccessControlEnumerableUpgradeable";
 export type { IAccessControlUpgradeable } from "./IAccessControlUpgradeable";
+export type { OwnableUpgradeable } from "./OwnableUpgradeable";
 export type { PaymentSplitterUpgradeable } from "./PaymentSplitterUpgradeable";
 export type { GovernorCountingSimpleUpgradeable } from "./GovernorCountingSimpleUpgradeable";
 export type { GovernorTimelockControlUpgradeable } from "./GovernorTimelockControlUpgradeable";
@@ -20,6 +21,7 @@ export type { IERC721ReceiverUpgradeable } from "./IERC721ReceiverUpgradeable";
 export type { IERC721Upgradeable } from "./IERC721Upgradeable";
 export type { ERC165Upgradeable } from "./ERC165Upgradeable";
 export type { IERC165Upgradeable } from "./IERC165Upgradeable";
+export type { CloneFactory } from "./CloneFactory";
 export type { ERC721CheckpointableUpgradable } from "./ERC721CheckpointableUpgradable";
 export type { ERC721DAOToken } from "./ERC721DAOToken";
 export type { ERC721Governor } from "./ERC721Governor";
@@ -33,6 +35,7 @@ export { AccessControlEnumerableUpgradeable__factory } from "./factories/AccessC
 export { AccessControlUpgradeable__factory } from "./factories/AccessControlUpgradeable__factory";
 export { IAccessControlEnumerableUpgradeable__factory } from "./factories/IAccessControlEnumerableUpgradeable__factory";
 export { IAccessControlUpgradeable__factory } from "./factories/IAccessControlUpgradeable__factory";
+export { OwnableUpgradeable__factory } from "./factories/OwnableUpgradeable__factory";
 export { PaymentSplitterUpgradeable__factory } from "./factories/PaymentSplitterUpgradeable__factory";
 export { GovernorCountingSimpleUpgradeable__factory } from "./factories/GovernorCountingSimpleUpgradeable__factory";
 export { GovernorTimelockControlUpgradeable__factory } from "./factories/GovernorTimelockControlUpgradeable__factory";
@@ -48,6 +51,7 @@ export { IERC721ReceiverUpgradeable__factory } from "./factories/IERC721Receiver
 export { IERC721Upgradeable__factory } from "./factories/IERC721Upgradeable__factory";
 export { ERC165Upgradeable__factory } from "./factories/ERC165Upgradeable__factory";
 export { IERC165Upgradeable__factory } from "./factories/IERC165Upgradeable__factory";
+export { CloneFactory__factory } from "./factories/CloneFactory__factory";
 export { ERC721CheckpointableUpgradable__factory } from "./factories/ERC721CheckpointableUpgradable__factory";
 export { ERC721DAOToken__factory } from "./factories/ERC721DAOToken__factory";
 export { ERC721Governor__factory } from "./factories/ERC721Governor__factory";
