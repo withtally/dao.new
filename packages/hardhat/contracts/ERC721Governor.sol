@@ -11,34 +11,47 @@ import {GovernorTimelockControlUpgradeable} from "@openzeppelin/contracts-upgrad
 import {GovernorUpgradeable} from "@openzeppelin/contracts-upgradeable/governance/GovernorUpgradeable.sol";
 import {TimelockControllerUpgradeable} from "@openzeppelin/contracts-upgradeable/governance/TimelockControllerUpgradeable.sol";
 
-
 contract ERC721Governor is
     GovernorVotesERC721Upgradeable,
     GovernorCountingSimpleUpgradeable,
     GovernorTimelockControlUpgradeable
 {
+    uint256 private _votingDelay;
+    uint256 private _votingPeriod;
+
     function initialize(
         string memory name_,
         ERC721DAOToken token_,
-        TimelockControllerUpgradeable timelockAddress
+        TimelockControllerUpgradeable timelockAddress,
+        uint256 votingDelay_,
+        uint256 votingPeriod_
     ) public initializer {
         __Governor_init(name_);
         __GovernorVotesERC721Upgradeable_init(token_);
         __GovernorTimelockControl_init(timelockAddress);
+
+        _votingDelay = votingDelay_;
+        _votingPeriod = votingPeriod_;
     }
 
     // TODO solve the following overrides
 
-    function quorum(uint256 blockNumber) public view virtual override returns (uint256) {
+    function quorum(uint256 blockNumber)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
         return 0;
     }
 
     function votingDelay() public view virtual override returns (uint256) {
-        return 0;
+        return _votingDelay;
     }
 
     function votingPeriod() public view virtual override returns (uint256) {
-        return 0;
+        return _votingPeriod;
     }
 
     function state(uint256 proposalId)

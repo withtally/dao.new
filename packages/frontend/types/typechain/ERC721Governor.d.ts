@@ -31,7 +31,7 @@ interface ERC721GovernorInterface extends ethers.utils.Interface {
     "getVotes(address,uint256)": FunctionFragment;
     "hasVoted(uint256,address)": FunctionFragment;
     "hashProposal(address[],uint256[],bytes[],bytes32)": FunctionFragment;
-    "initialize(string,address,address)": FunctionFragment;
+    "initialize(string,address,address,uint256,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "proposalDeadline(uint256)": FunctionFragment;
     "proposalEta(uint256)": FunctionFragment;
@@ -88,7 +88,7 @@ interface ERC721GovernorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [string, string, string]
+    values: [string, string, string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
@@ -325,6 +325,8 @@ export class ERC721Governor extends BaseContract {
       name_: string,
       token_: string,
       timelockAddress: string,
+      votingDelay_: BigNumberish,
+      votingPeriod_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -461,6 +463,8 @@ export class ERC721Governor extends BaseContract {
     name_: string,
     token_: string,
     timelockAddress: string,
+    votingDelay_: BigNumberish,
+    votingPeriod_: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -594,6 +598,8 @@ export class ERC721Governor extends BaseContract {
       name_: string,
       token_: string,
       timelockAddress: string,
+      votingDelay_: BigNumberish,
+      votingPeriod_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -806,6 +812,8 @@ export class ERC721Governor extends BaseContract {
       name_: string,
       token_: string,
       timelockAddress: string,
+      votingDelay_: BigNumberish,
+      votingPeriod_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -937,6 +945,8 @@ export class ERC721Governor extends BaseContract {
       name_: string,
       token_: string,
       timelockAddress: string,
+      votingDelay_: BigNumberish,
+      votingPeriod_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
