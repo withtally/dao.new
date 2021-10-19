@@ -8,10 +8,10 @@ import { ERC721DAOToken } from "./ERC721DAOToken.sol";
 
 contract FixedPriceMinter is PaymentSplitterUpgradeable {
     ERC721DAOToken public token;
-    uint256 public maxTokens = 10000;
-    uint256 public tokenPrice = 69000000000000000; //0.069 ether
-    uint256 public maxMintsPerTx = 10;
-    uint256 public nextTokenId = 1;
+    uint256 public maxTokens;
+    uint256 public tokenPrice;
+    uint256 public maxMintsPerTx;
+    uint256 public nextTokenId;
 
     function initialize(
         ERC721DAOToken token_,
@@ -27,6 +27,8 @@ contract FixedPriceMinter is PaymentSplitterUpgradeable {
         maxTokens = maxTokens_;
         tokenPrice = tokenPrice_;
         maxMintsPerTx = maxMintsPerTx_;
+
+        nextTokenId = 1;
     }
 
     function mint(uint256 quantity) external payable {

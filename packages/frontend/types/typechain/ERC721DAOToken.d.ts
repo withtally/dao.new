@@ -46,7 +46,7 @@ interface ERC721DAOTokenInterface extends ethers.utils.Interface {
     "getRoleMemberCount(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
-    "initialize(string,string,bytes32[],address[])": FunctionFragment;
+    "initialize(string,string,string,bytes32[],address[])": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "mint(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
@@ -163,7 +163,7 @@ interface ERC721DAOTokenInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [string, string, BytesLike[], string[]]
+    values: [string, string, string, BytesLike[], string[]]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -536,6 +536,7 @@ export class ERC721DAOToken extends BaseContract {
     initialize(
       name_: string,
       symbol_: string,
+      baseURI_: string,
       roles: BytesLike[],
       rolesAssignees: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -745,6 +746,7 @@ export class ERC721DAOToken extends BaseContract {
   initialize(
     name_: string,
     symbol_: string,
+    baseURI_: string,
     roles: BytesLike[],
     rolesAssignees: string[],
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -945,6 +947,7 @@ export class ERC721DAOToken extends BaseContract {
     initialize(
       name_: string,
       symbol_: string,
+      baseURI_: string,
       roles: BytesLike[],
       rolesAssignees: string[],
       overrides?: CallOverrides
@@ -1231,6 +1234,7 @@ export class ERC721DAOToken extends BaseContract {
     initialize(
       name_: string,
       symbol_: string,
+      baseURI_: string,
       roles: BytesLike[],
       rolesAssignees: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1454,6 +1458,7 @@ export class ERC721DAOToken extends BaseContract {
     initialize(
       name_: string,
       symbol_: string,
+      baseURI_: string,
       roles: BytesLike[],
       rolesAssignees: string[],
       overrides?: Overrides & { from?: string | Promise<string> }

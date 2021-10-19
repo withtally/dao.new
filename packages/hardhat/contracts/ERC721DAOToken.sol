@@ -32,12 +32,14 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
     function initialize(
         string memory name_,
         string memory symbol_,
+        string memory baseURI_,
         bytes32[] memory roles,
         address[] memory rolesAssignees
     ) public initializer {
         require(roles.length == rolesAssignees.length, "ERC721DAOToken::initializer: roles assignment arity mismatch");
 
         __ERC721_init(name_, symbol_);
+        baseURI = baseURI_;
 
         // set roles administrator
         _setRoleAdmin(ADMIN_ROLE, ADMIN_ROLE);

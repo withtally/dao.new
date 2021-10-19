@@ -4,7 +4,7 @@ import { solidity } from "ethereum-waffle";
 import {
   deployCloneFactory,
   deployAndInitDAOToken,
-  roles,
+  defaultRoles,
   defaultAssignees,
   attachToken,
 } from "./utils";
@@ -54,7 +54,8 @@ describe("CloneFactory", () => {
     const callData = tokenLogic.interface.encodeFunctionData("initialize", [
       "NewToken",
       "NT",
-      roles,
+      "BaseURI",
+      defaultRoles,
       assignees,
     ]);
 

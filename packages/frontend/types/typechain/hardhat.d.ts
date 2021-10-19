@@ -109,6 +109,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721Governor__factory>;
     getContractFactory(
+      name: "ERC721Timelock",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC721Timelock__factory>;
+    getContractFactory(
       name: "FixedPriceMinter",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FixedPriceMinter__factory>;
