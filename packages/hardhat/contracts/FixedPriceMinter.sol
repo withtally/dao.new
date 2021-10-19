@@ -3,15 +3,15 @@
 /// @title Minter for ERC721DAOToken, selling tokens at a fixed price.
 
 pragma solidity ^0.8.6;
-import {PaymentSplitterUpgradeable} from "@openzeppelin/contracts-upgradeable/finance/PaymentSplitterUpgradeable.sol";
-import {ERC721DAOToken} from "./ERC721DAOToken.sol";
+import { PaymentSplitterUpgradeable } from "@openzeppelin/contracts-upgradeable/finance/PaymentSplitterUpgradeable.sol";
+import { ERC721DAOToken } from "./ERC721DAOToken.sol";
 
 contract FixedPriceMinter is PaymentSplitterUpgradeable {
     ERC721DAOToken public token;
     uint256 public maxTokens = 10000;
     uint256 public tokenPrice = 69000000000000000; //0.069 ether
     uint256 public maxMintsPerTx = 10;
-    uint256 public nextTokenId=1;
+    uint256 public nextTokenId = 1;
 
     function initialize(
         ERC721DAOToken token_,
@@ -33,17 +33,11 @@ contract FixedPriceMinter is PaymentSplitterUpgradeable {
         // TODO maybe add a startingBlock config
         // require(block.number >= startingBlock, "Sale hasn't started yet!");
 
-        require(
-            quantity <= maxMintsPerTx,
-            "FixedPriceMinter: There is a limit on minting too many at a time!"
-        );
+        require(quantity <= maxMintsPerTx, "FixedPriceMinter: There is a limit on minting too many at a time!");
 
-        require(
-            nextTokenId - 1 + quantity <= maxTokens,
-            "FixedPriceMinter: Minting this many would exceed supply!"
-        );
+        require(nextTokenId - 1 + quantity <= maxTokens, "FixedPriceMinter: Minting this many would exceed supply!");
 
-        require(msg.value >= tokenPrice * quantity, "FixedPriceMinter: ot enough ether sent!");
+        require(msg.value >= tokenPrice * quantity, "FixedPriceMinter: not enough ether sent!");
 
         // TODO do we want to enforce no contracts?
         require(_msgSender() == tx.origin, "FixedPriceMinter: No contracts!");

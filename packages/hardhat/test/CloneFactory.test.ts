@@ -3,7 +3,7 @@ import { ethers } from "hardhat";
 import { solidity } from "ethereum-waffle";
 import {
   deployCloneFactory,
-  deployDAOToken,
+  deployAndInitDAOToken,
   roles,
   defaultAssignees,
   attachToken,
@@ -31,7 +31,7 @@ describe("CloneFactory", () => {
   before(async () => {
     [deployer, user] = await ethers.getSigners();
     factory = await deployCloneFactory(deployer);
-    tokenLogic = await deployDAOToken(deployer);
+    tokenLogic = await deployAndInitDAOToken(deployer);
   });
 
   beforeEach(async () => {
