@@ -3,8 +3,6 @@ import { ethers } from "hardhat";
 import { solidity } from "ethereum-waffle";
 import {
   deployToken,
-  deployFixedPriceMinter,
-  initToken,
   deployTimelock,
   deployGovernor,
   deployMinter,
@@ -14,18 +12,21 @@ import {
   cloneTimelock,
   cloneGovernor,
   cloneMinter,
+  address,
+  propose,
+  hashString,
+  advanceBlocks,
+  setNextBlockTimestamp,
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   FixedPriceMinter,
   ERC721DAOToken,
-  TimelockControllerUpgradeable,
   ERC721Governor,
   CloneFactory,
   ERC721Timelock,
 } from "../../frontend/types/typechain";
-import { BigNumberish } from "@ethersproject/bignumber";
-import { Signer } from "crypto";
+import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 
 chai.use(solidity);
 const { expect } = chai;
@@ -37,8 +38,7 @@ const BASE_URI =
 
 // Minter Config
 const MAX_TOKENS = 10;
-const TOKEN_PRICE_ETH = 0.1;
-const TOKEN_PRICE = ethers.utils.parseEther(TOKEN_PRICE_ETH.toString());
+const TOKEN_PRICE = 100;
 const MAX_MINTS_PER_WALLET = 10;
 const TOTAL_SHARES = 10000;
 const FOUNDER_REWARD = 0.05;
@@ -56,6 +56,7 @@ let founder: SignerWithAddress;
 let user1: SignerWithAddress;
 let user2: SignerWithAddress;
 let user3: SignerWithAddress;
+let rando: SignerWithAddress;
 
 let token: ERC721DAOToken;
 let timelock: ERC721Timelock;
@@ -64,7 +65,7 @@ let minter: FixedPriceMinter;
 let factory: CloneFactory;
 
 const deploy = async () => {
-  [deployer, founder, user1, user2, user3] = await ethers.getSigners();
+  [deployer, founder, user1, user2, user3, rando] = await ethers.getSigners();
 
   // Deploy logic contracts
   const tokenImpl = await deployToken(deployer);
@@ -133,6 +134,7 @@ const deploy = async () => {
 
   // Timelock permissions: DAO is admin and proposer; executor remains open
   await timelock.grantRole(await timelock.PROPOSER_ROLE(), governor.address);
+  await timelock.grantRole(await timelock.EXECUTOR_ROLE(), zeroAddress);
   await timelock.revokeRole(
     await timelock.TIMELOCK_ADMIN_ROLE(),
     deployer.address
@@ -143,15 +145,23 @@ describe("End to end flows", () => {
   before(deploy);
 
   it("lets users mint", async () => {
-    await minter.connect(user1).mint(4, {
-      value: ethers.utils.parseEther((TOKEN_PRICE_ETH * 4).toString()),
-    });
-    await minter.connect(user2).mint(1, {
-      value: ethers.utils.parseEther((TOKEN_PRICE_ETH * 1).toString()),
-    });
-    await minter.connect(user3).mint(1, {
-      value: ethers.utils.parseEther((TOKEN_PRICE_ETH * 1).toString()),
-    });
+    expect(await ethers.provider.getBalance(minter.address)).to.equal(0);
+
+    await expect(() =>
+      minter.connect(user1).mint(4, {
+        value: TOKEN_PRICE * 4,
+      })
+    ).to.changeEtherBalance(minter, TOKEN_PRICE * 4);
+    await expect(() =>
+      minter.connect(user2).mint(1, {
+        value: TOKEN_PRICE,
+      })
+    ).to.changeEtherBalance(minter, TOKEN_PRICE);
+    await expect(() =>
+      minter.connect(user3).mint(1, {
+        value: TOKEN_PRICE,
+      })
+    ).to.changeEtherBalance(minter, TOKEN_PRICE);
 
     expect(await token.ownerOf(1)).equals(user1.address);
     expect(await token.ownerOf(2)).equals(user1.address);
@@ -159,5 +169,52 @@ describe("End to end flows", () => {
     expect(await token.ownerOf(4)).equals(user1.address);
     expect(await token.ownerOf(5)).equals(user2.address);
     expect(await token.ownerOf(6)).equals(user3.address);
+  });
+
+  it("allows founder and DAO to withdraw minting funds", async () => {
+    const totalSupply = await token.totalSupply();
+    const totalProceeds = TOKEN_PRICE * totalSupply.toNumber();
+    expect(await ethers.provider.getBalance(minter.address)).to.equal(
+      totalProceeds
+    );
+    const expectedFounderProfit = FOUNDER_REWARD * totalProceeds;
+    const expectedDAOProfit = totalProceeds - expectedFounderProfit;
+
+    await expect(() => minter.release(founder.address)).to.changeEtherBalance(
+      founder,
+      expectedFounderProfit
+    );
+    await expect(() => minter.release(timelock.address)).to.changeEtherBalance(
+      timelock,
+      expectedDAOProfit
+    );
+  });
+
+  it("allows DAO to spend via proposals", async () => {
+    const targets = [rando.address];
+    const values = [TOKEN_PRICE];
+    const callDatas = ["0x"];
+    const description = "description";
+    const descriptionHash = hashString(description);
+
+    const proposalId = await propose(
+      governor,
+      targets,
+      values,
+      callDatas,
+      description
+    );
+    await advanceBlocks(VOTING_DELAY);
+
+    await governor.connect(user1).castVote(proposalId, 1);
+    await advanceBlocks(VOTING_PERIOD);
+
+    await governor.queue(targets, values, callDatas, descriptionHash);
+    const eta = await governor.proposalEta(proposalId);
+    await setNextBlockTimestamp(eta.toNumber(), false);
+
+    expect(() =>
+      governor.execute(targets, values, callDatas, descriptionHash)
+    ).to.changeEtherBalance(rando, TOKEN_PRICE);
   });
 });

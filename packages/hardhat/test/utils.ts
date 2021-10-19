@@ -12,14 +12,19 @@ import {
   ERC721Timelock,
   ERC721Timelock__factory,
 } from "../../frontend/types/typechain";
-import { BigNumberish } from "@ethersproject/bignumber";
+import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
+import { BytesLike } from "@ethersproject/bignumber/node_modules/@ethersproject/bytes";
 
 const keccak256 = ethers.utils.keccak256;
 const toUtf8Bytes = ethers.utils.toUtf8Bytes;
-export const ADMIN_ROLE = keccak256(toUtf8Bytes("ADMIN_ROLE"));
-export const MINTER_ROLE = keccak256(toUtf8Bytes("MINTER_ROLE"));
-export const BURNER_ROLE = keccak256(toUtf8Bytes("BURNER_ROLE"));
-export const BASE_URI_ROLE = keccak256(toUtf8Bytes("BASE_URI_ROLE"));
+export const hashString = (str: string) => {
+  return keccak256(toUtf8Bytes(str));
+};
+
+export const ADMIN_ROLE = hashString("ADMIN_ROLE");
+export const MINTER_ROLE = hashString("MINTER_ROLE");
+export const BURNER_ROLE = hashString("BURNER_ROLE");
+export const BASE_URI_ROLE = hashString("BASE_URI_ROLE");
 
 export const defaultRoles = [
   ADMIN_ROLE,
@@ -33,6 +38,10 @@ export type TestSigners = {
   account0: SignerWithAddress;
   account1: SignerWithAddress;
   account2: SignerWithAddress;
+};
+
+export const address = (n: number): string => {
+  return `0x${n.toString(16).padStart(40, "0")}`;
 };
 
 export const getSigners = async (): Promise<TestSigners> => {
@@ -257,4 +266,45 @@ export const cloneMinter = async (
   const event = receipt.events?.find((e) => e.event == "NewClone");
 
   return new FixedPriceMinter__factory(deployer).attach(event?.args?.instance);
+};
+
+export const propose = async (
+  governor: ERC721Governor,
+  targets: string[],
+  values: BigNumberish[],
+  calldatas: BytesLike[],
+  description: string
+): Promise<BigNumber> => {
+  const tx = await governor.propose(targets, values, calldatas, description);
+  const receipt = await tx.wait();
+  const event = receipt.events?.find((e) => e.event == "ProposalCreated");
+  return event?.args?.proposalId;
+};
+
+export const mineBlock = async (): Promise<void> => {
+  await network.provider.send("evm_mine");
+};
+
+export const advanceBlocks = async (blocks: number): Promise<void> => {
+  for (let i = 0; i < blocks; i++) {
+    await mineBlock();
+  }
+};
+
+const rpc = <T = unknown>({
+  method,
+  params,
+}: {
+  method: string;
+  params?: unknown[];
+}): Promise<T> => {
+  return network.provider.send(method, params);
+};
+
+export const setNextBlockTimestamp = async (
+  n: number,
+  mine = true
+): Promise<void> => {
+  await rpc({ method: "evm_setNextBlockTimestamp", params: [n] });
+  if (mine) await mineBlock();
 };
