@@ -8,6 +8,7 @@ export type { IAccessControlUpgradeable } from "./IAccessControlUpgradeable";
 export type { OwnableUpgradeable } from "./OwnableUpgradeable";
 export type { PaymentSplitterUpgradeable } from "./PaymentSplitterUpgradeable";
 export type { GovernorCountingSimpleUpgradeable } from "./GovernorCountingSimpleUpgradeable";
+export type { GovernorProposalThresholdUpgradeable } from "./GovernorProposalThresholdUpgradeable";
 export type { GovernorTimelockControlUpgradeable } from "./GovernorTimelockControlUpgradeable";
 export type { IGovernorTimelockUpgradeable } from "./IGovernorTimelockUpgradeable";
 export type { GovernorUpgradeable } from "./GovernorUpgradeable";
@@ -39,6 +40,7 @@ export { IAccessControlUpgradeable__factory } from "./factories/IAccessControlUp
 export { OwnableUpgradeable__factory } from "./factories/OwnableUpgradeable__factory";
 export { PaymentSplitterUpgradeable__factory } from "./factories/PaymentSplitterUpgradeable__factory";
 export { GovernorCountingSimpleUpgradeable__factory } from "./factories/GovernorCountingSimpleUpgradeable__factory";
+export { GovernorProposalThresholdUpgradeable__factory } from "./factories/GovernorProposalThresholdUpgradeable__factory";
 export { GovernorTimelockControlUpgradeable__factory } from "./factories/GovernorTimelockControlUpgradeable__factory";
 export { IGovernorTimelockUpgradeable__factory } from "./factories/IGovernorTimelockUpgradeable__factory";
 export { GovernorUpgradeable__factory } from "./factories/GovernorUpgradeable__factory";

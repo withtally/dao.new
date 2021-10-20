@@ -220,6 +220,7 @@ export const cloneGovernor = async (
   implIndex: number,
   tokenAddress: string,
   timelockAddress: string,
+  proposalThreshold: number,
   votingDelay: number,
   votingPeriod: number,
   quorumNumerator: number
@@ -228,6 +229,7 @@ export const cloneGovernor = async (
     "GovernorName",
     tokenAddress,
     timelockAddress,
+    proposalThreshold,
     votingDelay,
     votingPeriod,
     quorumNumerator,
@@ -269,13 +271,16 @@ export const cloneMinter = async (
 };
 
 export const propose = async (
+  proposer: SignerWithAddress,
   governor: ERC721Governor,
   targets: string[],
   values: BigNumberish[],
   calldatas: BytesLike[],
   description: string
 ): Promise<BigNumber> => {
-  const tx = await governor.propose(targets, values, calldatas, description);
+  const tx = await governor
+    .connect(proposer)
+    .propose(targets, values, calldatas, description);
   const receipt = await tx.wait();
   const event = receipt.events?.find((e) => e.event == "ProposalCreated");
   return event?.args?.proposalId;

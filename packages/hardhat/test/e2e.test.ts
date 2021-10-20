@@ -46,6 +46,7 @@ const FOUNDER_SHARES = FOUNDER_REWARD * TOTAL_SHARES;
 const DAO_SHARES = TOTAL_SHARES - FOUNDER_SHARES;
 
 // Governance Config
+const PROP_THRESHOLD = 1;
 const QUORUM_NUMERATOR = 1; // 1%
 const VOTING_PERIOD = 5_760; // About 24 hours with 15s blocks
 const VOTING_DELAY = 1; // 1 block
@@ -106,6 +107,7 @@ const deploy = async () => {
     2,
     token.address,
     timelock.address,
+    PROP_THRESHOLD,
     VOTING_DELAY,
     VOTING_PERIOD,
     QUORUM_NUMERATOR
@@ -198,6 +200,7 @@ describe("End to end flows", () => {
     const descriptionHash = hashString(description);
 
     const proposalId = await propose(
+      user1,
       governor,
       targets,
       values,

@@ -10,12 +10,16 @@ import { GovernorCountingSimpleUpgradeable } from "@openzeppelin/contracts-upgra
 import { GovernorTimelockControlUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorTimelockControlUpgradeable.sol";
 import { GovernorUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/GovernorUpgradeable.sol";
 import { TimelockControllerUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/TimelockControllerUpgradeable.sol";
+import { GovernorProposalThresholdUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorProposalThresholdUpgradeable.sol";
+import { IGovernorUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/IGovernorUpgradeable.sol";
 
 contract ERC721Governor is
     GovernorVotesERC721QuorumFractionUpgradeable,
     GovernorCountingSimpleUpgradeable,
-    GovernorTimelockControlUpgradeable
+    GovernorTimelockControlUpgradeable,
+    GovernorProposalThresholdUpgradeable
 {
+    uint256 private _proposalThreshold;
     uint256 private _votingDelay;
     uint256 private _votingPeriod;
 
@@ -23,6 +27,7 @@ contract ERC721Governor is
         string memory name_,
         ERC721DAOToken token_,
         TimelockControllerUpgradeable timelock_,
+        uint256 proposalThreshold_,
         uint256 votingDelay_,
         uint256 votingPeriod_,
         uint256 quorumNumerator_
@@ -32,8 +37,27 @@ contract ERC721Governor is
         __GovernorTimelockControl_init(timelock_);
         __GovernorVotesERC721QuorumFractionUpgradeable_init(quorumNumerator_);
 
+        _proposalThreshold = proposalThreshold_;
         _votingDelay = votingDelay_;
         _votingPeriod = votingPeriod_;
+    }
+
+    function propose(
+        address[] memory targets,
+        uint256[] memory values,
+        bytes[] memory calldatas,
+        string memory description
+    )
+        public
+        virtual
+        override(GovernorProposalThresholdUpgradeable, GovernorUpgradeable, IGovernorUpgradeable)
+        returns (uint256)
+    {
+        return super.propose(targets, values, calldatas, description);
+    }
+
+    function proposalThreshold() public view virtual override returns (uint256) {
+        return _proposalThreshold;
     }
 
     function votingDelay() public view virtual override returns (uint256) {

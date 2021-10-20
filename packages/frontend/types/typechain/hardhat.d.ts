@@ -41,6 +41,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.GovernorCountingSimpleUpgradeable__factory>;
     getContractFactory(
+      name: "GovernorProposalThresholdUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.GovernorProposalThresholdUpgradeable__factory>;
+    getContractFactory(
       name: "GovernorTimelockControlUpgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.GovernorTimelockControlUpgradeable__factory>;

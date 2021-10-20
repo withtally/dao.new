@@ -31,11 +31,12 @@ interface ERC721GovernorInterface extends ethers.utils.Interface {
     "getVotes(address,uint256)": FunctionFragment;
     "hasVoted(uint256,address)": FunctionFragment;
     "hashProposal(address[],uint256[],bytes[],bytes32)": FunctionFragment;
-    "initialize(string,address,address,uint256,uint256,uint256)": FunctionFragment;
+    "initialize(string,address,address,uint256,uint256,uint256,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "proposalDeadline(uint256)": FunctionFragment;
     "proposalEta(uint256)": FunctionFragment;
     "proposalSnapshot(uint256)": FunctionFragment;
+    "proposalThreshold()": FunctionFragment;
     "proposalVotes(uint256)": FunctionFragment;
     "propose(address[],uint256[],bytes[],string)": FunctionFragment;
     "queue(address[],uint256[],bytes[],bytes32)": FunctionFragment;
@@ -91,7 +92,15 @@ interface ERC721GovernorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [string, string, string, BigNumberish, BigNumberish, BigNumberish]
+    values: [
+      string,
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
+    ]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
@@ -105,6 +114,10 @@ interface ERC721GovernorInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "proposalSnapshot",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "proposalThreshold",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "proposalVotes",
@@ -191,6 +204,10 @@ interface ERC721GovernorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "proposalSnapshot",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "proposalThreshold",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -354,6 +371,7 @@ export class ERC721Governor extends BaseContract {
       name_: string,
       token_: string,
       timelock_: string,
+      proposalThreshold_: BigNumberish,
       votingDelay_: BigNumberish,
       votingPeriod_: BigNumberish,
       quorumNumerator_: BigNumberish,
@@ -376,6 +394,8 @@ export class ERC721Governor extends BaseContract {
       proposalId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    proposalThreshold(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     proposalVotes(
       proposalId: BigNumberish,
@@ -502,6 +522,7 @@ export class ERC721Governor extends BaseContract {
     name_: string,
     token_: string,
     timelock_: string,
+    proposalThreshold_: BigNumberish,
     votingDelay_: BigNumberish,
     votingPeriod_: BigNumberish,
     quorumNumerator_: BigNumberish,
@@ -524,6 +545,8 @@ export class ERC721Governor extends BaseContract {
     proposalId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  proposalThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
   proposalVotes(
     proposalId: BigNumberish,
@@ -647,6 +670,7 @@ export class ERC721Governor extends BaseContract {
       name_: string,
       token_: string,
       timelock_: string,
+      proposalThreshold_: BigNumberish,
       votingDelay_: BigNumberish,
       votingPeriod_: BigNumberish,
       quorumNumerator_: BigNumberish,
@@ -669,6 +693,8 @@ export class ERC721Governor extends BaseContract {
       proposalId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    proposalThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
     proposalVotes(
       proposalId: BigNumberish,
@@ -879,6 +905,7 @@ export class ERC721Governor extends BaseContract {
       name_: string,
       token_: string,
       timelock_: string,
+      proposalThreshold_: BigNumberish,
       votingDelay_: BigNumberish,
       votingPeriod_: BigNumberish,
       quorumNumerator_: BigNumberish,
@@ -901,6 +928,8 @@ export class ERC721Governor extends BaseContract {
       proposalId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    proposalThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
     proposalVotes(
       proposalId: BigNumberish,
@@ -1022,6 +1051,7 @@ export class ERC721Governor extends BaseContract {
       name_: string,
       token_: string,
       timelock_: string,
+      proposalThreshold_: BigNumberish,
       votingDelay_: BigNumberish,
       votingPeriod_: BigNumberish,
       quorumNumerator_: BigNumberish,
@@ -1044,6 +1074,8 @@ export class ERC721Governor extends BaseContract {
       proposalId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    proposalThreshold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     proposalVotes(
       proposalId: BigNumberish,
