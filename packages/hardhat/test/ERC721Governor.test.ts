@@ -198,13 +198,13 @@ describe("ERC721Governor", () => {
   });
 
   describe("Voting Period", async () => {
-    it("blocks random callers from setting voting delay", async () => {
+    it("blocks random callers from setting voting period", async () => {
       await expect(governor.setVotingPeriod(0)).to.be.revertedWith(
         "Governor: onlyGovernance"
       );
     });
 
-    it("allows setting voting delay using a proposal", async () => {
+    it("allows setting voting period using a proposal", async () => {
       const newPeriod = VOTING_PERIOD + 123;
       const funcData = governor.interface.encodeFunctionData(
         "setVotingPeriod",
@@ -228,6 +228,42 @@ describe("ERC721Governor", () => {
 
       const event = receipt.events?.find((e) => e.event == "VotingPeriodSet");
       expect(event?.args?.newVotingPeriod.toNumber()).equals(newPeriod);
+    });
+  });
+
+  describe("Quorum Numerator", async () => {
+    it("blocks random callers from setting quorum numerator", async () => {
+      await expect(governor.updateQuorumNumerator(0)).to.be.revertedWith(
+        "Governor: onlyGovernance"
+      );
+    });
+
+    it("allows setting quorum numerator using a proposal", async () => {
+      const newValue = QUORUM_NUMERATOR + 12;
+      const funcData = governor.interface.encodeFunctionData(
+        "updateQuorumNumerator",
+        [newValue]
+      );
+      const description = "description";
+      const propInfo: ProposalInfo = {
+        targets: [governor.address],
+        values: [0],
+        callDatas: [funcData],
+        description: description,
+        descriptionHash: hashString(description),
+      };
+      for (let i = 0; i < PROP_THRESHOLD; i++) {
+        await token.connect(deployer).mint(user.address, i);
+      }
+
+      const receipt = await proposeAndExecute(user, governor, propInfo);
+
+      expect((await governor.quorumNumerator()).toNumber()).equals(newValue);
+
+      const event = receipt.events?.find(
+        (e) => e.event == "QuorumNumeratorUpdated"
+      );
+      expect(event?.args?.newQuorumNumerator.toNumber()).equals(newValue);
     });
   });
 });
