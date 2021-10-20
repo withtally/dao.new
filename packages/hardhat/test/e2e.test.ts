@@ -41,6 +41,7 @@ const BASE_URI =
 const MAX_TOKENS = 10;
 const TOKEN_PRICE = 100;
 const MAX_MINTS_PER_WALLET = 10;
+const STARTING_BLOCK = 1;
 const TOTAL_SHARES = 10000;
 const FOUNDER_REWARD = 0.05;
 const FOUNDER_SHARES = FOUNDER_REWARD * TOTAL_SHARES;
@@ -126,6 +127,7 @@ const deploy = async () => {
     MAX_TOKENS,
     TOKEN_PRICE,
     MAX_MINTS_PER_WALLET,
+    STARTING_BLOCK,
     payees,
     shares
   );

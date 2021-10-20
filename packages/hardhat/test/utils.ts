@@ -107,6 +107,7 @@ export const deployFixedPriceMinter = async (
   maxTokens: BigNumberish,
   tokenPrice: BigNumberish,
   maxMintsPerTx: BigNumberish,
+  startingBlock: BigNumberish,
   payees: string[],
   shares: BigNumberish[]
 ) => {
@@ -116,6 +117,7 @@ export const deployFixedPriceMinter = async (
     maxTokens,
     tokenPrice,
     maxMintsPerTx,
+    startingBlock,
     payees,
     shares
   );
@@ -268,6 +270,7 @@ export const cloneMinter = async (
   maxTokenSupply: BigNumberish,
   tokenPrice: BigNumberish,
   maxMintsPerTx: BigNumberish,
+  startingBlock: BigNumberish,
   payees: string[],
   shares: BigNumberish[]
 ): Promise<FixedPriceMinter> => {
@@ -276,6 +279,7 @@ export const cloneMinter = async (
     maxTokenSupply,
     tokenPrice,
     maxMintsPerTx,
+    startingBlock,
     payees,
     shares,
   ]);

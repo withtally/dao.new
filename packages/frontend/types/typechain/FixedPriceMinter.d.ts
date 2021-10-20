@@ -22,25 +22,31 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface FixedPriceMinterInterface extends ethers.utils.Interface {
   functions: {
-    "initialize(address,uint256,uint256,uint256,address[],uint256[])": FunctionFragment;
+    "initialize(address,uint256,uint256,uint256,uint256,address[],uint256[])": FunctionFragment;
     "maxMintsPerTx()": FunctionFragment;
     "maxTokens()": FunctionFragment;
     "mint(uint256)": FunctionFragment;
     "nextTokenId()": FunctionFragment;
+    "owner()": FunctionFragment;
     "payee(uint256)": FunctionFragment;
     "release(address)": FunctionFragment;
     "released(address)": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
+    "setStartingBlock(uint256)": FunctionFragment;
     "shares(address)": FunctionFragment;
+    "startingBlock()": FunctionFragment;
     "token()": FunctionFragment;
     "tokenPrice()": FunctionFragment;
     "totalReleased()": FunctionFragment;
     "totalShares()": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "initialize",
     values: [
       string,
+      BigNumberish,
       BigNumberish,
       BigNumberish,
       BigNumberish,
@@ -58,10 +64,23 @@ interface FixedPriceMinterInterface extends ethers.utils.Interface {
     functionFragment: "nextTokenId",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(functionFragment: "payee", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "release", values: [string]): string;
   encodeFunctionData(functionFragment: "released", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setStartingBlock",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "shares", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "startingBlock",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "token", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "tokenPrice",
@@ -75,6 +94,10 @@ interface FixedPriceMinterInterface extends ethers.utils.Interface {
     functionFragment: "totalShares",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
+  ): string;
 
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
@@ -87,10 +110,23 @@ interface FixedPriceMinterInterface extends ethers.utils.Interface {
     functionFragment: "nextTokenId",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "payee", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "release", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "released", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setStartingBlock",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "shares", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "startingBlock",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "tokenPrice", data: BytesLike): Result;
   decodeFunctionResult(
@@ -101,13 +137,19 @@ interface FixedPriceMinterInterface extends ethers.utils.Interface {
     functionFragment: "totalShares",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
 
   events: {
+    "OwnershipTransferred(address,address)": EventFragment;
     "PayeeAdded(address,uint256)": EventFragment;
     "PaymentReceived(address,uint256)": EventFragment;
     "PaymentReleased(address,uint256)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PayeeAdded"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PaymentReceived"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PaymentReleased"): EventFragment;
@@ -162,6 +204,7 @@ export class FixedPriceMinter extends BaseContract {
       maxTokens_: BigNumberish,
       tokenPrice_: BigNumberish,
       maxMintsPerTx_: BigNumberish,
+      startingBlock_: BigNumberish,
       payees_: string[],
       shares_: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -178,6 +221,8 @@ export class FixedPriceMinter extends BaseContract {
 
     nextTokenId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
     payee(index: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
     release(
@@ -187,7 +232,18 @@ export class FixedPriceMinter extends BaseContract {
 
     released(account: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setStartingBlock(
+      startingBlock_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     shares(account: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    startingBlock(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     token(overrides?: CallOverrides): Promise<[string]>;
 
@@ -196,6 +252,11 @@ export class FixedPriceMinter extends BaseContract {
     totalReleased(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     totalShares(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   initialize(
@@ -203,6 +264,7 @@ export class FixedPriceMinter extends BaseContract {
     maxTokens_: BigNumberish,
     tokenPrice_: BigNumberish,
     maxMintsPerTx_: BigNumberish,
+    startingBlock_: BigNumberish,
     payees_: string[],
     shares_: BigNumberish[],
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -219,6 +281,8 @@ export class FixedPriceMinter extends BaseContract {
 
   nextTokenId(overrides?: CallOverrides): Promise<BigNumber>;
 
+  owner(overrides?: CallOverrides): Promise<string>;
+
   payee(index: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   release(
@@ -228,7 +292,18 @@ export class FixedPriceMinter extends BaseContract {
 
   released(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+  renounceOwnership(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setStartingBlock(
+    startingBlock_: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   shares(account: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  startingBlock(overrides?: CallOverrides): Promise<BigNumber>;
 
   token(overrides?: CallOverrides): Promise<string>;
 
@@ -238,12 +313,18 @@ export class FixedPriceMinter extends BaseContract {
 
   totalShares(overrides?: CallOverrides): Promise<BigNumber>;
 
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     initialize(
       token_: string,
       maxTokens_: BigNumberish,
       tokenPrice_: BigNumberish,
       maxMintsPerTx_: BigNumberish,
+      startingBlock_: BigNumberish,
       payees_: string[],
       shares_: BigNumberish[],
       overrides?: CallOverrides
@@ -257,13 +338,24 @@ export class FixedPriceMinter extends BaseContract {
 
     nextTokenId(overrides?: CallOverrides): Promise<BigNumber>;
 
+    owner(overrides?: CallOverrides): Promise<string>;
+
     payee(index: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     release(account: string, overrides?: CallOverrides): Promise<void>;
 
     released(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    setStartingBlock(
+      startingBlock_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     shares(account: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    startingBlock(overrides?: CallOverrides): Promise<BigNumber>;
 
     token(overrides?: CallOverrides): Promise<string>;
 
@@ -272,9 +364,22 @@ export class FixedPriceMinter extends BaseContract {
     totalReleased(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalShares(overrides?: CallOverrides): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { previousOwner: string; newOwner: string }
+    >;
+
     PayeeAdded(
       account?: null,
       shares?: null
@@ -303,6 +408,7 @@ export class FixedPriceMinter extends BaseContract {
       maxTokens_: BigNumberish,
       tokenPrice_: BigNumberish,
       maxMintsPerTx_: BigNumberish,
+      startingBlock_: BigNumberish,
       payees_: string[],
       shares_: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -319,6 +425,8 @@ export class FixedPriceMinter extends BaseContract {
 
     nextTokenId(overrides?: CallOverrides): Promise<BigNumber>;
 
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
     payee(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     release(
@@ -328,7 +436,18 @@ export class FixedPriceMinter extends BaseContract {
 
     released(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setStartingBlock(
+      startingBlock_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     shares(account: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    startingBlock(overrides?: CallOverrides): Promise<BigNumber>;
 
     token(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -337,6 +456,11 @@ export class FixedPriceMinter extends BaseContract {
     totalReleased(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalShares(overrides?: CallOverrides): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -345,6 +469,7 @@ export class FixedPriceMinter extends BaseContract {
       maxTokens_: BigNumberish,
       tokenPrice_: BigNumberish,
       maxMintsPerTx_: BigNumberish,
+      startingBlock_: BigNumberish,
       payees_: string[],
       shares_: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -361,6 +486,8 @@ export class FixedPriceMinter extends BaseContract {
 
     nextTokenId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     payee(
       index: BigNumberish,
       overrides?: CallOverrides
@@ -376,10 +503,21 @@ export class FixedPriceMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setStartingBlock(
+      startingBlock_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     shares(
       account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    startingBlock(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     token(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -388,5 +526,10 @@ export class FixedPriceMinter extends BaseContract {
     totalReleased(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalShares(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
   };
 }

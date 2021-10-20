@@ -5,12 +5,14 @@
 pragma solidity ^0.8.6;
 import { PaymentSplitterUpgradeable } from "@openzeppelin/contracts-upgradeable/finance/PaymentSplitterUpgradeable.sol";
 import { ERC721DAOToken } from "./ERC721DAOToken.sol";
+import { OwnableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-contract FixedPriceMinter is PaymentSplitterUpgradeable {
+contract FixedPriceMinter is PaymentSplitterUpgradeable, OwnableUpgradeable {
     ERC721DAOToken public token;
     uint256 public maxTokens;
     uint256 public tokenPrice;
     uint256 public maxMintsPerTx;
+    uint256 public startingBlock;
     uint256 public nextTokenId;
 
     function initialize(
@@ -18,22 +20,24 @@ contract FixedPriceMinter is PaymentSplitterUpgradeable {
         uint256 maxTokens_,
         uint256 tokenPrice_,
         uint256 maxMintsPerTx_,
+        uint256 startingBlock_,
         address[] memory payees_,
         uint256[] memory shares_
     ) public initializer {
         __PaymentSplitter_init(payees_, shares_);
+        __Ownable_init();
 
         token = token_;
         maxTokens = maxTokens_;
         tokenPrice = tokenPrice_;
         maxMintsPerTx = maxMintsPerTx_;
+        startingBlock = startingBlock_;
 
         nextTokenId = 1;
     }
 
     function mint(uint256 quantity) external payable {
-        // TODO maybe add a startingBlock config
-        // require(block.number >= startingBlock, "Sale hasn't started yet!");
+        require(block.number >= startingBlock, "FixedPriceMinter: Sale hasn't started yet!");
 
         require(quantity <= maxMintsPerTx, "FixedPriceMinter: There is a limit on minting too many at a time!");
 
@@ -47,5 +51,9 @@ contract FixedPriceMinter is PaymentSplitterUpgradeable {
         for (uint256 i = 0; i < quantity; i++) {
             token.mint(_msgSender(), nextTokenId++);
         }
+    }
+
+    function setStartingBlock(uint256 startingBlock_) external onlyOwner {
+        startingBlock = startingBlock_;
     }
 }
