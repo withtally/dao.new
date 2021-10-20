@@ -14,6 +14,7 @@ import {
 } from "../../frontend/types/typechain";
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { BytesLike } from "@ethersproject/bignumber/node_modules/@ethersproject/bytes";
+import { ContractReceipt } from "@ethersproject/contracts";
 
 const keccak256 = ethers.utils.keccak256;
 const toUtf8Bytes = ethers.utils.toUtf8Bytes;
@@ -38,6 +39,22 @@ export type TestSigners = {
   account0: SignerWithAddress;
   account1: SignerWithAddress;
   account2: SignerWithAddress;
+};
+
+export type ProposalInfo = {
+  targets: string[];
+  values: BigNumberish[];
+  callDatas: BytesLike[];
+  description: string;
+  descriptionHash: BytesLike;
+};
+
+export const encodeParameters = (
+  types: string[],
+  values: unknown[]
+): string => {
+  const abi = new ethers.utils.AbiCoder();
+  return abi.encode(types, values);
 };
 
 export const address = (n: number): string => {
@@ -273,17 +290,63 @@ export const cloneMinter = async (
 export const propose = async (
   proposer: SignerWithAddress,
   governor: ERC721Governor,
-  targets: string[],
-  values: BigNumberish[],
-  calldatas: BytesLike[],
-  description: string
+  propInfo: ProposalInfo
 ): Promise<BigNumber> => {
   const tx = await governor
     .connect(proposer)
-    .propose(targets, values, calldatas, description);
+    .propose(
+      propInfo.targets,
+      propInfo.values,
+      propInfo.callDatas,
+      propInfo.description
+    );
   const receipt = await tx.wait();
   const event = receipt.events?.find((e) => e.event == "ProposalCreated");
   return event?.args?.proposalId;
+};
+
+export const proposeAndExecute = async (
+  proposer: SignerWithAddress,
+  governor: ERC721Governor,
+  propInfo: ProposalInfo
+): Promise<ContractReceipt> => {
+  const proposalId = await propose(proposer, governor, propInfo);
+  await advanceBlocks((await governor.votingDelay()).toNumber());
+
+  await governor.connect(proposer).castVote(proposalId, 1);
+  await advanceBlocks((await governor.votingPeriod()).toNumber());
+
+  await governor.queue(
+    propInfo.targets,
+    propInfo.values,
+    propInfo.callDatas,
+    propInfo.descriptionHash
+  );
+  const eta = await governor.proposalEta(proposalId);
+  await setNextBlockTimestamp(eta.toNumber(), false);
+
+  const tx = await governor.execute(
+    propInfo.targets,
+    propInfo.values,
+    propInfo.callDatas,
+    propInfo.descriptionHash
+  );
+
+  return await tx.wait();
+};
+
+export const createTransferProp = (
+  targetAddress: string,
+  value: number
+): ProposalInfo => {
+  const description = "description";
+  return {
+    targets: [targetAddress],
+    values: [value],
+    callDatas: ["0x"],
+    description: description,
+    descriptionHash: hashString(description),
+  };
 };
 
 export const mineBlock = async (): Promise<void> => {

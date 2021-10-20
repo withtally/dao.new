@@ -17,6 +17,7 @@ import {
   hashString,
   advanceBlocks,
   setNextBlockTimestamp,
+  createTransferProp,
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
@@ -199,14 +200,9 @@ describe("End to end flows", () => {
     const description = "description";
     const descriptionHash = hashString(description);
 
-    const proposalId = await propose(
-      user1,
-      governor,
-      targets,
-      values,
-      callDatas,
-      description
-    );
+    const propInfo = createTransferProp(rando.address, TOKEN_PRICE);
+
+    const proposalId = await propose(user1, governor, propInfo);
     await advanceBlocks(VOTING_DELAY);
 
     await governor.connect(user1).castVote(proposalId, 1);

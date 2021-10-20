@@ -43,6 +43,9 @@ interface ERC721GovernorInterface extends ethers.utils.Interface {
     "quorum(uint256)": FunctionFragment;
     "quorumDenominator()": FunctionFragment;
     "quorumNumerator()": FunctionFragment;
+    "setProposalThreshold(uint256)": FunctionFragment;
+    "setVotingDelay(uint256)": FunctionFragment;
+    "setVotingPeriod(uint256)": FunctionFragment;
     "state(uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "timelock()": FunctionFragment;
@@ -143,6 +146,18 @@ interface ERC721GovernorInterface extends ethers.utils.Interface {
     functionFragment: "quorumNumerator",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "setProposalThreshold",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setVotingDelay",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setVotingPeriod",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "state", values: [BigNumberish]): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -225,6 +240,18 @@ interface ERC721GovernorInterface extends ethers.utils.Interface {
     functionFragment: "quorumNumerator",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "setProposalThreshold",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setVotingDelay",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setVotingPeriod",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "state", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
@@ -255,18 +282,24 @@ interface ERC721GovernorInterface extends ethers.utils.Interface {
     "ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)": EventFragment;
     "ProposalExecuted(uint256)": EventFragment;
     "ProposalQueued(uint256,uint256)": EventFragment;
+    "ProposalThresholdSet(uint256,uint256)": EventFragment;
     "QuorumNumeratorUpdated(uint256,uint256)": EventFragment;
     "TimelockChange(address,address)": EventFragment;
     "VoteCast(address,uint256,uint8,uint256,string)": EventFragment;
+    "VotingDelaySet(uint256,uint256)": EventFragment;
+    "VotingPeriodSet(uint256,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ProposalCanceled"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalExecuted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalQueued"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ProposalThresholdSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "QuorumNumeratorUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TimelockChange"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "VoteCast"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "VotingDelaySet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "VotingPeriodSet"): EventFragment;
 }
 
 export class ERC721Governor extends BaseContract {
@@ -433,6 +466,21 @@ export class ERC721Governor extends BaseContract {
 
     quorumNumerator(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    setProposalThreshold(
+      proposalThreshold_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setVotingDelay(
+      votingDelay_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setVotingPeriod(
+      votingPeriod_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     state(
       proposalId: BigNumberish,
       overrides?: CallOverrides
@@ -584,6 +632,21 @@ export class ERC721Governor extends BaseContract {
 
   quorumNumerator(overrides?: CallOverrides): Promise<BigNumber>;
 
+  setProposalThreshold(
+    proposalThreshold_: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setVotingDelay(
+    votingDelay_: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setVotingPeriod(
+    votingPeriod_: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   state(proposalId: BigNumberish, overrides?: CallOverrides): Promise<number>;
 
   supportsInterface(
@@ -732,6 +795,21 @@ export class ERC721Governor extends BaseContract {
 
     quorumNumerator(overrides?: CallOverrides): Promise<BigNumber>;
 
+    setProposalThreshold(
+      proposalThreshold_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setVotingDelay(
+      votingDelay_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setVotingPeriod(
+      votingPeriod_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     state(proposalId: BigNumberish, overrides?: CallOverrides): Promise<number>;
 
     supportsInterface(
@@ -812,6 +890,14 @@ export class ERC721Governor extends BaseContract {
       { proposalId: BigNumber; eta: BigNumber }
     >;
 
+    ProposalThresholdSet(
+      oldProposalThreshold?: null,
+      newProposalThreshold?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber],
+      { oldProposalThreshold: BigNumber; newProposalThreshold: BigNumber }
+    >;
+
     QuorumNumeratorUpdated(
       oldQuorumNumerator?: null,
       newQuorumNumerator?: null
@@ -843,6 +929,22 @@ export class ERC721Governor extends BaseContract {
         weight: BigNumber;
         reason: string;
       }
+    >;
+
+    VotingDelaySet(
+      oldVotingDelay?: null,
+      newVotingDelay?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber],
+      { oldVotingDelay: BigNumber; newVotingDelay: BigNumber }
+    >;
+
+    VotingPeriodSet(
+      oldVotingPeriod?: null,
+      newVotingPeriod?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber],
+      { oldVotingPeriod: BigNumber; newVotingPeriod: BigNumber }
     >;
   };
 
@@ -960,6 +1062,21 @@ export class ERC721Governor extends BaseContract {
     quorumDenominator(overrides?: CallOverrides): Promise<BigNumber>;
 
     quorumNumerator(overrides?: CallOverrides): Promise<BigNumber>;
+
+    setProposalThreshold(
+      proposalThreshold_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setVotingDelay(
+      votingDelay_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setVotingPeriod(
+      votingPeriod_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     state(
       proposalId: BigNumberish,
@@ -1106,6 +1223,21 @@ export class ERC721Governor extends BaseContract {
     quorumDenominator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     quorumNumerator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    setProposalThreshold(
+      proposalThreshold_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setVotingDelay(
+      votingDelay_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setVotingPeriod(
+      votingPeriod_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     state(
       proposalId: BigNumberish,

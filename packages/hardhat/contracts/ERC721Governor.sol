@@ -23,6 +23,10 @@ contract ERC721Governor is
     uint256 private _votingDelay;
     uint256 private _votingPeriod;
 
+    event ProposalThresholdSet(uint256 oldProposalThreshold, uint256 newProposalThreshold);
+    event VotingDelaySet(uint256 oldVotingDelay, uint256 newVotingDelay);
+    event VotingPeriodSet(uint256 oldVotingPeriod, uint256 newVotingPeriod);
+
     function initialize(
         string memory name_,
         ERC721DAOToken token_,
@@ -60,12 +64,35 @@ contract ERC721Governor is
         return _proposalThreshold;
     }
 
+    function setProposalThreshold(uint256 proposalThreshold_) external onlyGovernance {
+        require(
+            proposalThreshold_ <= token.totalSupply(),
+            "ERC721Governor::setProposalThreshold: proposalThreshold cannot exceed total token supply"
+        );
+
+        emit ProposalThresholdSet(_proposalThreshold, proposalThreshold_);
+
+        _proposalThreshold = proposalThreshold_;
+    }
+
     function votingDelay() public view virtual override returns (uint256) {
         return _votingDelay;
     }
 
+    function setVotingDelay(uint256 votingDelay_) external onlyGovernance {
+        emit VotingDelaySet(_votingDelay, votingDelay_);
+
+        _votingDelay = votingDelay_;
+    }
+
     function votingPeriod() public view virtual override returns (uint256) {
         return _votingPeriod;
+    }
+
+    function setVotingPeriod(uint256 votingPeriod_) external onlyGovernance {
+        emit VotingPeriodSet(_votingPeriod, votingPeriod_);
+
+        _votingPeriod = votingPeriod_;
     }
 
     function state(uint256 proposalId)
