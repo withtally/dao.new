@@ -53,6 +53,11 @@ contract FixedPriceMinter is PaymentSplitterUpgradeable, OwnableUpgradeable {
         }
     }
 
+    function mintSpecial(address to, uint256 tokenId) external onlyOwner {
+        require(tokenId > maxTokens, "FixedPriceMinter: tokenId must be larger than maxToken");
+        token.mint(to, tokenId);
+    }
+
     function setStartingBlock(uint256 startingBlock_) external onlyOwner {
         startingBlock = startingBlock_;
     }

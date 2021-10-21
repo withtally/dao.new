@@ -160,4 +160,26 @@ describe("FixedPriceMinter", () => {
       ).to.be.revertedWith("Ownable: caller is not the owner");
     });
   });
+
+  describe("Mint special", async () => {
+    it("should mint to the to address", async () => {
+      await minter.connect(creator).mintSpecial(user.address, 12345);
+
+      expect(await token.ownerOf(12345)).equals(user.address);
+    });
+
+    it("should not allow non owners to mint", async () => {
+      await expect(minter.connect(user).mintSpecial(user.address, 12345)).to.be
+        .reverted;
+    });
+
+    it("should allow tokenIds only larger than max supply", async () => {
+      await expect(
+        minter.connect(creator).mintSpecial(user.address, MAX_TOKENS)
+      ).to.be.reverted;
+
+      await minter.connect(creator).mintSpecial(user.address, MAX_TOKENS + 1);
+      expect(await token.ownerOf(MAX_TOKENS + 1)).equals(user.address);
+    });
+  });
 });
