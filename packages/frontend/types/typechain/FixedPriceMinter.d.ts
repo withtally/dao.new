@@ -33,6 +33,8 @@ interface FixedPriceMinterInterface extends ethers.utils.Interface {
     "release(address)": FunctionFragment;
     "released(address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
+    "saleActive()": FunctionFragment;
+    "setSaleActive(bool)": FunctionFragment;
     "setStartingBlock(uint256)": FunctionFragment;
     "shares(address)": FunctionFragment;
     "startingBlock()": FunctionFragment;
@@ -76,6 +78,14 @@ interface FixedPriceMinterInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "saleActive",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setSaleActive",
+    values: [boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "setStartingBlock",
@@ -125,6 +135,11 @@ interface FixedPriceMinterInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "released", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "saleActive", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setSaleActive",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -251,6 +266,13 @@ export class FixedPriceMinter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    saleActive(overrides?: CallOverrides): Promise<[boolean]>;
+
+    setSaleActive(
+      isActive: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setStartingBlock(
       startingBlock_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -317,6 +339,13 @@ export class FixedPriceMinter extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  saleActive(overrides?: CallOverrides): Promise<boolean>;
+
+  setSaleActive(
+    isActive: boolean,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setStartingBlock(
     startingBlock_: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -374,6 +403,10 @@ export class FixedPriceMinter extends BaseContract {
     released(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    saleActive(overrides?: CallOverrides): Promise<boolean>;
+
+    setSaleActive(isActive: boolean, overrides?: CallOverrides): Promise<void>;
 
     setStartingBlock(
       startingBlock_: BigNumberish,
@@ -473,6 +506,13 @@ export class FixedPriceMinter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    saleActive(overrides?: CallOverrides): Promise<BigNumber>;
+
+    setSaleActive(
+      isActive: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setStartingBlock(
       startingBlock_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -543,6 +583,13 @@ export class FixedPriceMinter extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    saleActive(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    setSaleActive(
+      isActive: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

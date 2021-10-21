@@ -14,6 +14,7 @@ contract FixedPriceMinter is PaymentSplitterUpgradeable, OwnableUpgradeable {
     uint256 public maxMintsPerTx;
     uint256 public startingBlock;
     uint256 public nextTokenId;
+    bool public saleActive = false;
 
     function initialize(
         ERC721DAOToken token_,
@@ -39,6 +40,8 @@ contract FixedPriceMinter is PaymentSplitterUpgradeable, OwnableUpgradeable {
     function mint(uint256 quantity) external payable {
         require(block.number >= startingBlock, "FixedPriceMinter: Sale hasn't started yet!");
 
+        require(saleActive, "FixedPriceMinter: sale is not active");
+
         require(quantity <= maxMintsPerTx, "FixedPriceMinter: There is a limit on minting too many at a time!");
 
         require(nextTokenId - 1 + quantity <= maxTokens, "FixedPriceMinter: Minting this many would exceed supply!");
@@ -51,6 +54,10 @@ contract FixedPriceMinter is PaymentSplitterUpgradeable, OwnableUpgradeable {
         for (uint256 i = 0; i < quantity; i++) {
             token.mint(_msgSender(), nextTokenId++);
         }
+    }
+
+    function setSaleActive(bool isActive) external onlyOwner {
+        saleActive = isActive;
     }
 
     function mintSpecial(address to, uint256 tokenId) external onlyOwner {

@@ -60,8 +60,21 @@ describe("FixedPriceMinter", () => {
     await ethers.provider.send("evm_revert", [snapshotId]);
   });
 
-  describe("Mint", async () => {
+  describe("Before sale is active", async () => {
+    it("should not allow minting", async () => {
+      await expect(
+        minter.connect(user).mint(1, { value: TOKEN_PRICE })
+      ).to.be.revertedWith("FixedPriceMinter: sale is not active");
+    });
+  });
+
+  describe("Mint after sale is active", async () => {
+    before(async () => {
+      await minter.connect(creator).setSaleActive(true);
+    });
+
     it("should mint an asset", async () => {
+      await minter.connect(creator).setSaleActive(true);
       await minter.connect(user).mint(1, {
         value: TOKEN_PRICE,
       });
