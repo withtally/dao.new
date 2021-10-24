@@ -3,9 +3,16 @@
 //
 // When running the script with `hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-import { Contract } from 'ethers';
-import { config, ethers } from 'hardhat';
-import fs from 'fs';
+import { Contract, ContractFactory } from "ethers";
+import { config, ethers } from "hardhat";
+import fs from "fs";
+import {
+  CloneFactory__factory,
+  ERC721DAOToken__factory,
+  ERC721Governor__factory,
+  ERC721Timelock__factory,
+  FixedPriceMinter__factory,
+} from "../../frontend/types/typechain";
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
@@ -17,26 +24,32 @@ async function main() {
 
   fs.unlinkSync(`${config.paths.artifacts}/contracts/contractAddress.ts`);
 
-  // We get the contract to deploy
-  const YourContract = await ethers.getContractFactory('YourContract');
-  const contract = await YourContract.deploy('Hello, Hardhat!');
-  await contract.deployed();
-  saveFrontendFiles(contract, "YourContract");
-  console.log('YourContract deployed to:', contract.address);
+  const [deployer] = await ethers.getSigners();
 
-  const MulticallContract = await ethers.getContractFactory('Multicall');
-  const multicallContract = await MulticallContract.deploy();
-  await multicallContract.deployed();
-  saveFrontendFiles(multicallContract, "MulticallContract");
-  console.log('Multicall deployed to:', multicallContract.address);
+  await deployContract(new ERC721DAOToken__factory(deployer), "ERC721DAOToken");
+  await deployContract(new ERC721Timelock__factory(deployer), "ERC721Timelock");
+  await deployContract(new ERC721Governor__factory(deployer), "ERC721Governor");
+  await deployContract(
+    new FixedPriceMinter__factory(deployer),
+    "FixedPriceMinter"
+  );
+  await deployContract(new CloneFactory__factory(deployer), "CloneFactory");
+}
+
+async function deployContract(factory: ContractFactory, name: string) {
+  const contract = await factory.deploy();
+  await contract.deployed();
+  saveFrontendFiles(contract, name);
 }
 
 // https://github.com/nomiclabs/hardhat-hackathon-boilerplate/blob/master/scripts/deploy.js
 function saveFrontendFiles(contract: Contract, contractName: string) {
+  const varName = contractName + "Address";
   fs.appendFileSync(
     `${config.paths.artifacts}/contracts/contractAddress.ts`,
-    `export const ${contractName} = '${contract.address}'\n`
+    `export const ${varName} = '${contract.address}'\n`
   );
+  console.log("%s deployed to: %s", contractName, contract.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
