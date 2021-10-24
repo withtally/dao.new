@@ -37,22 +37,25 @@ contract FixedPriceMinter is PaymentSplitterUpgradeable, OwnableUpgradeable {
         nextTokenId = 1;
     }
 
-    function mint(uint256 quantity) external payable {
+    function mint(uint256 amount) external payable {
         require(block.number >= startingBlock, "FixedPriceMinter: Sale hasn't started yet!");
 
         require(saleActive, "FixedPriceMinter: sale is not active");
 
-        require(quantity <= maxMintsPerTx, "FixedPriceMinter: There is a limit on minting too many at a time!");
+        require(amount <= maxMintsPerTx, "FixedPriceMinter: There is a limit on minting too many at a time!");
 
-        require(nextTokenId - 1 + quantity <= maxTokens, "FixedPriceMinter: Minting this many would exceed supply!");
-
-        require(msg.value >= tokenPrice * quantity, "FixedPriceMinter: not enough ether sent!");
-
+        require(msg.value >= tokenPrice * amount, "FixedPriceMinter: not enough ether sent!");
         // TODO do we want to enforce no contracts?
         require(_msgSender() == tx.origin, "FixedPriceMinter: No contracts!");
 
-        for (uint256 i = 0; i < quantity; i++) {
-            token.mint(_msgSender(), nextTokenId++);
+        mintBatch(_msgSender(), amount);
+    }
+
+    function mintBatch(address to, uint256 amount) private {
+        require(nextTokenId - 1 + amount <= maxTokens, "FixedPriceMinter: Minting this many would exceed supply!");
+
+        for (uint256 i = 0; i < amount; i++) {
+            token.mint(to, nextTokenId++);
         }
     }
 
@@ -60,9 +63,8 @@ contract FixedPriceMinter is PaymentSplitterUpgradeable, OwnableUpgradeable {
         saleActive = isActive;
     }
 
-    function mintSpecial(address to, uint256 tokenId) external onlyOwner {
-        require(tokenId > maxTokens, "FixedPriceMinter: tokenId must be larger than maxToken");
-        token.mint(to, tokenId);
+    function ownerMint(address to, uint256 amount) external onlyOwner {
+        mintBatch(to, amount);
     }
 
     function setStartingBlock(uint256 startingBlock_) external onlyOwner {

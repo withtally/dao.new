@@ -26,9 +26,9 @@ interface FixedPriceMinterInterface extends ethers.utils.Interface {
     "maxMintsPerTx()": FunctionFragment;
     "maxTokens()": FunctionFragment;
     "mint(uint256)": FunctionFragment;
-    "mintSpecial(address,uint256)": FunctionFragment;
     "nextTokenId()": FunctionFragment;
     "owner()": FunctionFragment;
+    "ownerMint(address,uint256)": FunctionFragment;
     "payee(uint256)": FunctionFragment;
     "release(address)": FunctionFragment;
     "released(address)": FunctionFragment;
@@ -64,14 +64,14 @@ interface FixedPriceMinterInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "maxTokens", values?: undefined): string;
   encodeFunctionData(functionFragment: "mint", values: [BigNumberish]): string;
   encodeFunctionData(
-    functionFragment: "mintSpecial",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "nextTokenId",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "ownerMint",
+    values: [string, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "payee", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "release", values: [string]): string;
   encodeFunctionData(functionFragment: "released", values: [string]): string;
@@ -122,14 +122,11 @@ interface FixedPriceMinterInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "maxTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "mintSpecial",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "nextTokenId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "ownerMint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "payee", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "release", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "released", data: BytesLike): Result;
@@ -239,19 +236,19 @@ export class FixedPriceMinter extends BaseContract {
     maxTokens(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     mint(
-      quantity: BigNumberish,
+      amount: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    mintSpecial(
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     nextTokenId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
+
+    ownerMint(
+      to: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     payee(index: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
@@ -312,19 +309,19 @@ export class FixedPriceMinter extends BaseContract {
   maxTokens(overrides?: CallOverrides): Promise<BigNumber>;
 
   mint(
-    quantity: BigNumberish,
+    amount: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  mintSpecial(
-    to: string,
-    tokenId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   nextTokenId(overrides?: CallOverrides): Promise<BigNumber>;
 
   owner(overrides?: CallOverrides): Promise<string>;
+
+  ownerMint(
+    to: string,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   payee(index: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
@@ -384,17 +381,17 @@ export class FixedPriceMinter extends BaseContract {
 
     maxTokens(overrides?: CallOverrides): Promise<BigNumber>;
 
-    mint(quantity: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    mintSpecial(
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    mint(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     nextTokenId(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<string>;
+
+    ownerMint(
+      to: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     payee(index: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
@@ -479,19 +476,19 @@ export class FixedPriceMinter extends BaseContract {
     maxTokens(overrides?: CallOverrides): Promise<BigNumber>;
 
     mint(
-      quantity: BigNumberish,
+      amount: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    mintSpecial(
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     nextTokenId(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    ownerMint(
+      to: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     payee(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -553,19 +550,19 @@ export class FixedPriceMinter extends BaseContract {
     maxTokens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     mint(
-      quantity: BigNumberish,
+      amount: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    mintSpecial(
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     nextTokenId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    ownerMint(
+      to: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     payee(
       index: BigNumberish,
