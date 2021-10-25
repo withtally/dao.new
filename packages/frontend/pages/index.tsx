@@ -2,18 +2,27 @@ import { Box, Button, Divider, Heading, Input, Text } from '@chakra-ui/react'
 import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
 import { ethers, providers, utils } from 'ethers'
 import React, { useReducer } from 'react'
-import { YourContract as LOCAL_CONTRACT_ADDRESS } from '../artifacts/contracts/contractAddress'
-import YourContract from '../artifacts/contracts/YourContract.sol/YourContract.json'
+import { CloneFactoryAddress as LOCAL_CONTRACT_ADDRESS } from '../artifacts/contracts/contractAddress'
 import { Layout } from '../components/layout/Layout'
-import { YourContract as YourContractType } from '../types/typechain'
+import {
+  CloneFactory__factory,
+  ERC721DAOToken__factory,
+} from '../types/typechain'
 
 /**
  * Constants & Helpers
  */
-
 const localProvider = new providers.StaticJsonRpcProvider(
   'http://localhost:8545'
 )
+
+const keccak256 = ethers.utils.keccak256
+const toUtf8Bytes = ethers.utils.toUtf8Bytes
+export const hashString = (str: string) => {
+  return keccak256(toUtf8Bytes(str))
+}
+
+export const ADMIN_ROLE = hashString('ADMIN_ROLE')
 
 const ROPSTEN_CONTRACT_ADDRESS = '0x6b61a52b1EA15f4b8dB186126e980208E1E18864'
 
@@ -88,41 +97,36 @@ function HomeIndex(): JSX.Element {
     signer: localProvider.getSigner(),
   })
 
-  // call the smart contract, read the current greeting value
-  async function fetchContractGreeting() {
-    if (library) {
-      const contract = new ethers.Contract(
-        CONTRACT_ADDRESS,
-        YourContract.abi,
-        library
-      ) as YourContractType
-      try {
-        const data = await contract.greeting()
-        dispatch({ type: 'SET_GREETING', greeting: data })
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.log('Error: ', err)
-      }
-    }
-  }
-
-  // call the smart contract, send an update
-  async function setContractGreeting() {
-    if (!state.inputValue) return
+  async function deployClones() {
     if (library) {
       dispatch({
         type: 'SET_LOADING',
         isLoading: true,
       })
+
       const signer = library.getSigner()
-      const contract = new ethers.Contract(
-        CONTRACT_ADDRESS,
-        YourContract.abi,
-        signer
-      ) as YourContractType
-      const transaction = await contract.setGreeting(state.inputValue)
-      await transaction.wait()
-      fetchContractGreeting()
+      const contract = new CloneFactory__factory(signer).attach(
+        CONTRACT_ADDRESS
+      )
+
+      const tokenInterface = ERC721DAOToken__factory.createInterface()
+      const callData = tokenInterface.encodeFunctionData('initialize', [
+        'NewToken',
+        'NT',
+        'baseURI',
+        [ADMIN_ROLE],
+        [account],
+      ])
+
+      const tx = await contract.clone(0, callData)
+      console.log('tx', tx)
+      const receipt = await tx.wait()
+      console.log('receipt', receipt)
+      const event = receipt.events?.find((e) => e.event == 'NewClone')
+
+      console.log('NewClone event: ', event)
+      console.log('Instance: ', event?.args?.instance)
+
       dispatch({
         type: 'SET_LOADING',
         isLoading: false,
@@ -142,49 +146,17 @@ function HomeIndex(): JSX.Element {
       <Heading as="h1" mb="8">
         Next.js Ethereum Starter
       </Heading>
-      <Button
-        as="a"
-        size="lg"
-        colorScheme="teal"
-        variant="outline"
-        href="https://github.com/austintgriffith/scaffold-eth/tree/nextjs-typescript"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Get the source code!
-      </Button>
-      <Text mt="8" fontSize="xl">
-        This page only works on the ROPSTEN Testnet or on a Local Chain.
-      </Text>
       <Box maxWidth="container.sm" p="8" mt="8" bg="gray.100">
         <Text fontSize="xl">Contract Address: {CONTRACT_ADDRESS}</Text>
         <Divider my="8" borderColor="gray.400" />
         <Box>
-          <Text fontSize="lg">Greeting: {state.greeting}</Text>
-          <Button mt="2" colorScheme="teal" onClick={fetchContractGreeting}>
-            Fetch Greeting
-          </Button>
-        </Box>
-        <Divider my="8" borderColor="gray.400" />
-        <Box>
-          <Input
-            bg="white"
-            type="text"
-            placeholder="Enter a Greeting"
-            onChange={(e) => {
-              dispatch({
-                type: 'SET_INPUT_VALUE',
-                inputValue: e.target.value,
-              })
-            }}
-          />
           <Button
             mt="2"
             colorScheme="teal"
             isLoading={state.isLoading}
-            onClick={setContractGreeting}
+            onClick={deployClones}
           >
-            Set Greeting
+            Deploy Clones
           </Button>
         </Box>
         <Divider my="8" borderColor="gray.400" />

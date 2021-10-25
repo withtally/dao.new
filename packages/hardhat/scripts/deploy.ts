@@ -7,11 +7,13 @@ import { Contract, ContractFactory } from "ethers";
 import { config, ethers } from "hardhat";
 import fs from "fs";
 import {
+  CloneFactory,
   CloneFactory__factory,
   ERC721DAOToken__factory,
   ERC721Governor__factory,
   ERC721Timelock__factory,
   FixedPriceMinter__factory,
+  Multicall__factory,
 } from "../../frontend/types/typechain";
 
 async function main() {
@@ -26,20 +28,51 @@ async function main() {
 
   const [deployer] = await ethers.getSigners();
 
-  await deployContract(new ERC721DAOToken__factory(deployer), "ERC721DAOToken");
-  await deployContract(new ERC721Timelock__factory(deployer), "ERC721Timelock");
-  await deployContract(new ERC721Governor__factory(deployer), "ERC721Governor");
-  await deployContract(
+  await deployContract(new Multicall__factory(deployer), "Multicall");
+
+  const tokenImpl = await deployContract(
+    new ERC721DAOToken__factory(deployer),
+    "ERC721DAOToken"
+  );
+  const timelockImpl = await deployContract(
+    new ERC721Timelock__factory(deployer),
+    "ERC721Timelock"
+  );
+  const governorImpl = await deployContract(
+    new ERC721Governor__factory(deployer),
+    "ERC721Governor"
+  );
+  const minterImpl = await deployContract(
     new FixedPriceMinter__factory(deployer),
     "FixedPriceMinter"
   );
-  await deployContract(new CloneFactory__factory(deployer), "CloneFactory");
+  const cloneFactory = (await deployContract(
+    new CloneFactory__factory(deployer),
+    "CloneFactory"
+  )) as CloneFactory;
+
+  // Sets the deployer as the Owner of the factory
+  await cloneFactory.connect(deployer).initialize();
+
+  await cloneFactory
+    .connect(deployer)
+    .addImplementation(tokenImpl.address, "token");
+  await cloneFactory
+    .connect(deployer)
+    .addImplementation(timelockImpl.address, "timelock");
+  await cloneFactory
+    .connect(deployer)
+    .addImplementation(governorImpl.address, "governor");
+  await cloneFactory
+    .connect(deployer)
+    .addImplementation(minterImpl.address, "minter");
 }
 
 async function deployContract(factory: ContractFactory, name: string) {
   const contract = await factory.deploy();
   await contract.deployed();
   saveFrontendFiles(contract, name);
+  return contract;
 }
 
 // https://github.com/nomiclabs/hardhat-hackathon-boilerplate/blob/master/scripts/deploy.js

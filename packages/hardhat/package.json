@@ -7,8 +7,9 @@
     "chain": "npx hardhat node --network hardhat",
     "clean": "npx hardhat clean",
     "compile": "npx hardhat compile",
-    "deploy": "npx hardhat --network hardhat run scripts/deploy.ts",
-    "test": "npx hardhat test --network hardhat"
+    "deploy": "npx hardhat --network localhost run scripts/deploy.ts",
+    "test": "npx hardhat test --network hardhat",
+    "console": "npx hardhat console --network localhost"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
