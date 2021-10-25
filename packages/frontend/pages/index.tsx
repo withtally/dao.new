@@ -223,6 +223,7 @@ function HomeIndex(): JSX.Element {
           cloneFactory,
           3,
           minterInitCallData(
+            account,
             tokenCloneAddress,
             DEFAULT_TOKEN_SUPPLY,
             DEFAULT_TOKEN_PRICE,

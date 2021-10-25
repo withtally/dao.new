@@ -14,9 +14,10 @@ contract FixedPriceMinter is PaymentSplitterUpgradeable, OwnableUpgradeable {
     uint256 public maxMintsPerTx;
     uint256 public startingBlock;
     uint256 public nextTokenId;
-    bool public saleActive = false;
+    bool public saleActive;
 
     function initialize(
+        address owner_,
         ERC721DAOToken token_,
         uint256 maxTokens_,
         uint256 tokenPrice_,
@@ -27,6 +28,7 @@ contract FixedPriceMinter is PaymentSplitterUpgradeable, OwnableUpgradeable {
     ) public initializer {
         __PaymentSplitter_init(payees_, shares_);
         __Ownable_init();
+        transferOwnership(owner_);
 
         token = token_;
         maxTokens = maxTokens_;
@@ -35,6 +37,7 @@ contract FixedPriceMinter is PaymentSplitterUpgradeable, OwnableUpgradeable {
         startingBlock = startingBlock_;
 
         nextTokenId = 1;
+        saleActive = false;
     }
 
     function mint(uint256 amount) external payable {

@@ -38,6 +38,7 @@ describe("FixedPriceMinter", () => {
 
     minter = await deployFixedPriceMinter(
       deployer,
+      creator.address,
       token.address,
       MAX_TOKENS,
       TOKEN_PRICE,
@@ -48,8 +49,6 @@ describe("FixedPriceMinter", () => {
     );
 
     await initToken(token, deployer.address, deployer.address, minter.address);
-
-    await minter.transferOwnership(creator.address);
   });
 
   beforeEach(async () => {

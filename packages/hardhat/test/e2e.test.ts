@@ -123,6 +123,7 @@ const deploy = async () => {
     factory,
     minterImpl,
     3,
+    founder.address,
     token.address,
     MAX_TOKENS,
     TOKEN_PRICE,
@@ -144,6 +145,8 @@ const deploy = async () => {
     await timelock.TIMELOCK_ADMIN_ROLE(),
     deployer.address
   );
+
+  await minter.connect(founder).setSaleActive(true);
 };
 
 describe("End to end flows", () => {

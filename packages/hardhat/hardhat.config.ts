@@ -36,7 +36,7 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       chainId: 1337,
-      loggingEnabled: true,
+      loggingEnabled: false,
     },
   },
   typechain: {

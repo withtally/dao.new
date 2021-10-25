@@ -22,7 +22,7 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface FixedPriceMinterInterface extends ethers.utils.Interface {
   functions: {
-    "initialize(address,uint256,uint256,uint256,uint256,address[],uint256[])": FunctionFragment;
+    "initialize(address,address,uint256,uint256,uint256,uint256,address[],uint256[])": FunctionFragment;
     "maxMintsPerTx()": FunctionFragment;
     "maxTokens()": FunctionFragment;
     "mint(uint256)": FunctionFragment;
@@ -48,6 +48,7 @@ interface FixedPriceMinterInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "initialize",
     values: [
+      string,
       string,
       BigNumberish,
       BigNumberish,
@@ -221,6 +222,7 @@ export class FixedPriceMinter extends BaseContract {
 
   functions: {
     initialize(
+      owner_: string,
       token_: string,
       maxTokens_: BigNumberish,
       tokenPrice_: BigNumberish,
@@ -294,6 +296,7 @@ export class FixedPriceMinter extends BaseContract {
   };
 
   initialize(
+    owner_: string,
     token_: string,
     maxTokens_: BigNumberish,
     tokenPrice_: BigNumberish,
@@ -367,6 +370,7 @@ export class FixedPriceMinter extends BaseContract {
 
   callStatic: {
     initialize(
+      owner_: string,
       token_: string,
       maxTokens_: BigNumberish,
       tokenPrice_: BigNumberish,
@@ -461,6 +465,7 @@ export class FixedPriceMinter extends BaseContract {
 
   estimateGas: {
     initialize(
+      owner_: string,
       token_: string,
       maxTokens_: BigNumberish,
       tokenPrice_: BigNumberish,
@@ -535,6 +540,7 @@ export class FixedPriceMinter extends BaseContract {
 
   populateTransaction: {
     initialize(
+      owner_: string,
       token_: string,
       maxTokens_: BigNumberish,
       tokenPrice_: BigNumberish,

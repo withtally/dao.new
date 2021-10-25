@@ -103,6 +103,7 @@ export const attachToken = (
 
 export const deployFixedPriceMinter = async (
   deployer: SignerWithAddress,
+  ownerAddress: string,
   tokenAddress: string,
   maxTokens: BigNumberish,
   tokenPrice: BigNumberish,
@@ -113,6 +114,7 @@ export const deployFixedPriceMinter = async (
 ) => {
   const minter = await new FixedPriceMinter__factory(deployer).deploy();
   await minter.initialize(
+    ownerAddress,
     tokenAddress,
     maxTokens,
     tokenPrice,
@@ -266,6 +268,7 @@ export const cloneMinter = async (
   factory: CloneFactory,
   minterImpl: FixedPriceMinter,
   implIndex: number,
+  ownerAddress: string,
   tokenAddress: string,
   maxTokenSupply: BigNumberish,
   tokenPrice: BigNumberish,
@@ -275,6 +278,7 @@ export const cloneMinter = async (
   shares: BigNumberish[]
 ): Promise<FixedPriceMinter> => {
   const callData = minterImpl.interface.encodeFunctionData("initialize", [
+    ownerAddress,
     tokenAddress,
     maxTokenSupply,
     tokenPrice,

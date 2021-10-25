@@ -59,6 +59,7 @@ export function tokenInitCallData(
 }
 
 export function minterInitCallData(
+  ownerAddress: string,
   tokenAddress: string,
   maxTokenSupply: BigNumberish,
   tokenPrice: BigNumberish,
@@ -69,6 +70,7 @@ export function minterInitCallData(
 ): string {
   const iFace = FixedPriceMinter__factory.createInterface()
   return iFace.encodeFunctionData('initialize', [
+    ownerAddress,
     tokenAddress,
     maxTokenSupply,
     tokenPrice,
