@@ -402,13 +402,13 @@ function HomeIndex(): JSX.Element {
 
   return (
     <Layout>
-      <Heading as="h1" mb="8">
-        Create NFT DAO Wizard 🧙‍♀️
+      <Heading as="h1" mb="8" px={4}>
+        Create NFT DAO 🧙‍♀️
       </Heading>
-      <Box maxWidth="container.sm">
+      <Box maxWidth="container.sm" px={4}>
         <form onSubmit={deployClones}>
           <Heading as="h2" mb={6} mt={6}>
-            Token
+            1. Token
           </Heading>
           <VStack spacing={4}>
             <FormControl id="token-name" isRequired>
@@ -451,7 +451,7 @@ function HomeIndex(): JSX.Element {
             </FormControl>
           </VStack>
           <Heading as="h2" mb={6} mt={6}>
-            Minter
+            2. Minter
           </Heading>
           <VStack spacing={4}>
             <FormControl id="minter-totalsupply" isRequired>
@@ -559,7 +559,7 @@ function HomeIndex(): JSX.Element {
             </FormControl>
           </VStack>
           <Heading as="h2" mb={6} mt={6}>
-            Governor
+            3. Governor
           </Heading>
           <VStack spacing={4}>
             <FormControl id="governor-name" isRequired>
@@ -679,6 +679,8 @@ function HomeIndex(): JSX.Element {
             <Button
               name="submit"
               mt={8}
+              size="lg"
+              colorScheme="teal"
               isLoading={state.isLoading}
               onClick={deployClones}
               isDisabled={!library}
@@ -689,8 +691,16 @@ function HomeIndex(): JSX.Element {
         </form>
       </Box>
       {state.clones !== null ? (
-        <Box maxWidth="container.sm" p="8" mt={8} bg="gray.100">
-          <Table variant="simple">
+        <Box maxWidth="container.sm" p={4} ms={4} mt={8} bg="gray.100">
+          <Heading as="h2" size="lg" mb={4}>
+            Your NFT DAO contracts:
+          </Heading>
+          <Text color="gray.600" fontSize="sm">
+            Save these addresses so you can easily find contracts later. You can
+            always find them again on Etherscan, in the transaction you just
+            sent.
+          </Text>
+          <Table variant="unstyled" mt={8}>
             <Thead>
               <Tr>
                 <Th>Contract</Th>
@@ -720,7 +730,7 @@ function HomeIndex(): JSX.Element {
       ) : (
         <></>
       )}
-      <Box maxWidth="container.sm" mt={16}>
+      <Box maxWidth="container.sm" mt={16} ms={4}>
         <Text mb="4">This button only works on a Local Chain.</Text>
         <Button onClick={sendFunds} isDisabled={!isLocalChain}>
           Send Funds From Local Hardhat Chain
