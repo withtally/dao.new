@@ -1,31 +1,23 @@
 import { Box, Button, Divider, Heading, Input, Text } from '@chakra-ui/react'
 import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
-import { ethers, providers, utils, BigNumberish } from 'ethers'
+import { ethers, providers, utils } from 'ethers'
 import React, { useReducer } from 'react'
-import { CloneFactoryAddress as LOCAL_CONTRACT_ADDRESS } from '../artifacts/contracts/contractAddress'
+import { ERC721DAODeployerAddress as LOCAL_CONTRACT_ADDRESS } from '../artifacts/contracts/contractAddress'
 import { Layout } from '../components/layout/Layout'
 import {
-  cloneContract,
-  minterInitCallData,
-  tokenInitCallData,
   DEFAULT_TOKEN_SUPPLY,
   DEFAULT_TOKEN_PRICE,
   DEFAULT_MAX_MINTS,
   DEFAULT_SALE_START_DELAY,
   FOUNDER_SHARES,
   DAO_SHARES,
-  timelockInitCallData,
   TIMELOCK_DELAY,
-  govInitCallData,
   PROP_THRESHOLD,
   VOTING_DELAY,
   VOTING_PERIOD,
   QUORUM_NUMERATOR,
 } from '../lib/contractUtils'
-import {
-  CloneFactory__factory,
-  ERC721DAOToken__factory,
-} from '../types/typechain'
+import { ERC721DAODeployer__factory } from '../types/typechain'
 import {
   Table,
   Thead,
@@ -49,20 +41,19 @@ const ROPSTEN_CONTRACT_ADDRESS = '0x6b61a52b1EA15f4b8dB186126e980208E1E18864'
 /**
  * Prop Types
  */
+type CloneAddresses = {
+  token: string
+  timelock: string
+  governor: string
+  minter: string
+}
+
 type StateType = {
-  greeting: string
   inputValue: string
   isLoading: boolean
-  tokenCloneAddress: string
-  timelockCloneAddress: string
-  govCloneAddress: string
-  minterCloneAddress: string
+  clones: CloneAddresses
 }
 type ActionType =
-  | {
-      type: 'SET_GREETING'
-      greeting: StateType['greeting']
-    }
   | {
       type: 'SET_INPUT_VALUE'
       inputValue: StateType['inputValue']
@@ -72,43 +63,22 @@ type ActionType =
       isLoading: StateType['isLoading']
     }
   | {
-      type: 'SET_TOKEN_CLONE_ADDRESS'
-      tokenCloneAddress: StateType['tokenCloneAddress']
-    }
-  | {
-      type: 'SET_TIMELOCK_CLONE_ADDRESS'
-      timelockCloneAddress: StateType['timelockCloneAddress']
-    }
-  | {
-      type: 'SET_GOV_CLONE_ADDRESS'
-      govCloneAddress: StateType['govCloneAddress']
-    }
-  | {
-      type: 'SET_MINTER_CLONE_ADDRESS'
-      minterCloneAddress: StateType['minterCloneAddress']
+      type: 'SET_CLONES'
+      clones: StateType['clones']
     }
 
 /**
  * Component
  */
 const initialState: StateType = {
-  greeting: '',
   inputValue: '',
   isLoading: false,
-  tokenCloneAddress: '',
-  timelockCloneAddress: '',
-  govCloneAddress: '',
-  minterCloneAddress: '',
+  clones: null,
 }
 
 function reducer(state: StateType, action: ActionType): StateType {
   switch (action.type) {
     // Track the greeting from the blockchain
-    case 'SET_GREETING':
-      return {
-        ...state,
-        greeting: action.greeting,
-      }
     case 'SET_INPUT_VALUE':
       return {
         ...state,
@@ -119,25 +89,10 @@ function reducer(state: StateType, action: ActionType): StateType {
         ...state,
         isLoading: action.isLoading,
       }
-    case 'SET_TOKEN_CLONE_ADDRESS':
+    case 'SET_CLONES':
       return {
         ...state,
-        tokenCloneAddress: action.tokenCloneAddress,
-      }
-    case 'SET_TIMELOCK_CLONE_ADDRESS':
-      return {
-        ...state,
-        timelockCloneAddress: action.timelockCloneAddress,
-      }
-    case 'SET_GOV_CLONE_ADDRESS':
-      return {
-        ...state,
-        govCloneAddress: action.govCloneAddress,
-      }
-    case 'SET_MINTER_CLONE_ADDRESS':
-      return {
-        ...state,
-        minterCloneAddress: action.minterCloneAddress,
+        clones: action.clones,
       }
     default:
       throw new Error()
@@ -170,72 +125,48 @@ function HomeIndex(): JSX.Element {
 
       try {
         const signer = library.getSigner()
-        const cloneFactory = new CloneFactory__factory(signer).attach(
+        const deployer = new ERC721DAODeployer__factory(signer).attach(
           CONTRACT_ADDRESS
         )
 
-        const tokenCloneAddress = await cloneContract(
-          cloneFactory,
-          0,
-          tokenInitCallData('NewToken', 'NT', 'baseURI', account)
-        )
-        dispatch({
-          type: 'SET_TOKEN_CLONE_ADDRESS',
-          tokenCloneAddress: tokenCloneAddress,
-        })
-
-        const proposers: string[] = []
-        const executors: string[] = []
-        const timelockCloneAddress = await cloneContract(
-          cloneFactory,
-          1,
-          timelockInitCallData(TIMELOCK_DELAY, account, proposers, executors)
-        )
-        dispatch({
-          type: 'SET_TIMELOCK_CLONE_ADDRESS',
-          timelockCloneAddress: timelockCloneAddress,
-        })
-
-        const govCloneAddress = await cloneContract(
-          cloneFactory,
-          2,
-          govInitCallData(
-            'GovName',
-            tokenCloneAddress,
-            timelockCloneAddress,
-            PROP_THRESHOLD,
-            VOTING_DELAY,
-            VOTING_PERIOD,
-            QUORUM_NUMERATOR
-          )
-        )
-        dispatch({
-          type: 'SET_GOV_CLONE_ADDRESS',
-          govCloneAddress: govCloneAddress,
-        })
-
-        const payees: string[] = [account, timelockCloneAddress]
-        const shares: BigNumberish[] = [FOUNDER_SHARES, DAO_SHARES]
         const startingBlock =
           signer.provider.blockNumber + DEFAULT_SALE_START_DELAY
 
-        const minterCloneAddress = await cloneContract(
-          cloneFactory,
-          3,
-          minterInitCallData(
-            account,
-            tokenCloneAddress,
-            DEFAULT_TOKEN_SUPPLY,
-            DEFAULT_TOKEN_PRICE,
-            DEFAULT_MAX_MINTS,
-            startingBlock,
-            payees,
-            shares
-          )
+        const tx = await deployer.clone(
+          account,
+          {
+            name: 'MyToken',
+            symbol: 'MT',
+            baseURI: 'BASE_URI',
+          },
+          TIMELOCK_DELAY,
+          {
+            name: 'GovName',
+            proposalThreshold: PROP_THRESHOLD,
+            votingDelay: VOTING_DELAY,
+            votingPeriod: VOTING_PERIOD,
+            quorumNumerator: QUORUM_NUMERATOR,
+          },
+          {
+            maxTokens: DEFAULT_TOKEN_SUPPLY,
+            tokenPrice: DEFAULT_TOKEN_PRICE,
+            maxMintsPerTx: DEFAULT_MAX_MINTS,
+            startingBlock: startingBlock,
+            creatorShares: FOUNDER_SHARES,
+            daoShares: DAO_SHARES,
+          }
         )
+        const receipt = await tx.wait()
+        const event = receipt.events?.find((e) => e.event == 'NewClone')
+
         dispatch({
-          type: 'SET_MINTER_CLONE_ADDRESS',
-          minterCloneAddress: minterCloneAddress,
+          type: 'SET_CLONES',
+          clones: {
+            token: event?.args?.token,
+            timelock: event?.args?.timelock,
+            governor: event?.args?.governor,
+            minter: event?.args?.minter,
+          },
         })
       } catch (e) {
         console.log(e)
@@ -271,7 +202,7 @@ function HomeIndex(): JSX.Element {
             Deploy Clones
           </Button>
         </Box>
-        {state.tokenCloneAddress !== '' ? (
+        {state.clones !== null ? (
           <>
             <Divider my="8" borderColor="gray.400" />
             <Table variant="simple">
@@ -284,19 +215,19 @@ function HomeIndex(): JSX.Element {
               <Tbody>
                 <Tr>
                   <Td>NFT</Td>
-                  <Td>{state.tokenCloneAddress}</Td>
+                  <Td>{state.clones.token}</Td>
                 </Tr>
                 <Tr>
                   <Td>Minter</Td>
-                  <Td>{state.minterCloneAddress}</Td>
+                  <Td>{state.clones.minter}</Td>
                 </Tr>
                 <Tr>
                   <Td>Governor</Td>
-                  <Td>{state.govCloneAddress}</Td>
+                  <Td>{state.clones.governor}</Td>
                 </Tr>
                 <Tr>
                   <Td>Timelock</Td>
-                  <Td>{state.timelockCloneAddress}</Td>
+                  <Td>{state.clones.timelock}</Td>
                 </Tr>
               </Tbody>
             </Table>

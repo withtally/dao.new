@@ -7,13 +7,13 @@ import { Contract, ContractFactory } from "ethers";
 import { config, ethers } from "hardhat";
 import fs from "fs";
 import {
-  CloneFactory,
-  CloneFactory__factory,
   ERC721DAOToken__factory,
   ERC721Governor__factory,
   ERC721Timelock__factory,
   FixedPriceMinter__factory,
   Multicall__factory,
+  ERC721DAODeployer__factory,
+  ERC721DAODeployer,
 } from "../../frontend/types/typechain";
 
 async function main() {
@@ -46,26 +46,17 @@ async function main() {
     new FixedPriceMinter__factory(deployer),
     "FixedPriceMinter"
   );
-  const cloneFactory = (await deployContract(
-    new CloneFactory__factory(deployer),
-    "CloneFactory"
-  )) as CloneFactory;
+  const deployerContract = (await deployContract(
+    new ERC721DAODeployer__factory(deployer),
+    "ERC721DAODeployer"
+  )) as ERC721DAODeployer;
 
-  // Sets the deployer as the Owner of the factory
-  await cloneFactory.connect(deployer).initialize();
-
-  await cloneFactory
-    .connect(deployer)
-    .addImplementation(tokenImpl.address, "token");
-  await cloneFactory
-    .connect(deployer)
-    .addImplementation(timelockImpl.address, "timelock");
-  await cloneFactory
-    .connect(deployer)
-    .addImplementation(governorImpl.address, "governor");
-  await cloneFactory
-    .connect(deployer)
-    .addImplementation(minterImpl.address, "minter");
+  await deployerContract.initialize(
+    tokenImpl.address,
+    timelockImpl.address,
+    governorImpl.address,
+    minterImpl.address
+  );
 }
 
 async function deployContract(factory: ContractFactory, name: string) {
