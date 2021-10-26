@@ -21,7 +21,7 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface ERC721DAODeployerInterface extends ethers.utils.Interface {
   functions: {
-    "clone(address,tuple,uint256,tuple,tuple)": FunctionFragment;
+    "clone(address,tuple,tuple,tuple)": FunctionFragment;
     "governor()": FunctionFragment;
     "initialize(address,address,address,address)": FunctionFragment;
     "minter()": FunctionFragment;
@@ -38,13 +38,13 @@ interface ERC721DAODeployerInterface extends ethers.utils.Interface {
     values: [
       string,
       { name: string; symbol: string; baseURI: string },
-      BigNumberish,
       {
         name: string;
         proposalThreshold: BigNumberish;
         votingDelay: BigNumberish;
         votingPeriod: BigNumberish;
         quorumNumerator: BigNumberish;
+        timelockDelay: BigNumberish;
       },
       {
         maxTokens: BigNumberish;
@@ -156,13 +156,13 @@ export class ERC721DAODeployer extends BaseContract {
     clone(
       creatorAddress: string,
       tokenParams: { name: string; symbol: string; baseURI: string },
-      timelockMinDelay: BigNumberish,
       governorParams: {
         name: string;
         proposalThreshold: BigNumberish;
         votingDelay: BigNumberish;
         votingPeriod: BigNumberish;
         quorumNumerator: BigNumberish;
+        timelockDelay: BigNumberish;
       },
       minterParams: {
         maxTokens: BigNumberish;
@@ -214,13 +214,13 @@ export class ERC721DAODeployer extends BaseContract {
   clone(
     creatorAddress: string,
     tokenParams: { name: string; symbol: string; baseURI: string },
-    timelockMinDelay: BigNumberish,
     governorParams: {
       name: string;
       proposalThreshold: BigNumberish;
       votingDelay: BigNumberish;
       votingPeriod: BigNumberish;
       quorumNumerator: BigNumberish;
+      timelockDelay: BigNumberish;
     },
     minterParams: {
       maxTokens: BigNumberish;
@@ -272,13 +272,13 @@ export class ERC721DAODeployer extends BaseContract {
     clone(
       creatorAddress: string,
       tokenParams: { name: string; symbol: string; baseURI: string },
-      timelockMinDelay: BigNumberish,
       governorParams: {
         name: string;
         proposalThreshold: BigNumberish;
         votingDelay: BigNumberish;
         votingPeriod: BigNumberish;
         quorumNumerator: BigNumberish;
+        timelockDelay: BigNumberish;
       },
       minterParams: {
         maxTokens: BigNumberish;
@@ -359,13 +359,13 @@ export class ERC721DAODeployer extends BaseContract {
     clone(
       creatorAddress: string,
       tokenParams: { name: string; symbol: string; baseURI: string },
-      timelockMinDelay: BigNumberish,
       governorParams: {
         name: string;
         proposalThreshold: BigNumberish;
         votingDelay: BigNumberish;
         votingPeriod: BigNumberish;
         quorumNumerator: BigNumberish;
+        timelockDelay: BigNumberish;
       },
       minterParams: {
         maxTokens: BigNumberish;
@@ -418,13 +418,13 @@ export class ERC721DAODeployer extends BaseContract {
     clone(
       creatorAddress: string,
       tokenParams: { name: string; symbol: string; baseURI: string },
-      timelockMinDelay: BigNumberish,
       governorParams: {
         name: string;
         proposalThreshold: BigNumberish;
         votingDelay: BigNumberish;
         votingPeriod: BigNumberish;
         quorumNumerator: BigNumberish;
+        timelockDelay: BigNumberish;
       },
       minterParams: {
         maxTokens: BigNumberish;

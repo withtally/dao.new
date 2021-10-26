@@ -24,6 +24,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         uint256 votingDelay;
         uint256 votingPeriod;
         uint256 quorumNumerator;
+        uint256 timelockDelay;
     }
 
     struct MinterParams {
@@ -57,7 +58,6 @@ contract ERC721DAODeployer is OwnableUpgradeable {
     function clone(
         address creatorAddress,
         TokenParams calldata tokenParams,
-        uint256 timelockMinDelay,
         GovernorParams calldata governorParams,
         MinterParams calldata minterParams
     ) external {
@@ -84,7 +84,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             address[] memory executors = new address[](1);
             executors[0] = address(0);
 
-            timelockClone.initialize(timelockMinDelay, proposers, executors);
+            timelockClone.initialize(governorParams.timelockDelay, proposers, executors);
         }
 
         governorClone.initialize(
