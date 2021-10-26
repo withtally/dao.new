@@ -105,6 +105,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721CheckpointableUpgradable__factory>;
     getContractFactory(
+      name: "ERC721DAODeployer",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC721DAODeployer__factory>;
+    getContractFactory(
       name: "ERC721DAOToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721DAOToken__factory>;

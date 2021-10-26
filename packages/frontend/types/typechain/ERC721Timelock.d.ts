@@ -36,7 +36,7 @@ interface ERC721TimelockInterface extends ethers.utils.Interface {
     "hasRole(bytes32,address)": FunctionFragment;
     "hashOperation(address,uint256,bytes,bytes32,bytes32)": FunctionFragment;
     "hashOperationBatch(address[],uint256[],bytes[],bytes32,bytes32)": FunctionFragment;
-    "initialize(uint256,address,address[],address[])": FunctionFragment;
+    "initialize(uint256,address[],address[])": FunctionFragment;
     "isOperation(bytes32)": FunctionFragment;
     "isOperationDone(bytes32)": FunctionFragment;
     "isOperationPending(bytes32)": FunctionFragment;
@@ -104,7 +104,7 @@ interface ERC721TimelockInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [BigNumberish, string, string[], string[]]
+    values: [BigNumberish, string[], string[]]
   ): string;
   encodeFunctionData(
     functionFragment: "isOperation",
@@ -378,7 +378,6 @@ export class ERC721Timelock extends BaseContract {
 
     initialize(
       minDelay: BigNumberish,
-      initialAdmin: string,
       proposers: string[],
       executors: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -516,7 +515,6 @@ export class ERC721Timelock extends BaseContract {
 
   initialize(
     minDelay: BigNumberish,
-    initialAdmin: string,
     proposers: string[],
     executors: string[],
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -642,7 +640,6 @@ export class ERC721Timelock extends BaseContract {
 
     initialize(
       minDelay: BigNumberish,
-      initialAdmin: string,
       proposers: string[],
       executors: string[],
       overrides?: CallOverrides
@@ -857,7 +854,6 @@ export class ERC721Timelock extends BaseContract {
 
     initialize(
       minDelay: BigNumberish,
-      initialAdmin: string,
       proposers: string[],
       executors: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1003,7 +999,6 @@ export class ERC721Timelock extends BaseContract {
 
     initialize(
       minDelay: BigNumberish,
-      initialAdmin: string,
       proposers: string[],
       executors: string[],
       overrides?: Overrides & { from?: string | Promise<string> }

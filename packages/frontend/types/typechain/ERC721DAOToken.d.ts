@@ -37,8 +37,10 @@ interface ERC721DAOTokenInterface extends ethers.utils.Interface {
     "delegate(address)": FunctionFragment;
     "delegateBySig(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
     "delegates(address)": FunctionFragment;
+    "getAdminRole()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getCurrentVotes(address)": FunctionFragment;
+    "getMinterRole()": FunctionFragment;
     "getPastTotalSupply(uint256)": FunctionFragment;
     "getPriorVotes(address,uint256)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
@@ -126,12 +128,20 @@ interface ERC721DAOTokenInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "delegates", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "getAdminRole",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getCurrentVotes",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMinterRole",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getPastTotalSupply",
@@ -278,11 +288,19 @@ interface ERC721DAOTokenInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "delegates", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "getAdminRole",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "getCurrentVotes",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMinterRole",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -487,6 +505,8 @@ export class ERC721DAOToken extends BaseContract {
 
     delegates(delegator: string, overrides?: CallOverrides): Promise<[string]>;
 
+    getAdminRole(overrides?: CallOverrides): Promise<[string]>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -496,6 +516,8 @@ export class ERC721DAOToken extends BaseContract {
       account: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    getMinterRole(overrides?: CallOverrides): Promise<[string]>;
 
     getPastTotalSupply(
       blockNumber: BigNumberish,
@@ -697,6 +719,8 @@ export class ERC721DAOToken extends BaseContract {
 
   delegates(delegator: string, overrides?: CallOverrides): Promise<string>;
 
+  getAdminRole(overrides?: CallOverrides): Promise<string>;
+
   getApproved(
     tokenId: BigNumberish,
     overrides?: CallOverrides
@@ -706,6 +730,8 @@ export class ERC721DAOToken extends BaseContract {
     account: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  getMinterRole(overrides?: CallOverrides): Promise<string>;
 
   getPastTotalSupply(
     blockNumber: BigNumberish,
@@ -898,6 +924,8 @@ export class ERC721DAOToken extends BaseContract {
 
     delegates(delegator: string, overrides?: CallOverrides): Promise<string>;
 
+    getAdminRole(overrides?: CallOverrides): Promise<string>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -907,6 +935,8 @@ export class ERC721DAOToken extends BaseContract {
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getMinterRole(overrides?: CallOverrides): Promise<string>;
 
     getPastTotalSupply(
       blockNumber: BigNumberish,
@@ -1182,6 +1212,8 @@ export class ERC721DAOToken extends BaseContract {
 
     delegates(delegator: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    getAdminRole(overrides?: CallOverrides): Promise<BigNumber>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1191,6 +1223,8 @@ export class ERC721DAOToken extends BaseContract {
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getMinterRole(overrides?: CallOverrides): Promise<BigNumber>;
 
     getPastTotalSupply(
       blockNumber: BigNumberish,
@@ -1406,6 +1440,8 @@ export class ERC721DAOToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getAdminRole(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1415,6 +1451,8 @@ export class ERC721DAOToken extends BaseContract {
       account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getMinterRole(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getPastTotalSupply(
       blockNumber: BigNumberish,

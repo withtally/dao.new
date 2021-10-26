@@ -15,6 +15,8 @@ import {
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { BytesLike } from "@ethersproject/bignumber/node_modules/@ethersproject/bytes";
 import { ContractReceipt } from "@ethersproject/contracts";
+import { ERC721DAODeployer } from "../../frontend/types/typechain/ERC721DAODeployer";
+import { ERC721DAODeployer__factory } from "../../frontend/types/typechain/factories/ERC721DAODeployer__factory";
 
 const keccak256 = ethers.utils.keccak256;
 const toUtf8Bytes = ethers.utils.toUtf8Bytes;
@@ -134,6 +136,23 @@ export const deployCloneFactory = async (
   return factory;
 };
 
+export const deployAndInitDeployer = async (
+  deployer: SignerWithAddress,
+  token: ERC721DAOToken,
+  timelock: ERC721Timelock,
+  governor: ERC721Governor,
+  minter: FixedPriceMinter
+): Promise<ERC721DAODeployer> => {
+  const instance = await new ERC721DAODeployer__factory(deployer).deploy();
+  await instance.initialize(
+    token.address,
+    timelock.address,
+    governor.address,
+    minter.address
+  );
+  return instance;
+};
+
 export const defaultAssignees = async (
   deployer: SignerWithAddress
 ): Promise<string[]> => {
@@ -185,114 +204,6 @@ export const deployGovernor = async (
 
 export const deployMinter = async (deployer: SignerWithAddress) => {
   return await new FixedPriceMinter__factory(deployer).deploy();
-};
-
-export const cloneToken = async (
-  deployer: SignerWithAddress,
-  factory: CloneFactory,
-  tokenImpl: ERC721DAOToken,
-  implIndex: number,
-  baseURI: string,
-  roles: string[],
-  assignees: string[]
-): Promise<ERC721DAOToken> => {
-  const callData = tokenImpl.interface.encodeFunctionData("initialize", [
-    "NewToken",
-    "NT",
-    baseURI,
-    roles,
-    assignees,
-  ]);
-
-  const tx = await factory.clone(implIndex, callData);
-  const receipt = await tx.wait();
-
-  const event = receipt.events?.find((e) => e.event == "NewClone");
-  return attachToken(deployer, event?.args?.instance);
-};
-
-export const cloneTimelock = async (
-  deployer: SignerWithAddress,
-  factory: CloneFactory,
-  timelockImpl: ERC721Timelock,
-  implIndex: number,
-  minDelay: BigNumberish,
-  proposers: string[],
-  executors: string[]
-): Promise<ERC721Timelock> => {
-  const callData = timelockImpl.interface.encodeFunctionData("initialize", [
-    minDelay,
-    deployer.address,
-    proposers,
-    executors,
-  ]);
-
-  const tx = await factory.clone(implIndex, callData);
-  const receipt = await tx.wait();
-  const event = receipt.events?.find((e) => e.event == "NewClone");
-
-  return new ERC721Timelock__factory(deployer).attach(event?.args?.instance);
-};
-
-export const cloneGovernor = async (
-  deployer: SignerWithAddress,
-  factory: CloneFactory,
-  governorImpl: ERC721Governor,
-  implIndex: number,
-  tokenAddress: string,
-  timelockAddress: string,
-  proposalThreshold: number,
-  votingDelay: number,
-  votingPeriod: number,
-  quorumNumerator: number
-): Promise<ERC721Governor> => {
-  const callData = governorImpl.interface.encodeFunctionData("initialize", [
-    "GovernorName",
-    tokenAddress,
-    timelockAddress,
-    proposalThreshold,
-    votingDelay,
-    votingPeriod,
-    quorumNumerator,
-  ]);
-
-  const tx = await factory.clone(implIndex, callData);
-  const receipt = await tx.wait();
-  const event = receipt.events?.find((e) => e.event == "NewClone");
-
-  return new ERC721Governor__factory(deployer).attach(event?.args?.instance);
-};
-
-export const cloneMinter = async (
-  deployer: SignerWithAddress,
-  factory: CloneFactory,
-  minterImpl: FixedPriceMinter,
-  implIndex: number,
-  ownerAddress: string,
-  tokenAddress: string,
-  maxTokenSupply: BigNumberish,
-  tokenPrice: BigNumberish,
-  maxMintsPerTx: BigNumberish,
-  startingBlock: BigNumberish,
-  payees: string[],
-  shares: BigNumberish[]
-): Promise<FixedPriceMinter> => {
-  const callData = minterImpl.interface.encodeFunctionData("initialize", [
-    ownerAddress,
-    tokenAddress,
-    maxTokenSupply,
-    tokenPrice,
-    maxMintsPerTx,
-    startingBlock,
-    payees,
-    shares,
-  ]);
-
-  const tx = await factory.clone(implIndex, callData);
-  const receipt = await tx.wait();
-  const event = receipt.events?.find((e) => e.event == "NewClone");
-
-  return new FixedPriceMinter__factory(deployer).attach(event?.args?.instance);
 };
 
 export const propose = async (

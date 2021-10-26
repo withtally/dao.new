@@ -55,7 +55,7 @@ describe("ERC721Governor", () => {
       deployer.address
     );
 
-    timelock.initialize(1, deployer.address, [governor.address], [zeroAddress]);
+    timelock.initialize(1, [governor.address], [zeroAddress]);
 
     await governor.initialize(
       "MyDAO",

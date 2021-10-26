@@ -6,28 +6,25 @@ import {
   deployTimelock,
   deployGovernor,
   deployMinter,
-  deployCloneFactory,
-  cloneToken,
-  ADMIN_ROLE,
-  cloneTimelock,
-  cloneGovernor,
-  cloneMinter,
-  address,
   propose,
   hashString,
   advanceBlocks,
   setNextBlockTimestamp,
   createTransferProp,
+  deployAndInitDeployer,
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   FixedPriceMinter,
   ERC721DAOToken,
   ERC721Governor,
-  CloneFactory,
   ERC721Timelock,
+  ERC721Timelock__factory,
+  ERC721DAOToken__factory,
+  ERC721Governor__factory,
+  FixedPriceMinter__factory,
 } from "../../frontend/types/typechain";
-import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
+import { ERC721DAODeployer } from "../../frontend/types/typechain/ERC721DAODeployer";
 
 chai.use(solidity);
 const { expect } = chai;
@@ -54,8 +51,8 @@ const VOTING_PERIOD = 5_760; // About 24 hours with 15s blocks
 const VOTING_DELAY = 1; // 1 block
 const TIMELOCK_DELAY = 172_800; // 2 days
 
-let deployer: SignerWithAddress;
-let founder: SignerWithAddress;
+let signer: SignerWithAddress;
+let creator: SignerWithAddress;
 let user1: SignerWithAddress;
 let user2: SignerWithAddress;
 let user3: SignerWithAddress;
@@ -65,88 +62,57 @@ let token: ERC721DAOToken;
 let timelock: ERC721Timelock;
 let governor: ERC721Governor;
 let minter: FixedPriceMinter;
-let factory: CloneFactory;
+let deployer: ERC721DAODeployer;
 
 const deploy = async () => {
-  [deployer, founder, user1, user2, user3, rando] = await ethers.getSigners();
+  [signer, creator, user1, user2, user3, rando] = await ethers.getSigners();
 
   // Deploy logic contracts
-  const tokenImpl = await deployToken(deployer);
-  const timelockImpl = await deployTimelock(deployer);
-  const governorImpl = await deployGovernor(deployer);
-  const minterImpl = await deployMinter(deployer);
-  factory = await deployCloneFactory(deployer);
-
-  await factory.addImplementation(tokenImpl.address, "token");
-  await factory.addImplementation(timelockImpl.address, "timelock");
-  await factory.addImplementation(governorImpl.address, "governor");
-  await factory.addImplementation(minterImpl.address, "minter");
-
-  token = await cloneToken(
-    deployer,
-    factory,
+  const tokenImpl = await deployToken(signer);
+  const timelockImpl = await deployTimelock(signer);
+  const governorImpl = await deployGovernor(signer);
+  const minterImpl = await deployMinter(signer);
+  deployer = await deployAndInitDeployer(
+    signer,
     tokenImpl,
-    0,
-    BASE_URI,
-    [ADMIN_ROLE],
-    [deployer.address]
-  );
-
-  timelock = await cloneTimelock(
-    deployer,
-    factory,
     timelockImpl,
-    1,
-    TIMELOCK_DELAY,
-    [],
-    []
-  );
-
-  governor = await cloneGovernor(
-    deployer,
-    factory,
     governorImpl,
-    2,
-    token.address,
-    timelock.address,
-    PROP_THRESHOLD,
-    VOTING_DELAY,
-    VOTING_PERIOD,
-    QUORUM_NUMERATOR
+    minterImpl
   );
 
-  const payees: string[] = [founder.address, timelock.address];
-  const shares: BigNumberish[] = [FOUNDER_SHARES, DAO_SHARES];
-
-  minter = await cloneMinter(
-    deployer,
-    factory,
-    minterImpl,
-    3,
-    founder.address,
-    token.address,
-    MAX_TOKENS,
-    TOKEN_PRICE,
-    MAX_MINTS_PER_WALLET,
-    STARTING_BLOCK,
-    payees,
-    shares
+  const tx = await deployer.clone(
+    creator.address,
+    {
+      name: "MyToken",
+      symbol: "MT",
+      baseURI: BASE_URI,
+    },
+    TIMELOCK_DELAY,
+    {
+      name: "GovName",
+      proposalThreshold: PROP_THRESHOLD,
+      votingDelay: VOTING_DELAY,
+      votingPeriod: VOTING_PERIOD,
+      quorumNumerator: QUORUM_NUMERATOR,
+    },
+    {
+      maxTokens: MAX_TOKENS,
+      tokenPrice: TOKEN_PRICE,
+      maxMintsPerTx: MAX_MINTS_PER_WALLET,
+      startingBlock: STARTING_BLOCK,
+      creatorShares: FOUNDER_SHARES,
+      daoShares: DAO_SHARES,
+    }
   );
+  const receipt = await tx.wait();
+  const event = receipt.events?.find((e) => e.event == "NewClone");
 
-  // Token permissions
-  await token.grantRole(await token.ADMIN_ROLE(), timelock.address);
-  await token.grantRole(await token.MINTER_ROLE(), minter.address);
-  await token.revokeRole(await token.ADMIN_ROLE(), deployer.address);
+  token = new ERC721DAOToken__factory(signer).attach(event?.args?.token);
+  timelock = new ERC721Timelock__factory(signer).attach(event?.args?.timelock);
+  governor = new ERC721Governor__factory(signer).attach(event?.args?.governor);
+  minter = new FixedPriceMinter__factory(signer).attach(event?.args?.minter);
 
-  // Timelock permissions: DAO is admin and proposer; executor remains open
-  await timelock.grantRole(await timelock.PROPOSER_ROLE(), governor.address);
-  await timelock.grantRole(await timelock.EXECUTOR_ROLE(), zeroAddress);
-  await timelock.revokeRole(
-    await timelock.TIMELOCK_ADMIN_ROLE(),
-    deployer.address
-  );
-
-  await minter.connect(founder).setSaleActive(true);
+  await minter.connect(creator).setSaleActive(true);
 };
 
 describe("End to end flows", () => {
@@ -188,8 +154,8 @@ describe("End to end flows", () => {
     const expectedFounderProfit = FOUNDER_REWARD * totalProceeds;
     const expectedDAOProfit = totalProceeds - expectedFounderProfit;
 
-    await expect(() => minter.release(founder.address)).to.changeEtherBalance(
-      founder,
+    await expect(() => minter.release(creator.address)).to.changeEtherBalance(
+      creator,
       expectedFounderProfit
     );
     await expect(() => minter.release(timelock.address)).to.changeEtherBalance(

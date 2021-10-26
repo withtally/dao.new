@@ -83,4 +83,12 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
     function _baseURI() internal view override returns (string memory) {
         return baseURI;
     }
+
+    function getAdminRole() external pure returns (bytes32) {
+        return ADMIN_ROLE;
+    }
+
+    function getMinterRole() external pure returns (bytes32) {
+        return MINTER_ROLE;
+    }
 }

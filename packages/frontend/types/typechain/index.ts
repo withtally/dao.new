@@ -24,6 +24,7 @@ export type { ERC165Upgradeable } from "./ERC165Upgradeable";
 export type { IERC165Upgradeable } from "./IERC165Upgradeable";
 export type { CloneFactory } from "./CloneFactory";
 export type { ERC721CheckpointableUpgradable } from "./ERC721CheckpointableUpgradable";
+export type { ERC721DAODeployer } from "./ERC721DAODeployer";
 export type { ERC721DAOToken } from "./ERC721DAOToken";
 export type { ERC721Governor } from "./ERC721Governor";
 export type { ERC721Timelock } from "./ERC721Timelock";
@@ -56,6 +57,7 @@ export { ERC165Upgradeable__factory } from "./factories/ERC165Upgradeable__facto
 export { IERC165Upgradeable__factory } from "./factories/IERC165Upgradeable__factory";
 export { CloneFactory__factory } from "./factories/CloneFactory__factory";
 export { ERC721CheckpointableUpgradable__factory } from "./factories/ERC721CheckpointableUpgradable__factory";
+export { ERC721DAODeployer__factory } from "./factories/ERC721DAODeployer__factory";
 export { ERC721DAOToken__factory } from "./factories/ERC721DAOToken__factory";
 export { ERC721Governor__factory } from "./factories/ERC721Governor__factory";
 export { ERC721Timelock__factory } from "./factories/ERC721Timelock__factory";
