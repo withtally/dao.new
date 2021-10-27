@@ -87,13 +87,13 @@ const deploy = async () => {
       symbol: "MT",
       baseURI: BASE_URI,
     },
-    TIMELOCK_DELAY,
     {
       name: "GovName",
       proposalThreshold: PROP_THRESHOLD,
       votingDelay: VOTING_DELAY,
       votingPeriod: VOTING_PERIOD,
       quorumNumerator: QUORUM_NUMERATOR,
+      timelockDelay: TIMELOCK_DELAY,
     },
     {
       maxTokens: MAX_TOKENS,
