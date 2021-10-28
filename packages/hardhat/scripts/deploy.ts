@@ -16,6 +16,8 @@ import {
   ERC721DAODeployer,
 } from "../../frontend/types/typechain";
 
+const contractAddressFile = `${config.paths.artifacts}/contracts/contractAddress.ts`;
+
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
   // line interface.
@@ -24,7 +26,9 @@ async function main() {
   // manually to make sure everything is compiled
   // await hre.run('compile');
 
-  fs.unlinkSync(`${config.paths.artifacts}/contracts/contractAddress.ts`);
+  if (fs.existsSync(contractAddressFile)) {
+    fs.unlinkSync(contractAddressFile);
+  }
 
   const [deployer] = await ethers.getSigners();
 
@@ -70,7 +74,7 @@ async function deployContract(factory: ContractFactory, name: string) {
 function saveFrontendFiles(contract: Contract, contractName: string) {
   const varName = contractName + "Address";
   fs.appendFileSync(
-    `${config.paths.artifacts}/contracts/contractAddress.ts`,
+    contractAddressFile,
     `export const ${varName} = '${contract.address}'\n`
   );
   console.log("%s deployed to: %s", contractName, contract.address);
