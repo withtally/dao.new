@@ -188,10 +188,13 @@ function HomeIndex(): JSX.Element {
   const isLocalChain =
     chainId === ChainId.Localhost || chainId === ChainId.Hardhat
 
-  const CONTRACT_ADDRESS =
+  let CONTRACT_ADDRESS =
     chainId === ChainId.Ropsten
       ? ROPSTEN_CONTRACT_ADDRESS
-      : LOCAL_CONTRACT_ADDRESS
+      : LOCAL_CONTRACT_ADDRESS;
+  if (chainId === ChainId.Rinkeby) {
+    CONTRACT_ADDRESS = "0x5C05E04FEbA9aBd428E6467F7d9412C9BD30ca96";
+  }
 
   // Use the localProvider as the signer to send ETH to our wallet
   const { sendTransaction } = useSendTransaction({
