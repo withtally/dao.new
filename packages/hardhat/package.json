@@ -8,6 +8,7 @@
     "clean": "npx hardhat clean",
     "compile": "npx hardhat compile",
     "deploy": "npx hardhat --network localhost run scripts/deploy.ts",
+    "deploy:rinkeby": "npx hardhat --network rinkeby run scripts/deploy.ts",
     "test": "npx hardhat test --network hardhat",
     "console": "npx hardhat console --network localhost"
   },

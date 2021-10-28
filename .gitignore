@@ -43,3 +43,5 @@ packages/frontend/out/
 packages/frontend/build
 # contracts
 packages/frontend/artifacts
+
+secrets.json

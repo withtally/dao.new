@@ -4,6 +4,8 @@ import "@typechain/hardhat";
 import { task } from "hardhat/config";
 import { HardhatUserConfig } from "hardhat/types";
 
+const { alchemyApiKey, mnemonic } = require("./secrets.json");
+
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
 task("accounts", "Prints the list of accounts", async (_args, hre) => {
@@ -37,6 +39,10 @@ const config: HardhatUserConfig = {
     hardhat: {
       chainId: 1337,
       loggingEnabled: false,
+    },
+    rinkeby: {
+      url: `https://eth-rinkeby.alchemyapi.io/v2/${alchemyApiKey}`,
+      accounts: { mnemonic: mnemonic },
     },
   },
   typechain: {

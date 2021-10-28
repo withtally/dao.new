@@ -8,6 +8,7 @@
     "start": "yarn workspace nextjs-ethereum-starter-frontend start",
     "chain": "yarn workspace nextjs-ethereum-starter-hardhat chain",
     "deploy": "yarn workspace nextjs-ethereum-starter-hardhat deploy",
+    "deploy:rinkeby": "yarn workspace nextjs-ethereum-starter-hardhat deploy:rinkeby",
     "compile": "yarn workspace nextjs-ethereum-starter-hardhat compile",
     "clean": "yarn workspace nextjs-ethereum-starter-hardhat clean",
     "test": "yarn workspace nextjs-ethereum-starter-hardhat test"
