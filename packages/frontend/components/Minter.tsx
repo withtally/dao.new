@@ -92,7 +92,6 @@ export const Minter = () => {
   const { state: state2, send: setSaleActiveFunction } = useContractFunction(contract, 'setSaleActive', {transactionName: 'minttx'})
 
   const mint = async (tokensToMint: number) => {
-    console.log('hai', tokensToMint)
     mintFunction(tokensToMint, { value: tokenPrice.mul(tokensToMint) })
   }
 
