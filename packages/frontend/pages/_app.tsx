@@ -15,6 +15,7 @@ import { useApollo } from '../lib/apolloClient'
 export const INFURA_ID = '460f40a260564ac4a4f4b3fffb032dad'
 
 const config: Config = {
+  readOnlyChainId: CHAIN_ID,
   readOnlyUrls: {
     [ChainId.Ropsten]: `https://ropsten.infura.io/v3/${INFURA_ID}`,
     [ChainId.Hardhat]: 'http://localhost:8545',
