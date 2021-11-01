@@ -25,7 +25,8 @@ import type {
   OnEvent,
 } from "./common";
 
-export interface FixedPriceMinterInterface extends ethers.utils.Interface {
+export interface FixedPriceSpecificIDMinterInterface
+  extends ethers.utils.Interface {
   functions: {
     "CREATOR_ROLE()": FunctionFragment;
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
@@ -34,12 +35,11 @@ export interface FixedPriceMinterInterface extends ethers.utils.Interface {
     "getRoleMemberCount(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
-    "init(uint256,uint256,uint256)": FunctionFragment;
+    "init(uint256,uint256)": FunctionFragment;
     "initialize(address,address,uint256,address[],uint256[])": FunctionFragment;
     "maxMintsPerTx()": FunctionFragment;
     "maxTokens()": FunctionFragment;
     "mint(uint256)": FunctionFragment;
-    "nextTokenId()": FunctionFragment;
     "ownerMint(address,uint256)": FunctionFragment;
     "pause()": FunctionFragment;
     "paused()": FunctionFragment;
@@ -89,7 +89,7 @@ export interface FixedPriceMinterInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "init",
-    values: [BigNumberish, BigNumberish, BigNumberish]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
@@ -101,10 +101,6 @@ export interface FixedPriceMinterInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "maxTokens", values?: undefined): string;
   encodeFunctionData(functionFragment: "mint", values: [BigNumberish]): string;
-  encodeFunctionData(
-    functionFragment: "nextTokenId",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "ownerMint",
     values: [string, BigNumberish]
@@ -180,10 +176,6 @@ export interface FixedPriceMinterInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "maxTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "nextTokenId",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "ownerMint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
@@ -292,12 +284,12 @@ export type UnpausedEvent = TypedEvent<[string], { account: string }>;
 
 export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
 
-export interface FixedPriceMinter extends BaseContract {
+export interface FixedPriceSpecificIDMinter extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: FixedPriceMinterInterface;
+  interface: FixedPriceSpecificIDMinterInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -351,7 +343,6 @@ export interface FixedPriceMinter extends BaseContract {
     init(
       maxTokens_: BigNumberish,
       tokenPrice_: BigNumberish,
-      maxMintsPerTx_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -369,15 +360,13 @@ export interface FixedPriceMinter extends BaseContract {
     maxTokens(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     mint(
-      amount: BigNumberish,
+      tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    nextTokenId(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     ownerMint(
       to: string,
-      amount: BigNumberish,
+      tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -467,7 +456,6 @@ export interface FixedPriceMinter extends BaseContract {
   init(
     maxTokens_: BigNumberish,
     tokenPrice_: BigNumberish,
-    maxMintsPerTx_: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -485,15 +473,13 @@ export interface FixedPriceMinter extends BaseContract {
   maxTokens(overrides?: CallOverrides): Promise<BigNumber>;
 
   mint(
-    amount: BigNumberish,
+    tokenId: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  nextTokenId(overrides?: CallOverrides): Promise<BigNumber>;
-
   ownerMint(
     to: string,
-    amount: BigNumberish,
+    tokenId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -583,7 +569,6 @@ export interface FixedPriceMinter extends BaseContract {
     init(
       maxTokens_: BigNumberish,
       tokenPrice_: BigNumberish,
-      maxMintsPerTx_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -600,13 +585,11 @@ export interface FixedPriceMinter extends BaseContract {
 
     maxTokens(overrides?: CallOverrides): Promise<BigNumber>;
 
-    mint(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    nextTokenId(overrides?: CallOverrides): Promise<BigNumber>;
+    mint(tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     ownerMint(
       to: string,
-      amount: BigNumberish,
+      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -752,7 +735,6 @@ export interface FixedPriceMinter extends BaseContract {
     init(
       maxTokens_: BigNumberish,
       tokenPrice_: BigNumberish,
-      maxMintsPerTx_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -770,15 +752,13 @@ export interface FixedPriceMinter extends BaseContract {
     maxTokens(overrides?: CallOverrides): Promise<BigNumber>;
 
     mint(
-      amount: BigNumberish,
+      tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    nextTokenId(overrides?: CallOverrides): Promise<BigNumber>;
-
     ownerMint(
       to: string,
-      amount: BigNumberish,
+      tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -874,7 +854,6 @@ export interface FixedPriceMinter extends BaseContract {
     init(
       maxTokens_: BigNumberish,
       tokenPrice_: BigNumberish,
-      maxMintsPerTx_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -892,15 +871,13 @@ export interface FixedPriceMinter extends BaseContract {
     maxTokens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     mint(
-      amount: BigNumberish,
+      tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    nextTokenId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     ownerMint(
       to: string,
-      amount: BigNumberish,
+      tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

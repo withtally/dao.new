@@ -28,6 +28,7 @@ export const ADMIN_ROLE = hashString("ADMIN_ROLE");
 export const MINTER_ROLE = hashString("MINTER_ROLE");
 export const BURNER_ROLE = hashString("BURNER_ROLE");
 export const BASE_URI_ROLE = hashString("BASE_URI_ROLE");
+export const CREATOR_ROLE = hashString("CREATOR_ROLE");
 
 export const defaultRoles = [
   ADMIN_ROLE,
@@ -115,16 +116,16 @@ export const deployFixedPriceMinter = async (
   shares: BigNumberish[]
 ) => {
   const minter = await new FixedPriceMinter__factory(deployer).deploy();
+
   await minter.initialize(
     ownerAddress,
     tokenAddress,
-    maxTokens,
-    tokenPrice,
-    maxMintsPerTx,
     startingBlock,
     payees,
     shares
   );
+  await minter.init(maxTokens, tokenPrice, maxMintsPerTx);
+
   return minter;
 };
 

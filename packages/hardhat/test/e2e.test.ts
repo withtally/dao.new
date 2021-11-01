@@ -105,12 +105,14 @@ const deploy = async () => {
       timelockDelay: TIMELOCK_DELAY,
     },
     {
-      maxTokens: MAX_TOKENS,
-      tokenPrice: TOKEN_PRICE,
-      maxMintsPerTx: MAX_MINTS_PER_WALLET,
       startingBlock: STARTING_BLOCK,
       creatorShares: FOUNDER_SHARES,
       daoShares: DAO_SHARES,
+      extraInitCallData: minterImpl.interface.encodeFunctionData("init", [
+        MAX_TOKENS,
+        TOKEN_PRICE,
+        MAX_MINTS_PER_WALLET,
+      ]),
     }
   );
   const receipt = await tx.wait();
@@ -121,7 +123,7 @@ const deploy = async () => {
   governor = new ERC721Governor__factory(signer).attach(event?.args?.governor);
   minter = new FixedPriceMinter__factory(signer).attach(event?.args?.minter);
 
-  await minter.connect(creator).setSaleActive(true);
+  await minter.connect(creator).unpause();
 };
 
 describe("End to end flows", () => {
@@ -157,7 +159,6 @@ describe("End to end flows", () => {
       expectedMinterBalance
     );
 
-    console.log("asserting token ownership");
     expect(await token.ownerOf(1)).equals(user1.address);
     expect(await token.ownerOf(2)).equals(user1.address);
     expect(await token.ownerOf(3)).equals(user1.address);

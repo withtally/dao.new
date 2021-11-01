@@ -65,6 +65,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.TimelockControllerUpgradeable__factory>;
     getContractFactory(
+      name: "PausableUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PausableUpgradeable__factory>;
+    getContractFactory(
       name: "ERC721Upgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721Upgradeable__factory>;
@@ -125,6 +129,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FixedPriceMinter__factory>;
     getContractFactory(
+      name: "FixedPriceSpecificIDMinter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.FixedPriceSpecificIDMinter__factory>;
+    getContractFactory(
       name: "GovernorVotesERC721QuorumFractionUpgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.GovernorVotesERC721QuorumFractionUpgradeable__factory>;
@@ -132,6 +140,10 @@ declare module "hardhat/types/runtime" {
       name: "GovernorVotesERC721Upgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.GovernorVotesERC721Upgradeable__factory>;
+    getContractFactory(
+      name: "IERC721Minter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC721Minter__factory>;
     getContractFactory(
       name: "Multicall",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -206,6 +218,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.TimelockControllerUpgradeable>;
+    getContractAt(
+      name: "PausableUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PausableUpgradeable>;
     getContractAt(
       name: "ERC721Upgradeable",
       address: string,
@@ -282,6 +299,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.FixedPriceMinter>;
     getContractAt(
+      name: "FixedPriceSpecificIDMinter",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.FixedPriceSpecificIDMinter>;
+    getContractAt(
       name: "GovernorVotesERC721QuorumFractionUpgradeable",
       address: string,
       signer?: ethers.Signer
@@ -291,6 +313,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.GovernorVotesERC721Upgradeable>;
+    getContractAt(
+      name: "IERC721Minter",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721Minter>;
     getContractAt(
       name: "Multicall",
       address: string,

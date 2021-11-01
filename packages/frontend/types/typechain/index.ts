@@ -14,6 +14,7 @@ export type { IGovernorTimelockUpgradeable } from "./IGovernorTimelockUpgradeabl
 export type { GovernorUpgradeable } from "./GovernorUpgradeable";
 export type { IGovernorUpgradeable } from "./IGovernorUpgradeable";
 export type { TimelockControllerUpgradeable } from "./TimelockControllerUpgradeable";
+export type { PausableUpgradeable } from "./PausableUpgradeable";
 export type { ERC721Upgradeable } from "./ERC721Upgradeable";
 export type { ERC721EnumerableUpgradeable } from "./ERC721EnumerableUpgradeable";
 export type { IERC721EnumerableUpgradeable } from "./IERC721EnumerableUpgradeable";
@@ -29,8 +30,10 @@ export type { ERC721DAOToken } from "./ERC721DAOToken";
 export type { ERC721Governor } from "./ERC721Governor";
 export type { ERC721Timelock } from "./ERC721Timelock";
 export type { FixedPriceMinter } from "./FixedPriceMinter";
+export type { FixedPriceSpecificIDMinter } from "./FixedPriceSpecificIDMinter";
 export type { GovernorVotesERC721QuorumFractionUpgradeable } from "./GovernorVotesERC721QuorumFractionUpgradeable";
 export type { GovernorVotesERC721Upgradeable } from "./GovernorVotesERC721Upgradeable";
+export type { IERC721Minter } from "./IERC721Minter";
 export type { Multicall } from "./Multicall";
 export type { YourContract } from "./YourContract";
 
@@ -47,6 +50,7 @@ export { IGovernorTimelockUpgradeable__factory } from "./factories/IGovernorTime
 export { GovernorUpgradeable__factory } from "./factories/GovernorUpgradeable__factory";
 export { IGovernorUpgradeable__factory } from "./factories/IGovernorUpgradeable__factory";
 export { TimelockControllerUpgradeable__factory } from "./factories/TimelockControllerUpgradeable__factory";
+export { PausableUpgradeable__factory } from "./factories/PausableUpgradeable__factory";
 export { ERC721Upgradeable__factory } from "./factories/ERC721Upgradeable__factory";
 export { ERC721EnumerableUpgradeable__factory } from "./factories/ERC721EnumerableUpgradeable__factory";
 export { IERC721EnumerableUpgradeable__factory } from "./factories/IERC721EnumerableUpgradeable__factory";
@@ -62,7 +66,9 @@ export { ERC721DAOToken__factory } from "./factories/ERC721DAOToken__factory";
 export { ERC721Governor__factory } from "./factories/ERC721Governor__factory";
 export { ERC721Timelock__factory } from "./factories/ERC721Timelock__factory";
 export { FixedPriceMinter__factory } from "./factories/FixedPriceMinter__factory";
+export { FixedPriceSpecificIDMinter__factory } from "./factories/FixedPriceSpecificIDMinter__factory";
 export { GovernorVotesERC721QuorumFractionUpgradeable__factory } from "./factories/GovernorVotesERC721QuorumFractionUpgradeable__factory";
 export { GovernorVotesERC721Upgradeable__factory } from "./factories/GovernorVotesERC721Upgradeable__factory";
+export { IERC721Minter__factory } from "./factories/IERC721Minter__factory";
 export { Multicall__factory } from "./factories/Multicall__factory";
 export { YourContract__factory } from "./factories/YourContract__factory";

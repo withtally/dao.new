@@ -4,6 +4,7 @@ pragma solidity ^0.8.6;
 
 import { OwnableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import { ClonesUpgradeable } from "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
+import { AddressUpgradeable } from "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 import { ERC721DAOToken } from "./ERC721DAOToken.sol";
 import { ERC721Timelock } from "./ERC721Timelock.sol";
 import { ERC721Governor } from "./ERC721Governor.sol";
@@ -11,6 +12,7 @@ import { FixedPriceMinter } from "./FixedPriceMinter.sol";
 
 contract ERC721DAODeployer is OwnableUpgradeable {
     using ClonesUpgradeable for address;
+    using AddressUpgradeable for address;
 
     struct TokenParams {
         string name;
@@ -28,12 +30,10 @@ contract ERC721DAODeployer is OwnableUpgradeable {
     }
 
     struct MinterParams {
-        uint256 maxTokens;
-        uint256 tokenPrice;
-        uint256 maxMintsPerTx;
         uint256 startingBlock;
         uint256 creatorShares;
         uint256 daoShares;
+        bytes extraInitCallData;
     }
 
     ERC721DAOToken public token;
@@ -106,16 +106,8 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             shares[0] = minterParams.creatorShares;
             shares[1] = minterParams.daoShares;
 
-            minterClone.initialize(
-                creatorAddress,
-                tokenClone,
-                minterParams.maxTokens,
-                minterParams.tokenPrice,
-                minterParams.maxMintsPerTx,
-                minterParams.startingBlock,
-                payees,
-                shares
-            );
+            minterClone.initialize(creatorAddress, tokenClone, minterParams.startingBlock, payees, shares);
+            address(minterClone).functionCall(minterParams.extraInitCallData);
         }
 
         emit NewClone(address(tokenClone), address(timelockClone), address(governorClone), address(minterClone));

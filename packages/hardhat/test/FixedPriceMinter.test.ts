@@ -1,7 +1,12 @@
 import chai from "chai";
 import { ethers } from "hardhat";
 import { solidity } from "ethereum-waffle";
-import { deployToken, deployFixedPriceMinter, initToken } from "./utils";
+import {
+  deployToken,
+  deployFixedPriceMinter,
+  initToken,
+  CREATOR_ROLE,
+} from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   FixedPriceMinter,
@@ -63,17 +68,16 @@ describe("FixedPriceMinter", () => {
     it("should not allow minting", async () => {
       await expect(
         minter.connect(user).mint(1, { value: TOKEN_PRICE })
-      ).to.be.revertedWith("FixedPriceMinter: sale is not active");
+      ).to.be.revertedWith("Pausable: paused");
     });
   });
 
   describe("Mint after sale is active", async () => {
     before(async () => {
-      await minter.connect(creator).setSaleActive(true);
+      await minter.connect(creator).unpause();
     });
 
     it("should mint an asset", async () => {
-      await minter.connect(creator).setSaleActive(true);
       await minter.connect(user).mint(1, {
         value: TOKEN_PRICE,
       });
@@ -151,7 +155,7 @@ describe("FixedPriceMinter", () => {
         minter.connect(user).mint(3, {
           value: ethers.utils.parseEther((TOKEN_PRICE_ETH * 3).toString()),
         })
-      ).to.be.revertedWith("FixedPriceMinter: Sale hasn't started yet!");
+      ).to.be.revertedWith("IERC721Minter: Sale hasn't started yet!");
     });
   });
 
@@ -165,11 +169,13 @@ describe("FixedPriceMinter", () => {
     });
 
     it("should prevent non-creators from setting starting block", async () => {
-      expect(await minter.owner()).to.not.equal(deployer.address);
+      expect(await minter.hasRole(CREATOR_ROLE, user2.address)).to.be.false;
 
       await expect(
-        minter.connect(deployer).setStartingBlock(STARTING_BLOCK + 123)
-      ).to.be.revertedWith("Ownable: caller is not the owner");
+        minter.connect(user2).setStartingBlock(STARTING_BLOCK + 123)
+      ).to.be.revertedWith(
+        `AccessControl: account ${user2.address.toLowerCase()} is missing role 0x828634d95e775031b9ff576b159a8509d3053581a8c9c4d7d86899e0afcd882f`
+      );
     });
   });
 
@@ -184,7 +190,9 @@ describe("FixedPriceMinter", () => {
     it("should not allow non owners to mint", async () => {
       await expect(
         minter.connect(user).ownerMint(user.address, 5)
-      ).to.be.revertedWith("Ownable: caller is not the owner");
+      ).to.be.revertedWith(
+        `AccessControl: account ${user.address.toLowerCase()} is missing role 0x828634d95e775031b9ff576b159a8509d3053581a8c9c4d7d86899e0afcd882f`
+      );
     });
 
     it("should not allow minting more than max supply", async () => {
