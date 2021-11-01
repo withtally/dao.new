@@ -9,7 +9,7 @@ import {
 import type { AppProps } from 'next/app'
 import React from 'react'
 import { MulticallAddress } from '../artifacts/contracts/contractAddress'
-import { CHAIN_ID } from '../config'
+import { CHAIN_ID, secrets } from '../config'
 import { useApollo } from '../lib/apolloClient'
 
 // scaffold-eth's INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
@@ -19,6 +19,7 @@ const config: Config = {
   readOnlyChainId: CHAIN_ID,
   readOnlyUrls: {
     [ChainId.Ropsten]: `https://ropsten.infura.io/v3/${INFURA_ID}`,
+    [ChainId.Rinkeby]: `https://eth-rinkeby.alchemyapi.io/v2/${secrets.alchemyApiKey}`,
     [ChainId.Hardhat]: 'http://localhost:8545',
     [ChainId.Localhost]: 'http://localhost:8545',
   },
