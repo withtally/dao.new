@@ -5,7 +5,7 @@ import { Center, Container } from "@chakra-ui/react"
 const Mint = () => {
   return (
   <Layout>
-    <Container maxW="container.sm">
+    <Container maxW="container.lg">
       <Center>
         <Minter />
       </Center>
