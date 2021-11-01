@@ -25,6 +25,7 @@ import {
   FixedPriceMinter__factory,
 } from "../../frontend/types/typechain";
 import { ERC721DAODeployer } from "../../frontend/types/typechain/ERC721DAODeployer";
+import { Wallet } from "@ethersproject/wallet";
 
 chai.use(solidity);
 const { expect } = chai;
@@ -52,11 +53,11 @@ const VOTING_DELAY = 1; // 1 block
 const TIMELOCK_DELAY = 172_800; // 2 days
 
 let signer: SignerWithAddress;
-let creator: SignerWithAddress;
 let user1: SignerWithAddress;
 let user2: SignerWithAddress;
 let user3: SignerWithAddress;
 let rando: SignerWithAddress;
+let creator: Wallet;
 
 let token: ERC721DAOToken;
 let timelock: ERC721Timelock;
@@ -65,7 +66,15 @@ let minter: FixedPriceMinter;
 let deployer: ERC721DAODeployer;
 
 const deploy = async () => {
-  [signer, creator, user1, user2, user3, rando] = await ethers.getSigners();
+  [signer, user1, user2, user3, rando] = await ethers.getSigners();
+
+  creator = new Wallet(Wallet.createRandom().privateKey, signer.provider);
+
+  const giveCreatorEth = {
+    to: creator.address,
+    value: ethers.utils.parseEther("50"),
+  };
+  await user1.sendTransaction(giveCreatorEth);
 
   // Deploy logic contracts
   const tokenImpl = await deployToken(signer);
@@ -119,24 +128,36 @@ describe("End to end flows", () => {
   before(deploy);
 
   it("lets users mint", async () => {
-    expect(await ethers.provider.getBalance(minter.address)).to.equal(0);
+    let expectedMinterBalance = 0;
+    expect(await ethers.provider.getBalance(minter.address)).to.equal(
+      expectedMinterBalance
+    );
 
-    await expect(() =>
-      minter.connect(user1).mint(4, {
-        value: TOKEN_PRICE * 4,
-      })
-    ).to.changeEtherBalance(minter, TOKEN_PRICE * 4);
-    await expect(() =>
-      minter.connect(user2).mint(1, {
-        value: TOKEN_PRICE,
-      })
-    ).to.changeEtherBalance(minter, TOKEN_PRICE);
-    await expect(() =>
-      minter.connect(user3).mint(1, {
-        value: TOKEN_PRICE,
-      })
-    ).to.changeEtherBalance(minter, TOKEN_PRICE);
+    await minter.connect(user1).mint(4, {
+      value: TOKEN_PRICE * 4,
+    });
+    expectedMinterBalance += TOKEN_PRICE * 4;
+    expect(await ethers.provider.getBalance(minter.address)).to.equal(
+      expectedMinterBalance
+    );
 
+    await minter.connect(user2).mint(1, {
+      value: TOKEN_PRICE,
+    });
+    expectedMinterBalance += TOKEN_PRICE;
+    expect(await ethers.provider.getBalance(minter.address)).to.equal(
+      expectedMinterBalance
+    );
+
+    await minter.connect(user3).mint(1, {
+      value: TOKEN_PRICE,
+    });
+    expectedMinterBalance += TOKEN_PRICE;
+    expect(await ethers.provider.getBalance(minter.address)).to.equal(
+      expectedMinterBalance
+    );
+
+    console.log("asserting token ownership");
     expect(await token.ownerOf(1)).equals(user1.address);
     expect(await token.ownerOf(2)).equals(user1.address);
     expect(await token.ownerOf(3)).equals(user1.address);
@@ -151,6 +172,7 @@ describe("End to end flows", () => {
     expect(await ethers.provider.getBalance(minter.address)).to.equal(
       totalProceeds
     );
+    expect(await ethers.provider.getBalance(timelock.address)).to.equal(0);
     const expectedFounderProfit = FOUNDER_REWARD * totalProceeds;
     const expectedDAOProfit = totalProceeds - expectedFounderProfit;
 
@@ -158,8 +180,8 @@ describe("End to end flows", () => {
       creator,
       expectedFounderProfit
     );
-    await expect(() => minter.release(timelock.address)).to.changeEtherBalance(
-      timelock,
+    await minter.release(timelock.address);
+    expect(await ethers.provider.getBalance(timelock.address)).to.equal(
       expectedDAOProfit
     );
   });

@@ -141,6 +141,167 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.YourContract__factory>;
 
+    getContractAt(
+      name: "AccessControlEnumerableUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.AccessControlEnumerableUpgradeable>;
+    getContractAt(
+      name: "AccessControlUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.AccessControlUpgradeable>;
+    getContractAt(
+      name: "IAccessControlEnumerableUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IAccessControlEnumerableUpgradeable>;
+    getContractAt(
+      name: "IAccessControlUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IAccessControlUpgradeable>;
+    getContractAt(
+      name: "OwnableUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.OwnableUpgradeable>;
+    getContractAt(
+      name: "PaymentSplitterUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PaymentSplitterUpgradeable>;
+    getContractAt(
+      name: "GovernorCountingSimpleUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.GovernorCountingSimpleUpgradeable>;
+    getContractAt(
+      name: "GovernorProposalThresholdUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.GovernorProposalThresholdUpgradeable>;
+    getContractAt(
+      name: "GovernorTimelockControlUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.GovernorTimelockControlUpgradeable>;
+    getContractAt(
+      name: "IGovernorTimelockUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IGovernorTimelockUpgradeable>;
+    getContractAt(
+      name: "GovernorUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.GovernorUpgradeable>;
+    getContractAt(
+      name: "IGovernorUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IGovernorUpgradeable>;
+    getContractAt(
+      name: "TimelockControllerUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TimelockControllerUpgradeable>;
+    getContractAt(
+      name: "ERC721Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721Upgradeable>;
+    getContractAt(
+      name: "ERC721EnumerableUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721EnumerableUpgradeable>;
+    getContractAt(
+      name: "IERC721EnumerableUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721EnumerableUpgradeable>;
+    getContractAt(
+      name: "IERC721MetadataUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721MetadataUpgradeable>;
+    getContractAt(
+      name: "IERC721ReceiverUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721ReceiverUpgradeable>;
+    getContractAt(
+      name: "IERC721Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721Upgradeable>;
+    getContractAt(
+      name: "ERC165Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC165Upgradeable>;
+    getContractAt(
+      name: "IERC165Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC165Upgradeable>;
+    getContractAt(
+      name: "CloneFactory",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.CloneFactory>;
+    getContractAt(
+      name: "ERC721CheckpointableUpgradable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721CheckpointableUpgradable>;
+    getContractAt(
+      name: "ERC721DAODeployer",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721DAODeployer>;
+    getContractAt(
+      name: "ERC721DAOToken",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721DAOToken>;
+    getContractAt(
+      name: "ERC721Governor",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721Governor>;
+    getContractAt(
+      name: "ERC721Timelock",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721Timelock>;
+    getContractAt(
+      name: "FixedPriceMinter",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.FixedPriceMinter>;
+    getContractAt(
+      name: "GovernorVotesERC721QuorumFractionUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.GovernorVotesERC721QuorumFractionUpgradeable>;
+    getContractAt(
+      name: "GovernorVotesERC721Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.GovernorVotesERC721Upgradeable>;
+    getContractAt(
+      name: "Multicall",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Multicall>;
+    getContractAt(
+      name: "YourContract",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.YourContract>;
+
     // default types
     getContractFactory(
       name: string,
@@ -151,5 +312,10 @@ declare module "hardhat/types/runtime" {
       bytecode: ethers.utils.BytesLike,
       signer?: ethers.Signer
     ): Promise<ethers.ContractFactory>;
+    getContractAt(
+      nameOrAbi: string | any[],
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<ethers.Contract>;
   }
 }
