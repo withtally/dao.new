@@ -54,7 +54,7 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
     }
 
     function mint(address to, uint256 tokenId) public onlyRole(MINTER_ROLE) {
-        _mint(to, tokenId);
+        _safeMint(to, tokenId);
     }
 
     /**
