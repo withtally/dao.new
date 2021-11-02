@@ -8,7 +8,7 @@ import { AddressUpgradeable } from "@openzeppelin/contracts-upgradeable/utils/Ad
 import { ERC721DAOToken } from "./ERC721DAOToken.sol";
 import { ERC721Timelock } from "./ERC721Timelock.sol";
 import { ERC721Governor } from "./ERC721Governor.sol";
-import { FixedPriceMinter } from "./FixedPriceMinter.sol";
+import { IERC721Minter } from "./IERC721Minter.sol";
 
 contract ERC721DAODeployer is OwnableUpgradeable {
     using ClonesUpgradeable for address;
@@ -40,7 +40,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
     ERC721DAOToken public token;
     ERC721Timelock public timelock;
     ERC721Governor public governor;
-    FixedPriceMinter public minter;
+    IERC721Minter public minter;
 
     event ImplementationsSet(address token, address timelock, address governor, address minter);
     event NewClone(address token, address timelock, address governor, address minter);
@@ -49,7 +49,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721DAOToken token_,
         ERC721Timelock timelock_,
         ERC721Governor governor_,
-        FixedPriceMinter minter_
+        IERC721Minter minter_
     ) public initializer {
         __Ownable_init();
 
@@ -65,7 +65,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721DAOToken tokenClone = ERC721DAOToken(address(token).clone());
         ERC721Timelock timelockClone = ERC721Timelock(payable(address(timelock).clone()));
         ERC721Governor governorClone = ERC721Governor(address(governor).clone());
-        FixedPriceMinter minterClone = FixedPriceMinter(payable(address(minter).clone()));
+        IERC721Minter minterClone = IERC721Minter(payable(address(minter).clone()));
 
         {
             bytes32[] memory roles = new bytes32[](2);
@@ -118,7 +118,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721DAOToken token_,
         ERC721Timelock timelock_,
         ERC721Governor governor_,
-        FixedPriceMinter minter_
+        IERC721Minter minter_
     ) external onlyOwner {
         _setImplementations(token_, timelock_, governor_, minter_);
     }
@@ -127,7 +127,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721DAOToken token_,
         ERC721Timelock timelock_,
         ERC721Governor governor_,
-        FixedPriceMinter minter_
+        IERC721Minter minter_
     ) internal {
         token = token_;
         timelock = timelock_;
