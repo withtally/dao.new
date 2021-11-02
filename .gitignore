@@ -43,5 +43,8 @@ packages/frontend/out/
 packages/frontend/build
 # contracts
 packages/frontend/artifacts
+#typechain
+packages/frontend/types/typechain/**
+
 
 secrets.json
