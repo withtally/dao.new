@@ -4,9 +4,9 @@
 
 pragma solidity ^0.8.6;
 
-import { IERC721Minter } from "./IERC721Minter.sol";
+import { ERC721Minter } from "./ERC721Minter.sol";
 
-contract FixedPriceSpecificIDMinter is IERC721Minter {
+contract FixedPriceSpecificIDMinter is ERC721Minter {
     uint256 public maxTokens;
     uint256 public tokenPrice;
 

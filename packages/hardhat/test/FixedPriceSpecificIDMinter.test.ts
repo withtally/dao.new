@@ -133,7 +133,7 @@ describe("FixedPriceSpecificIDMinter", () => {
         minter.connect(user).mint(0, {
           value: TOKEN_PRICE,
         })
-      ).to.be.revertedWith("IERC721Minter: Sale hasn't started yet!");
+      ).to.be.revertedWith("ERC721Minter: Sale hasn't started yet!");
     });
   });
 

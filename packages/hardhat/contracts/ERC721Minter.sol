@@ -9,14 +9,14 @@ import { PaymentSplitterUpgradeable } from "@openzeppelin/contracts-upgradeable/
 import { AccessControlEnumerableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 import { PausableUpgradeable } from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 
-abstract contract IERC721Minter is PaymentSplitterUpgradeable, AccessControlEnumerableUpgradeable, PausableUpgradeable {
+abstract contract ERC721Minter is PaymentSplitterUpgradeable, AccessControlEnumerableUpgradeable, PausableUpgradeable {
     bytes32 public constant CREATOR_ROLE = keccak256("CREATOR_ROLE");
 
     ERC721DAOToken public token;
     uint256 public startingBlock;
 
     modifier afterStartingBlock() {
-        require(block.number >= startingBlock, "IERC721Minter: Sale hasn't started yet!");
+        require(block.number >= startingBlock, "ERC721Minter: Sale hasn't started yet!");
         _;
     }
 

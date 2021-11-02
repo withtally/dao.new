@@ -8,7 +8,7 @@ import { AddressUpgradeable } from "@openzeppelin/contracts-upgradeable/utils/Ad
 import { ERC721DAOToken } from "./ERC721DAOToken.sol";
 import { ERC721Timelock } from "./ERC721Timelock.sol";
 import { ERC721Governor } from "./ERC721Governor.sol";
-import { IERC721Minter } from "./IERC721Minter.sol";
+import { ERC721Minter } from "./ERC721Minter.sol";
 
 contract ERC721DAODeployer is OwnableUpgradeable {
     using ClonesUpgradeable for address;
@@ -41,7 +41,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
     ERC721DAOToken public token;
     ERC721Timelock public timelock;
     ERC721Governor public governor;
-    IERC721Minter[] public minters;
+    ERC721Minter[] public minters;
 
     event ImplementationsSet(address token, address timelock, address governor, address[] minters);
     event NewClone(address token, address timelock, address governor, address minter);
@@ -50,7 +50,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721DAOToken token_,
         ERC721Timelock timelock_,
         ERC721Governor governor_,
-        IERC721Minter[] calldata minters_
+        ERC721Minter[] calldata minters_
     ) public initializer {
         __Ownable_init();
 
@@ -66,7 +66,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721DAOToken tokenClone = ERC721DAOToken(address(token).clone());
         ERC721Timelock timelockClone = ERC721Timelock(payable(address(timelock).clone()));
         ERC721Governor governorClone = ERC721Governor(address(governor).clone());
-        IERC721Minter minterClone = IERC721Minter(payable(address(minters[minterParams.implementationIndex]).clone()));
+        ERC721Minter minterClone = ERC721Minter(payable(address(minters[minterParams.implementationIndex]).clone()));
 
         {
             bytes32[] memory roles = new bytes32[](2);
@@ -119,7 +119,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721DAOToken token_,
         ERC721Timelock timelock_,
         ERC721Governor governor_,
-        IERC721Minter[] calldata minters_
+        ERC721Minter[] calldata minters_
     ) external onlyOwner {
         _setImplementations(token_, timelock_, governor_, minters_);
     }
@@ -128,7 +128,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721DAOToken token_,
         ERC721Timelock timelock_,
         ERC721Governor governor_,
-        IERC721Minter[] calldata minters_
+        ERC721Minter[] calldata minters_
     ) internal {
         token = token_;
         timelock = timelock_;
@@ -138,7 +138,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         emit ImplementationsSet(address(token_), address(timelock_), address(governor_), mintersToAddresses(minters_));
     }
 
-    function mintersToAddresses(IERC721Minter[] calldata minters_) private pure returns (address[] memory) {
+    function mintersToAddresses(ERC721Minter[] calldata minters_) private pure returns (address[] memory) {
         address[] memory addrs = new address[](minters_.length);
         for (uint256 i = 0; i < minters_.length; i++) {
             addrs[i] = address(minters_[i]);

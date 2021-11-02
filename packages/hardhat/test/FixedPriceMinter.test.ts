@@ -155,7 +155,7 @@ describe("FixedPriceMinter", () => {
         minter.connect(user).mint(3, {
           value: ethers.utils.parseEther((TOKEN_PRICE_ETH * 3).toString()),
         })
-      ).to.be.revertedWith("IERC721Minter: Sale hasn't started yet!");
+      ).to.be.revertedWith("ERC721Minter: Sale hasn't started yet!");
     });
   });
 
