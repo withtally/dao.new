@@ -1,5 +1,5 @@
 import { ChainId } from '@usedapp/core'
-import * as allSecrets from '../hardhat/secrets.json'
+import allSecrets from '../hardhat/secrets.json'
 
 interface Config {
   minterAddress: string
