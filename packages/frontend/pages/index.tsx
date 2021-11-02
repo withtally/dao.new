@@ -17,7 +17,7 @@ import {
   Link,
 } from '@chakra-ui/react'
 import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
-import { ethers, providers, utils, BigNumberish } from 'ethers'
+import { ethers, providers, utils, BigNumberish, BytesLike } from 'ethers'
 import React, { ChangeEvent, useReducer } from 'react'
 import { ERC721DAODeployerAddress as LOCAL_CONTRACT_ADDRESS } from '../artifacts/contracts/contractAddress'
 import { Layout } from '../components/layout/Layout'
@@ -26,8 +26,6 @@ import {
   DEFAULT_TOKEN_PRICE,
   DEFAULT_MAX_MINTS,
   DEFAULT_SALE_START_DELAY,
-  FOUNDER_SHARES,
-  DAO_SHARES,
   DEFAULT_TIMELOCK_DELAY,
   DEFAULT_PROP_THRESHOLD,
   DEFAULT_VOTING_DELAY,
@@ -36,7 +34,10 @@ import {
   DEFAULT_CREATOR_PERCENTAGE,
   getSharesByCreatorPercentage,
 } from '../lib/contractUtils'
-import { ERC721DAODeployer__factory } from '../types/typechain'
+import {
+  ERC721DAODeployer__factory,
+  FixedPriceMinter__factory,
+} from '../types/typechain'
 import {
   Table,
   Thead,
@@ -83,11 +84,14 @@ type GovernorParams = {
 }
 
 type MinterParams = {
+  implementationIndex: number
   maxTokens: number
   tokenPrice: BigNumberish
   maxMintsPerTx: number
   creatorPercentage: number
   startingBlock: BigNumberish
+  extraInitCallData: BytesLike
+  extraInitValue: BigNumberish
 }
 
 type StateType = {
@@ -131,11 +135,14 @@ const initialState: StateType = {
     baseURI: '',
   },
   minterConfig: {
+    implementationIndex: 0,
     maxTokens: DEFAULT_TOKEN_SUPPLY,
     tokenPrice: DEFAULT_TOKEN_PRICE,
     maxMintsPerTx: DEFAULT_MAX_MINTS,
     creatorPercentage: DEFAULT_CREATOR_PERCENTAGE,
     startingBlock: 0,
+    extraInitCallData: '',
+    extraInitValue: 0,
   },
   governorConfig: {
     name: '',
@@ -191,9 +198,9 @@ function HomeIndex(): JSX.Element {
   let CONTRACT_ADDRESS =
     chainId === ChainId.Ropsten
       ? ROPSTEN_CONTRACT_ADDRESS
-      : LOCAL_CONTRACT_ADDRESS;
+      : LOCAL_CONTRACT_ADDRESS
   if (chainId === ChainId.Rinkeby) {
-    CONTRACT_ADDRESS = "0x5C05E04FEbA9aBd428E6467F7d9412C9BD30ca96";
+    CONTRACT_ADDRESS = '0x5C05E04FEbA9aBd428E6467F7d9412C9BD30ca96'
   }
 
   // Use the localProvider as the signer to send ETH to our wallet
@@ -224,9 +231,17 @@ function HomeIndex(): JSX.Element {
         state.governorConfig,
         {
           ...state.minterConfig,
-          tokenPrice: ethers.utils.parseEther(
-            state.minterConfig.tokenPrice.toString()
-          ),
+          extraInitCallData:
+            FixedPriceMinter__factory.createInterface().encodeFunctionData(
+              'init',
+              [
+                state.minterConfig.maxTokens,
+                ethers.utils.parseEther(
+                  state.minterConfig.tokenPrice.toString()
+                ),
+                state.minterConfig.maxMintsPerTx,
+              ]
+            ),
           ...getSharesByCreatorPercentage(state.minterConfig.creatorPercentage),
         }
       )

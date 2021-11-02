@@ -9,13 +9,13 @@ interface Config {
 
 type SupportedChains = ChainId.Rinkeby | ChainId.Localhost
 
-export const CHAIN_ID: SupportedChains = ChainId.Rinkeby
+export const CHAIN_ID: SupportedChains = ChainId.Localhost
 
 const config: Record<SupportedChains, Config> = {
   [ChainId.Localhost]: {
-    minterAddress: '0xEd46dE7A5F16D09b02fF3890DB11C91316196182',
-    tokenAddress: '0xA14d9C7a916Db01cCA55ec21Be1F7665C326928F',
-    timelockAddress: '0x1c8d7d133c0c4AC780Fc1a4f71913FB6625F7De5',
+    minterAddress: '0xCaA29B65446aBF1A513A178402A0408eB3AEee75',
+    tokenAddress: '0xD79aE87F2c003Ec925fB7e9C11585709bfe41473',
+    timelockAddress: '0xB7aa4c318000BB9bD16108F81C40D02E48af1C42',
   },
   [ChainId.Rinkeby]: {
     minterAddress: '0x1b186cD7707c939A839fE176976Da66C2E0C21BD',

@@ -14,6 +14,7 @@ import {
   Multicall__factory,
   ERC721DAODeployer__factory,
   ERC721DAODeployer,
+  FixedPriceSpecificIDMinter__factory,
 } from "../../frontend/types/typechain";
 
 const contractAddressFile = `${config.paths.artifacts}/contracts/contractAddress.ts`;
@@ -46,9 +47,13 @@ async function main() {
     new ERC721Governor__factory(deployer),
     "ERC721Governor"
   );
-  const minterImpl = await deployContract(
+  const simpleMinterImpl = await deployContract(
     new FixedPriceMinter__factory(deployer),
     "FixedPriceMinter"
+  );
+  const idMinterImpl = await deployContract(
+    new FixedPriceSpecificIDMinter__factory(deployer),
+    "FixedPriceSpecificIDMinter"
   );
   const deployerContract = (await deployContract(
     new ERC721DAODeployer__factory(deployer),
@@ -59,7 +64,7 @@ async function main() {
     tokenImpl.address,
     timelockImpl.address,
     governorImpl.address,
-    minterImpl.address
+    [simpleMinterImpl.address, idMinterImpl.address]
   );
 }
 
