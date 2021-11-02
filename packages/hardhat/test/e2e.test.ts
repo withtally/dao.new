@@ -113,6 +113,7 @@ const deploy = async () => {
         TOKEN_PRICE,
         MAX_MINTS_PER_WALLET,
       ]),
+      extraInitValue: 0,
     }
   );
   const receipt = await tx.wait();

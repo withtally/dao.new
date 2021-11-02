@@ -66,23 +66,26 @@ export type MinterParamsStruct = {
   creatorShares: BigNumberish;
   daoShares: BigNumberish;
   extraInitCallData: BytesLike;
+  extraInitValue: BigNumberish;
 };
 
 export type MinterParamsStructOutput = [
   BigNumber,
   BigNumber,
   BigNumber,
-  string
+  string,
+  BigNumber
 ] & {
   startingBlock: BigNumber;
   creatorShares: BigNumber;
   daoShares: BigNumber;
   extraInitCallData: string;
+  extraInitValue: BigNumber;
 };
 
 export interface ERC721DAODeployerInterface extends ethers.utils.Interface {
   functions: {
-    "clone(address,(string,string,string),(string,uint256,uint256,uint256,uint256,uint256),(uint256,uint256,uint256,bytes))": FunctionFragment;
+    "clone(address,(string,string,string),(string,uint256,uint256,uint256,uint256,uint256),(uint256,uint256,uint256,bytes,uint256))": FunctionFragment;
     "governor()": FunctionFragment;
     "initialize(address,address,address,address)": FunctionFragment;
     "minter()": FunctionFragment;
