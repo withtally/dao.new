@@ -95,11 +95,9 @@ export const Minter = () => {
     return !paused
   }
 
-  const tokenBalance = useTokenBalance(config.tokenAddress, account)
   const tokenPrice: BigNumber = useMintPrice()
   const totalSupply = useTotalSupply()
   const nftName = useNFTName()
-  const nftSymbol = useTokenSymbol()
   const maxMintPerTx = useMaxMintPerTxn()
   const isSaleActive = useIsSaleActive()
   const [tokensToMint, setTokensToMint] = useState(1)
