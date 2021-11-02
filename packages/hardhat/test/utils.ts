@@ -142,14 +142,14 @@ export const deployAndInitDeployer = async (
   token: ERC721DAOToken,
   timelock: ERC721Timelock,
   governor: ERC721Governor,
-  minter: FixedPriceMinter
+  minters: string[]
 ): Promise<ERC721DAODeployer> => {
   const instance = await new ERC721DAODeployer__factory(deployer).deploy();
   await instance.initialize(
     token.address,
     timelock.address,
     governor.address,
-    minter.address
+    minters
   );
   return instance;
 };

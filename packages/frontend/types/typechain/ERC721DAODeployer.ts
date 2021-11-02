@@ -62,6 +62,7 @@ export type GovernorParamsStructOutput = [
 };
 
 export type MinterParamsStruct = {
+  implementationIndex: BigNumberish;
   startingBlock: BigNumberish;
   creatorShares: BigNumberish;
   daoShares: BigNumberish;
@@ -73,9 +74,11 @@ export type MinterParamsStructOutput = [
   BigNumber,
   BigNumber,
   BigNumber,
+  BigNumber,
   string,
   BigNumber
 ] & {
+  implementationIndex: BigNumber;
   startingBlock: BigNumber;
   creatorShares: BigNumber;
   daoShares: BigNumber;
@@ -85,13 +88,13 @@ export type MinterParamsStructOutput = [
 
 export interface ERC721DAODeployerInterface extends ethers.utils.Interface {
   functions: {
-    "clone(address,(string,string,string),(string,uint256,uint256,uint256,uint256,uint256),(uint256,uint256,uint256,bytes,uint256))": FunctionFragment;
+    "clone(address,(string,string,string),(string,uint256,uint256,uint256,uint256,uint256),(uint256,uint256,uint256,uint256,bytes,uint256))": FunctionFragment;
     "governor()": FunctionFragment;
-    "initialize(address,address,address,address)": FunctionFragment;
-    "minter()": FunctionFragment;
+    "initialize(address,address,address,address[])": FunctionFragment;
+    "minters(uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "setImplementations(address,address,address,address)": FunctionFragment;
+    "setImplementations(address,address,address,address[])": FunctionFragment;
     "timelock()": FunctionFragment;
     "token()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -109,9 +112,12 @@ export interface ERC721DAODeployerInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "governor", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [string, string, string, string]
+    values: [string, string, string, string[]]
   ): string;
-  encodeFunctionData(functionFragment: "minter", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "minters",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -119,7 +125,7 @@ export interface ERC721DAODeployerInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setImplementations",
-    values: [string, string, string, string]
+    values: [string, string, string, string[]]
   ): string;
   encodeFunctionData(functionFragment: "timelock", values?: undefined): string;
   encodeFunctionData(functionFragment: "token", values?: undefined): string;
@@ -131,7 +137,7 @@ export interface ERC721DAODeployerInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "clone", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "governor", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "minter", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "minters", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -149,7 +155,7 @@ export interface ERC721DAODeployerInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
-    "ImplementationsSet(address,address,address,address)": EventFragment;
+    "ImplementationsSet(address,address,address,address[])": EventFragment;
     "NewClone(address,address,address,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
@@ -160,8 +166,8 @@ export interface ERC721DAODeployerInterface extends ethers.utils.Interface {
 }
 
 export type ImplementationsSetEvent = TypedEvent<
-  [string, string, string, string],
-  { token: string; timelock: string; governor: string; minter: string }
+  [string, string, string, string[]],
+  { token: string; timelock: string; governor: string; minters: string[] }
 >;
 
 export type ImplementationsSetEventFilter =
@@ -223,11 +229,11 @@ export interface ERC721DAODeployer extends BaseContract {
       token_: string,
       timelock_: string,
       governor_: string,
-      minter_: string,
+      minters_: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    minter(overrides?: CallOverrides): Promise<[string]>;
+    minters(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
@@ -239,7 +245,7 @@ export interface ERC721DAODeployer extends BaseContract {
       token_: string,
       timelock_: string,
       governor_: string,
-      minter_: string,
+      minters_: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -267,11 +273,11 @@ export interface ERC721DAODeployer extends BaseContract {
     token_: string,
     timelock_: string,
     governor_: string,
-    minter_: string,
+    minters_: string[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  minter(overrides?: CallOverrides): Promise<string>;
+  minters(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -283,7 +289,7 @@ export interface ERC721DAODeployer extends BaseContract {
     token_: string,
     timelock_: string,
     governor_: string,
-    minter_: string,
+    minters_: string[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -311,11 +317,11 @@ export interface ERC721DAODeployer extends BaseContract {
       token_: string,
       timelock_: string,
       governor_: string,
-      minter_: string,
+      minters_: string[],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    minter(overrides?: CallOverrides): Promise<string>;
+    minters(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -325,7 +331,7 @@ export interface ERC721DAODeployer extends BaseContract {
       token_: string,
       timelock_: string,
       governor_: string,
-      minter_: string,
+      minters_: string[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -340,17 +346,17 @@ export interface ERC721DAODeployer extends BaseContract {
   };
 
   filters: {
-    "ImplementationsSet(address,address,address,address)"(
+    "ImplementationsSet(address,address,address,address[])"(
       token?: null,
       timelock?: null,
       governor?: null,
-      minter?: null
+      minters?: null
     ): ImplementationsSetEventFilter;
     ImplementationsSet(
       token?: null,
       timelock?: null,
       governor?: null,
-      minter?: null
+      minters?: null
     ): ImplementationsSetEventFilter;
 
     "NewClone(address,address,address,address)"(
@@ -391,11 +397,11 @@ export interface ERC721DAODeployer extends BaseContract {
       token_: string,
       timelock_: string,
       governor_: string,
-      minter_: string,
+      minters_: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    minter(overrides?: CallOverrides): Promise<BigNumber>;
+    minters(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -407,7 +413,7 @@ export interface ERC721DAODeployer extends BaseContract {
       token_: string,
       timelock_: string,
       governor_: string,
-      minter_: string,
+      minters_: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -436,11 +442,14 @@ export interface ERC721DAODeployer extends BaseContract {
       token_: string,
       timelock_: string,
       governor_: string,
-      minter_: string,
+      minters_: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    minter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    minters(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -452,7 +461,7 @@ export interface ERC721DAODeployer extends BaseContract {
       token_: string,
       timelock_: string,
       governor_: string,
-      minter_: string,
+      minters_: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

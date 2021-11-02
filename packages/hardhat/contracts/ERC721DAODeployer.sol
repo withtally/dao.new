@@ -30,6 +30,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
     }
 
     struct MinterParams {
+        uint256 implementationIndex;
         uint256 startingBlock;
         uint256 creatorShares;
         uint256 daoShares;
@@ -40,20 +41,20 @@ contract ERC721DAODeployer is OwnableUpgradeable {
     ERC721DAOToken public token;
     ERC721Timelock public timelock;
     ERC721Governor public governor;
-    IERC721Minter public minter;
+    IERC721Minter[] public minters;
 
-    event ImplementationsSet(address token, address timelock, address governor, address minter);
+    event ImplementationsSet(address token, address timelock, address governor, address[] minters);
     event NewClone(address token, address timelock, address governor, address minter);
 
     function initialize(
         ERC721DAOToken token_,
         ERC721Timelock timelock_,
         ERC721Governor governor_,
-        IERC721Minter minter_
+        IERC721Minter[] calldata minters_
     ) public initializer {
         __Ownable_init();
 
-        _setImplementations(token_, timelock_, governor_, minter_);
+        _setImplementations(token_, timelock_, governor_, minters_);
     }
 
     function clone(
@@ -65,7 +66,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721DAOToken tokenClone = ERC721DAOToken(address(token).clone());
         ERC721Timelock timelockClone = ERC721Timelock(payable(address(timelock).clone()));
         ERC721Governor governorClone = ERC721Governor(address(governor).clone());
-        IERC721Minter minterClone = IERC721Minter(payable(address(minter).clone()));
+        IERC721Minter minterClone = IERC721Minter(payable(address(minters[minterParams.implementationIndex]).clone()));
 
         {
             bytes32[] memory roles = new bytes32[](2);
@@ -118,22 +119,30 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721DAOToken token_,
         ERC721Timelock timelock_,
         ERC721Governor governor_,
-        IERC721Minter minter_
+        IERC721Minter[] calldata minters_
     ) external onlyOwner {
-        _setImplementations(token_, timelock_, governor_, minter_);
+        _setImplementations(token_, timelock_, governor_, minters_);
     }
 
     function _setImplementations(
         ERC721DAOToken token_,
         ERC721Timelock timelock_,
         ERC721Governor governor_,
-        IERC721Minter minter_
+        IERC721Minter[] calldata minters_
     ) internal {
         token = token_;
         timelock = timelock_;
         governor = governor_;
-        minter = minter_;
+        minters = minters_;
 
-        emit ImplementationsSet(address(token_), address(timelock_), address(governor_), address(minter_));
+        emit ImplementationsSet(address(token_), address(timelock_), address(governor_), mintersToAddresses(minters_));
+    }
+
+    function mintersToAddresses(IERC721Minter[] calldata minters_) private pure returns (address[] memory) {
+        address[] memory addrs = new address[](minters_.length);
+        for (uint256 i = 0; i < minters_.length; i++) {
+            addrs[i] = address(minters_[i]);
+        }
+        return addrs;
     }
 }
