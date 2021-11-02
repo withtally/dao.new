@@ -11,6 +11,7 @@ import {
   ERC721Governor__factory,
   ERC721Timelock,
   ERC721Timelock__factory,
+  FixedPriceSpecificIDMinter__factory,
 } from "../../frontend/types/typechain";
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { BytesLike } from "@ethersproject/bignumber/node_modules/@ethersproject/bytes";
@@ -125,6 +126,33 @@ export const deployFixedPriceMinter = async (
     shares
   );
   await minter.init(maxTokens, tokenPrice, maxMintsPerTx);
+
+  return minter;
+};
+
+export const deployIDMinter = async (
+  deployer: SignerWithAddress,
+  ownerAddress: string,
+  tokenAddress: string,
+  maxTokens: BigNumberish,
+  tokenPrice: BigNumberish,
+  maxMintsPerTx: BigNumberish,
+  startingBlock: BigNumberish,
+  payees: string[],
+  shares: BigNumberish[]
+) => {
+  const minter = await new FixedPriceSpecificIDMinter__factory(
+    deployer
+  ).deploy();
+
+  await minter.initialize(
+    ownerAddress,
+    tokenAddress,
+    startingBlock,
+    payees,
+    shares
+  );
+  await minter.init(maxTokens, tokenPrice);
 
   return minter;
 };
