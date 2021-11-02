@@ -7,7 +7,7 @@ import {
   NumberInputField,
   NumberInputStepper,
 } from '@chakra-ui/number-input'
-import { Button, Table, Tr, Td } from '@chakra-ui/react'
+import { Button, Table, Tr, Td, Tbody } from '@chakra-ui/react'
 import {
   useContractCall,
   useContractFunction,
@@ -157,74 +157,76 @@ export const Minter = () => {
     <>
       <HStack spacing="20">
         <Table>
-          <Tr>
-            <Td>
-              Treasury (funds in{' '}
-              <Link
-                color="teal.500"
-                isExternal
-                href={etherscanLink(config.timelockAddress)}
-              >
-                timelock contract
-              </Link>
-              )
-            </Td>
-            <Td>{timelockEthBalance && formatEther(timelockEthBalance)}Ξ</Td>
-          </Tr>
-          <Tr>
-            <Td>
-              Funds in{' '}
-              <Link
-                color="teal.500"
-                isExternal
-                href={etherscanLink(config.minterAddress)}
-              >
-                minter contract
-              </Link>
-            </Td>
-            <Td>{minterEthBalance && formatEther(minterEthBalance)}Ξ</Td>
-          </Tr>
-          <Tr>
-            <Td>Sale status</Td>
-            <Td>
-              {isSaleActive ? '' : 'Not '}Active
-              {!isSaleActive ? (
-                <Button onClick={activateSaleClicked}>Activate sale</Button>
-              ) : (
-                ''
-              )}
-            </Td>
-          </Tr>
-          <Tr>
-            <Td>NFT name</Td>
-            <Td>{nftName}</Td>
-          </Tr>
-          <Tr>
-            <Td>Max mint per tx</Td>
-            <Td>{maxMintPerTx}</Td>
-          </Tr>
-          <Tr>
-            <Td>Price per NFT</Td>
-            <Td>{tokenPrice && formatEther(tokenPrice)}Ξ</Td>
-          </Tr>
-          <Tr>
-            <Td>Total minted</Td>
-            <Td>{totalSupply && totalSupply.toNumber()}</Td>
-          </Tr>
-          <Tr>
-            <Td>
-              <Link color="teal.500" href={openseaLink}>
-                Opensea
-              </Link>
-            </Td>
-          </Tr>
-          <Tr>
-            <Td>
-              <Link color="teal.500" href={raribleLink()}>
-                Rarible
-              </Link>
-            </Td>
-          </Tr>
+          <Tbody>
+            <Tr>
+              <Td>
+                Treasury (funds in{' '}
+                <Link
+                  color="teal.500"
+                  isExternal
+                  href={etherscanLink(config.timelockAddress)}
+                >
+                  timelock contract
+                </Link>
+                )
+              </Td>
+              <Td>{timelockEthBalance && formatEther(timelockEthBalance)}Ξ</Td>
+            </Tr>
+            <Tr>
+              <Td>
+                Funds in{' '}
+                <Link
+                  color="teal.500"
+                  isExternal
+                  href={etherscanLink(config.minterAddress)}
+                >
+                  minter contract
+                </Link>
+              </Td>
+              <Td>{minterEthBalance && formatEther(minterEthBalance)}Ξ</Td>
+            </Tr>
+            <Tr>
+              <Td>Sale status</Td>
+              <Td>
+                {isSaleActive ? '' : 'Not '}Active
+                {!isSaleActive ? (
+                  <Button onClick={activateSaleClicked}>Activate sale</Button>
+                ) : (
+                  ''
+                )}
+              </Td>
+            </Tr>
+            <Tr>
+              <Td>NFT name</Td>
+              <Td>{nftName}</Td>
+            </Tr>
+            <Tr>
+              <Td>Max mint per tx</Td>
+              <Td>{maxMintPerTx}</Td>
+            </Tr>
+            <Tr>
+              <Td>Price per NFT</Td>
+              <Td>{tokenPrice && formatEther(tokenPrice)}Ξ</Td>
+            </Tr>
+            <Tr>
+              <Td>Total minted</Td>
+              <Td>{totalSupply && totalSupply.toNumber()}</Td>
+            </Tr>
+            <Tr>
+              <Td>
+                <Link color="teal.500" href={openseaLink}>
+                  Opensea
+                </Link>
+              </Td>
+            </Tr>
+            <Tr>
+              <Td>
+                <Link color="teal.500" href={raribleLink()}>
+                  Rarible
+                </Link>
+              </Td>
+            </Tr>
+          </Tbody>
         </Table>
         <Spacer />
         <VStack>
