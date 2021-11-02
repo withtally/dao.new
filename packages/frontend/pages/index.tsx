@@ -15,6 +15,9 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   Link,
+  Radio,
+  RadioGroup,
+  HStack,
 } from '@chakra-ui/react'
 import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
 import { ethers, providers, utils, BigNumberish, BytesLike } from 'ethers'
@@ -37,6 +40,7 @@ import {
 import {
   ERC721DAODeployer__factory,
   FixedPriceMinter__factory,
+  FixedPriceSpecificIDMinter__factory,
 } from '../types/typechain'
 import {
   Table,
@@ -225,23 +229,35 @@ function HomeIndex(): JSX.Element {
         CONTRACT_ADDRESS
       )
 
+      let extraInitCallData
+      if (state.minterConfig.implementationIndex == 0) {
+        extraInitCallData =
+          FixedPriceMinter__factory.createInterface().encodeFunctionData(
+            'init',
+            [
+              state.minterConfig.maxTokens,
+              ethers.utils.parseEther(state.minterConfig.tokenPrice.toString()),
+              state.minterConfig.maxMintsPerTx,
+            ]
+          )
+      } else {
+        extraInitCallData =
+          FixedPriceSpecificIDMinter__factory.createInterface().encodeFunctionData(
+            'init',
+            [
+              state.minterConfig.maxTokens,
+              ethers.utils.parseEther(state.minterConfig.tokenPrice.toString()),
+            ]
+          )
+      }
+
       const tx = await deployer.clone(
         account,
         state.tokenConfig,
         state.governorConfig,
         {
           ...state.minterConfig,
-          extraInitCallData:
-            FixedPriceMinter__factory.createInterface().encodeFunctionData(
-              'init',
-              [
-                state.minterConfig.maxTokens,
-                ethers.utils.parseEther(
-                  state.minterConfig.tokenPrice.toString()
-                ),
-                state.minterConfig.maxMintsPerTx,
-              ]
-            ),
+          extraInitCallData: extraInitCallData,
           ...getSharesByCreatorPercentage(state.minterConfig.creatorPercentage),
         }
       )
@@ -358,6 +374,16 @@ function HomeIndex(): JSX.Element {
     })
   }
 
+  function onMinterTypeChange(e) {
+    dispatch({
+      type: 'SET_MINTER_CONFIG',
+      minterConfig: {
+        ...state.minterConfig,
+        implementationIndex: e,
+      },
+    })
+  }
+
   function onGovernorNameChange(e) {
     dispatch({
       type: 'SET_GOVERNOR_CONFIG',
@@ -428,7 +454,7 @@ function HomeIndex(): JSX.Element {
           <Heading as="h2" mb={6} mt={6}>
             1. Token
           </Heading>
-          <VStack spacing={4}>
+          <VStack spacing={6}>
             <FormControl id="token-name" isRequired>
               <FormLabel>Name</FormLabel>
               <Input
@@ -471,7 +497,7 @@ function HomeIndex(): JSX.Element {
           <Heading as="h2" mb={6} mt={6}>
             2. Minter
           </Heading>
-          <VStack spacing={4}>
+          <VStack spacing={6}>
             <FormControl id="minter-totalsupply" isRequired>
               <FormLabel>Total supply</FormLabel>
               <NumberInput
@@ -510,27 +536,6 @@ function HomeIndex(): JSX.Element {
               <FormHelperText>
                 The price your users will need to pay in ETH in order to mint a
                 token.
-              </FormHelperText>
-            </FormControl>
-            <FormControl id="minter-maxmints" isRequired>
-              <FormLabel>Max mints per transaction</FormLabel>
-              <NumberInput
-                defaultValue={10}
-                step={1}
-                min={1}
-                value={state.minterConfig.maxMintsPerTx}
-                onChange={onMinterMaxMintsChange}
-              >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-              <FormHelperText>
-                This is meant to add some friction against those who would want
-                to mint many tokens at once. This friction is helpful in
-                ensuring a more diverse set of token owners.
               </FormHelperText>
             </FormControl>
             <FormControl id="minter-creatorshares" isRequired>
@@ -575,11 +580,54 @@ function HomeIndex(): JSX.Element {
                 plus the delay you want to add.
               </FormHelperText>
             </FormControl>
+            <FormControl id="minter-type" isRequired>
+              <FormLabel>Minting strategy</FormLabel>
+              <RadioGroup
+                defaultValue="0"
+                value={state.minterConfig.implementationIndex.toString()}
+                onChange={onMinterTypeChange}
+              >
+                <HStack spacing={8}>
+                  <Radio value="0">In sequence</Radio>
+                  <Radio value="1">By token ID</Radio>
+                </HStack>
+              </RadioGroup>
+              <FormHelperText>
+                In sequence means a buyer's only input is how many tokens to
+                mint. By token ID, means buyers will mint one-at-a-time, and get
+                to choose a specific token ID to mint.
+              </FormHelperText>
+            </FormControl>
+            {state.minterConfig.implementationIndex == 0 ? (
+              <FormControl id="minter-maxmints" isRequired>
+                <FormLabel>Max mints per transaction</FormLabel>
+                <NumberInput
+                  defaultValue={10}
+                  step={1}
+                  min={1}
+                  value={state.minterConfig.maxMintsPerTx}
+                  onChange={onMinterMaxMintsChange}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+                <FormHelperText>
+                  This is meant to add some friction against those who would
+                  want to mint many tokens at once. This friction is helpful in
+                  ensuring a more diverse set of token owners.
+                </FormHelperText>
+              </FormControl>
+            ) : (
+              <></>
+            )}
           </VStack>
           <Heading as="h2" mb={6} mt={6}>
             3. Governor
           </Heading>
-          <VStack spacing={4}>
+          <VStack spacing={6}>
             <FormControl id="governor-name" isRequired>
               <FormLabel>Name</FormLabel>
               <Input
