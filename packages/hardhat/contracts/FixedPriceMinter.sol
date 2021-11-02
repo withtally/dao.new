@@ -16,7 +16,7 @@ contract FixedPriceMinter is ERC721Minter {
         uint256 maxTokens_,
         uint256 tokenPrice_,
         uint256 maxMintsPerTx_
-    ) public onlyRole(CREATOR_ROLE) {
+    ) public initializer {
         maxTokens = maxTokens_;
         tokenPrice = tokenPrice_;
         maxMintsPerTx = maxMintsPerTx_;

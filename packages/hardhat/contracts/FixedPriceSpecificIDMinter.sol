@@ -10,7 +10,7 @@ contract FixedPriceSpecificIDMinter is ERC721Minter {
     uint256 public maxTokens;
     uint256 public tokenPrice;
 
-    function init(uint256 maxTokens_, uint256 tokenPrice_) public onlyRole(CREATOR_ROLE) {
+    function init(uint256 maxTokens_, uint256 tokenPrice_) public initializer {
         maxTokens = maxTokens_;
         tokenPrice = tokenPrice_;
     }

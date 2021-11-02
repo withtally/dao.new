@@ -64,6 +64,14 @@ describe("FixedPriceMinter", () => {
     await ethers.provider.send("evm_revert", [snapshotId]);
   });
 
+  it("does not let init be called again", async () => {
+    await expect(
+      minter
+        .connect(deployer)
+        .init(MAX_TOKENS, TOKEN_PRICE, MAX_MINTS_PER_WALLET)
+    ).to.be.revertedWith("Initializable: contract is already initialized");
+  });
+
   describe("Before sale is active", async () => {
     it("should not allow minting", async () => {
       await expect(

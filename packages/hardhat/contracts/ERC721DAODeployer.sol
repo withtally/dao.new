@@ -108,8 +108,15 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             shares[0] = minterParams.creatorShares;
             shares[1] = minterParams.daoShares;
 
-            minterClone.initialize(creatorAddress, tokenClone, minterParams.startingBlock, payees, shares);
-            address(minterClone).functionCallWithValue(minterParams.extraInitCallData, minterParams.extraInitValue);
+            minterClone.initialize(
+                creatorAddress,
+                tokenClone,
+                minterParams.startingBlock,
+                payees,
+                shares,
+                minterParams.extraInitCallData,
+                minterParams.extraInitValue
+            );
         }
 
         emit NewClone(address(tokenClone), address(timelockClone), address(governorClone), address(minterClone));

@@ -123,9 +123,14 @@ export const deployFixedPriceMinter = async (
     tokenAddress,
     startingBlock,
     payees,
-    shares
+    shares,
+    minter.interface.encodeFunctionData("init", [
+      maxTokens,
+      tokenPrice,
+      maxMintsPerTx,
+    ]),
+    0
   );
-  await minter.init(maxTokens, tokenPrice, maxMintsPerTx);
 
   return minter;
 };
@@ -150,9 +155,10 @@ export const deployIDMinter = async (
     tokenAddress,
     startingBlock,
     payees,
-    shares
+    shares,
+    minter.interface.encodeFunctionData("init", [maxTokens, tokenPrice]),
+    0
   );
-  await minter.init(maxTokens, tokenPrice);
 
   return minter;
 };
