@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/number-input'
 import { Button, Table, Tr, Td, Tbody } from '@chakra-ui/react'
 import {
+  ChainId,
   useContractCall,
   useContractFunction,
   useEtherBalance,
@@ -26,7 +27,7 @@ export const Minter = () => {
   const minterAbi: Interface = new utils.Interface(FixedPriceMinterABI.abi)
   const tokenAbi: Interface = new utils.Interface(ERC721DAOTokenABI.abi)
 
-  const { account } = useEthers()
+  const { account, chainId } = useEthers()
 
   const useMintPrice = () => {
     const [tokenPrice] =
@@ -130,11 +131,16 @@ export const Minter = () => {
 
   const etherscanLink = (address) => {
     // TODO: support mainnet
+
     return `https://rinkeby.etherscan.io/address/${address}`
   }
 
   useEffect(() => {
     // TODO: support mainnet
+    if (chainId !== ChainId.Rinkeby) {
+      return
+    }
+
     fetch(
       `https://rinkeby-api.opensea.io/api/v1/asset_contract/${config.tokenAddress}`
     )
