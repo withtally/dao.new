@@ -1,5 +1,5 @@
 import { ChainId } from '@usedapp/core'
-import { alchemyApiKey } from '../hardhat/secrets.json'
+import * as allSecrets from '../hardhat/secrets.json'
 
 interface Config {
   minterAddress: string
@@ -13,9 +13,9 @@ export const CHAIN_ID: SupportedChains = ChainId.Localhost
 
 const config: Record<SupportedChains, Config> = {
   [ChainId.Localhost]: {
-    minterAddress: '0xCaA29B65446aBF1A513A178402A0408eB3AEee75',
-    tokenAddress: '0xD79aE87F2c003Ec925fB7e9C11585709bfe41473',
-    timelockAddress: '0xB7aa4c318000BB9bD16108F81C40D02E48af1C42',
+    minterAddress: '0xc8CB5439c767A63aca1c01862252B2F3495fDcFE',
+    tokenAddress: '0x3B02fF1e626Ed7a8fd6eC5299e2C54e1421B626B',
+    timelockAddress: '0xBA12646CC07ADBe43F8bD25D83FB628D29C8A762',
   },
   [ChainId.Rinkeby]: {
     minterAddress: '0x1b186cD7707c939A839fE176976Da66C2E0C21BD',
@@ -24,6 +24,6 @@ const config: Record<SupportedChains, Config> = {
   },
 }
 
-export const secrets = { alchemyApiKey: alchemyApiKey }
+export const secrets = { alchemyApiKey: allSecrets.alchemyApiKey }
 
 export default config[CHAIN_ID]
