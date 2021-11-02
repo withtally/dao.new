@@ -744,11 +744,11 @@ function HomeIndex(): JSX.Element {
           <Box>
             <Button
               name="submit"
+              type="submit"
               mt={8}
               size="lg"
               colorScheme="teal"
               isLoading={state.isLoading}
-              onClick={deployClones}
               isDisabled={!library}
             >
               Deploy Clones
