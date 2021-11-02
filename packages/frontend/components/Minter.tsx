@@ -205,7 +205,7 @@ export const Minter = () => {
           </Tr>
           <Tr>
             <Td>Price per NFT</Td>
-            <Td>{tokenPrice && formatEther(tokenPrice)} ETH</Td>
+            <Td>{tokenPrice && formatEther(tokenPrice)}Ξ</Td>
           </Tr>
           <Tr>
             <Td>Total minted</Td>
