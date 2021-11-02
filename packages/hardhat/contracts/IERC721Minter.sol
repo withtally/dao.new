@@ -13,7 +13,6 @@ abstract contract IERC721Minter is PaymentSplitterUpgradeable, AccessControlEnum
     bytes32 public constant CREATOR_ROLE = keccak256("CREATOR_ROLE");
 
     ERC721DAOToken public token;
-    uint256 public maxMintsPerTx;
     uint256 public startingBlock;
 
     modifier afterStartingBlock() {

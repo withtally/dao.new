@@ -10,6 +10,7 @@ contract FixedPriceMinter is IERC721Minter {
     uint256 public maxTokens;
     uint256 public tokenPrice;
     uint256 public nextTokenId;
+    uint256 public maxMintsPerTx;
 
     function init(
         uint256 maxTokens_,

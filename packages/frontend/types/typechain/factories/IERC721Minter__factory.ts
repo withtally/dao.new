@@ -330,19 +330,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "maxMintsPerTx",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "pause",
     outputs: [],
     stateMutability: "nonpayable",

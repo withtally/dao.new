@@ -34,7 +34,6 @@ export interface IERC721MinterInterface extends ethers.utils.Interface {
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "initialize(address,address,uint256,address[],uint256[])": FunctionFragment;
-    "maxMintsPerTx()": FunctionFragment;
     "pause()": FunctionFragment;
     "paused()": FunctionFragment;
     "payee(uint256)": FunctionFragment;
@@ -83,10 +82,6 @@ export interface IERC721MinterInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "initialize",
     values: [string, string, BigNumberish, string[], BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "maxMintsPerTx",
-    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "pause", values?: undefined): string;
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
@@ -148,10 +143,6 @@ export interface IERC721MinterInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "maxMintsPerTx",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "payee", data: BytesLike): Result;
@@ -323,8 +314,6 @@ export interface IERC721Minter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    maxMintsPerTx(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     pause(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -415,8 +404,6 @@ export interface IERC721Minter extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  maxMintsPerTx(overrides?: CallOverrides): Promise<BigNumber>;
-
   pause(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -506,8 +493,6 @@ export interface IERC721Minter extends BaseContract {
       shares_: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<void>;
-
-    maxMintsPerTx(overrides?: CallOverrides): Promise<BigNumber>;
 
     pause(overrides?: CallOverrides): Promise<void>;
 
@@ -655,8 +640,6 @@ export interface IERC721Minter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    maxMintsPerTx(overrides?: CallOverrides): Promise<BigNumber>;
-
     pause(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -752,8 +735,6 @@ export interface IERC721Minter extends BaseContract {
       shares_: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
-
-    maxMintsPerTx(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     pause(
       overrides?: Overrides & { from?: string | Promise<string> }
