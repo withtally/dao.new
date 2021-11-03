@@ -43,6 +43,7 @@ contract FixedPriceSequentialMinter is FixedPriceFixedSupplyMinter {
     }
 
     function ownerMint(address to, uint256 amount) external onlyRole(CREATOR_ROLE) {
+        require(!isOwnerMintLocked, "FixedPriceSequentialMinter: ownerMint is locked");
         mintBatch(to, amount);
     }
 }

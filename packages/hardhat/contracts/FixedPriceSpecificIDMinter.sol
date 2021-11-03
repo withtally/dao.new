@@ -21,6 +21,7 @@ contract FixedPriceSpecificIDMinter is FixedPriceFixedSupplyMinter {
     }
 
     function ownerMint(address to, uint256 tokenId) external onlyRole(CREATOR_ROLE) {
+        require(!isOwnerMintLocked, "FixedPriceSpecificIDMinter: ownerMint is locked");
         _mint(to, tokenId);
     }
 

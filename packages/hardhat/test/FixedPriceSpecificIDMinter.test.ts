@@ -163,7 +163,7 @@ describe("FixedPriceSpecificIDMinter", () => {
     });
   });
 
-  describe("Mint special", async () => {
+  describe("Owner Mint", async () => {
     it("should mint to the to address", async () => {
       await minter.connect(creator).ownerMint(user.address, 2);
 
@@ -188,6 +188,14 @@ describe("FixedPriceSpecificIDMinter", () => {
       ).to.be.revertedWith(
         "FixedPriceSpecificIDMinter: Minting this many would exceed supply!"
       );
+    });
+
+    it("should let creator lock, then prevent further owner mints", async () => {
+      await minter.connect(creator).lockOwnerMint();
+
+      await expect(
+        minter.connect(creator).ownerMint(user.address, 1)
+      ).to.be.revertedWith("FixedPriceSpecificIDMinter: ownerMint is locked");
     });
   });
 });

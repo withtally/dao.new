@@ -169,7 +169,7 @@ describe("FixedPriceSequentialMinter", () => {
     });
   });
 
-  describe("Mint special", async () => {
+  describe("Owner Mint", async () => {
     it("should mint to the to address", async () => {
       await minter.connect(creator).ownerMint(user.address, 2);
 
@@ -197,6 +197,14 @@ describe("FixedPriceSequentialMinter", () => {
       ).to.be.revertedWith(
         "FixedPriceSequentialMinter: Minting this many would exceed supply!"
       );
+    });
+
+    it("should let creator lock, then prevent further owner mints", async () => {
+      await minter.connect(creator).lockOwnerMint();
+
+      await expect(
+        minter.connect(creator).ownerMint(user.address, 1)
+      ).to.be.revertedWith("FixedPriceSequentialMinter: ownerMint is locked");
     });
   });
 
@@ -241,6 +249,22 @@ describe("FixedPriceSequentialMinter", () => {
   });
 
   describe("FixedPriceFixedSupplyMinter", async () => {
+    describe("Owner Mint Lock", async () => {
+      it("should let creator lock", async () => {
+        expect(await minter.isOwnerMintLocked()).to.be.false;
+
+        await minter.connect(creator).lockOwnerMint();
+
+        expect(await minter.isOwnerMintLocked()).to.be.true;
+      });
+
+      it("should block non-creators from locking", async () => {
+        await expect(minter.connect(user3).lockOwnerMint()).to.be.revertedWith(
+          `AccessControl: account ${user3.address.toLowerCase()} is missing role 0x828634d95e775031b9ff576b159a8509d3053581a8c9c4d7d86899e0afcd882f`
+        );
+      });
+    });
+
     describe("Max Tokens", async () => {
       it("should let creator set", async () => {
         const newValue = MAX_TOKENS + 123;
@@ -268,6 +292,12 @@ describe("FixedPriceSequentialMinter", () => {
           minter.connect(creator).setMaxTokens(1234)
         ).to.be.revertedWith(
           "FixedPriceFixedSupplyMinter: maxTokens is locked"
+        );
+      });
+
+      it("should block non-creators from locking", async () => {
+        await expect(minter.connect(user3).lockMaxTokens()).to.be.revertedWith(
+          `AccessControl: account ${user3.address.toLowerCase()} is missing role 0x828634d95e775031b9ff576b159a8509d3053581a8c9c4d7d86899e0afcd882f`
         );
       });
     });
@@ -299,6 +329,12 @@ describe("FixedPriceSequentialMinter", () => {
           minter.connect(creator).setTokenPrice(1234)
         ).to.be.revertedWith(
           "FixedPriceFixedSupplyMinter: tokenPrice is locked"
+        );
+      });
+
+      it("should block non-creators from locking", async () => {
+        await expect(minter.connect(user3).lockTokenPrice()).to.be.revertedWith(
+          `AccessControl: account ${user3.address.toLowerCase()} is missing role 0x828634d95e775031b9ff576b159a8509d3053581a8c9c4d7d86899e0afcd882f`
         );
       });
     });

@@ -12,6 +12,7 @@ abstract contract FixedPriceFixedSupplyMinter is ERC721Minter {
 
     bool public isMaxTokensLocked;
     bool public isTokenPriceLocked;
+    bool public isOwnerMintLocked;
 
     function __FixedPriceFixedSupplyMinter_init(uint256 maxTokens_, uint256 tokenPrice_) internal initializer {
         maxTokens = maxTokens_;
@@ -34,5 +35,9 @@ abstract contract FixedPriceFixedSupplyMinter is ERC721Minter {
 
     function lockTokenPrice() external onlyRole(CREATOR_ROLE) {
         isTokenPriceLocked = true;
+    }
+
+    function lockOwnerMint() external onlyRole(CREATOR_ROLE) {
+        isOwnerMintLocked = true;
     }
 }
