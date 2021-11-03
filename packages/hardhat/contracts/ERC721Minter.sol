@@ -29,8 +29,7 @@ abstract contract ERC721Minter is PaymentSplitterUpgradeable, AccessControlEnume
         uint256 startingBlock_,
         address[] memory payees_,
         uint256[] memory shares_,
-        bytes memory extraInitCallData_,
-        uint256 extraInitValue_
+        bytes memory extraInitCallData_
     ) public virtual initializer {
         _setRoleAdmin(CREATOR_ROLE, CREATOR_ROLE);
         _setupRole(CREATOR_ROLE, creator_);
@@ -44,7 +43,7 @@ abstract contract ERC721Minter is PaymentSplitterUpgradeable, AccessControlEnume
         startingBlock = startingBlock_;
         _pause();
 
-        address(this).functionCallWithValue(extraInitCallData_, extraInitValue_);
+        address(this).functionCall(extraInitCallData_);
     }
 
     function pause() public onlyRole(CREATOR_ROLE) {

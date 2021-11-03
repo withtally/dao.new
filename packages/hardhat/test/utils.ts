@@ -128,8 +128,7 @@ export const deployFixedPriceMinter = async (
       maxTokens,
       tokenPrice,
       maxMintsPerTx,
-    ]),
-    0
+    ])
   );
 
   return minter;
@@ -156,8 +155,7 @@ export const deployIDMinter = async (
     startingBlock,
     payees,
     shares,
-    minter.interface.encodeFunctionData("init", [maxTokens, tokenPrice]),
-    0
+    minter.interface.encodeFunctionData("init", [maxTokens, tokenPrice])
   );
 
   return minter;

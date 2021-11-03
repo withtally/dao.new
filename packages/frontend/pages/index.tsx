@@ -95,7 +95,6 @@ type MinterParams = {
   creatorPercentage: number
   startingBlock: BigNumberish
   extraInitCallData: BytesLike
-  extraInitValue: BigNumberish
 }
 
 type StateType = {
@@ -146,7 +145,6 @@ const initialState: StateType = {
     creatorPercentage: DEFAULT_CREATOR_PERCENTAGE,
     startingBlock: 0,
     extraInitCallData: '',
-    extraInitValue: 0,
   },
   governorConfig: {
     name: '',

@@ -126,7 +126,6 @@ const cloneWithFixedPriceMinter = async () => {
         TOKEN_PRICE,
         MAX_MINTS_PER_WALLET,
       ]),
-      extraInitValue: 0,
     }
   );
   const receipt = await tx.wait();
@@ -167,7 +166,6 @@ const cloneWithIDMinter = async () => {
         MAX_TOKENS,
         TOKEN_PRICE,
       ]),
-      extraInitValue: 0,
     }
   );
   const receipt = await tx.wait();
