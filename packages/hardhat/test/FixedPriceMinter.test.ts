@@ -176,11 +176,29 @@ describe("FixedPriceMinter", () => {
       expect((await minter.startingBlock()).toNumber()).equals(newValue);
     });
 
+    it("should prevent the creator from setting the starting block once it's locked", async () => {
+      await minter.connect(creator).lockStartingBlock();
+
+      await expect(
+        minter.connect(creator).setStartingBlock(STARTING_BLOCK + 123)
+      ).to.revertedWith("ERC721Minter: startingBlock is locked");
+    });
+
     it("should prevent non-creators from setting starting block", async () => {
       expect(await minter.hasRole(CREATOR_ROLE, user2.address)).to.be.false;
 
       await expect(
         minter.connect(user2).setStartingBlock(STARTING_BLOCK + 123)
+      ).to.be.revertedWith(
+        `AccessControl: account ${user2.address.toLowerCase()} is missing role 0x828634d95e775031b9ff576b159a8509d3053581a8c9c4d7d86899e0afcd882f`
+      );
+    });
+
+    it("should prevent non-creators from locking starting block", async () => {
+      expect(await minter.hasRole(CREATOR_ROLE, user2.address)).to.be.false;
+
+      await expect(
+        minter.connect(user2).lockStartingBlock()
       ).to.be.revertedWith(
         `AccessControl: account ${user2.address.toLowerCase()} is missing role 0x828634d95e775031b9ff576b159a8509d3053581a8c9c4d7d86899e0afcd882f`
       );

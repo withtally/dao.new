@@ -17,6 +17,7 @@ abstract contract ERC721Minter is PaymentSplitterUpgradeable, AccessControlEnume
 
     ERC721DAOToken public token;
     uint256 public startingBlock;
+    bool public isStartingBlockLocked;
 
     modifier afterStartingBlock() {
         require(block.number >= startingBlock, "ERC721Minter: Sale hasn't started yet!");
@@ -55,6 +56,11 @@ abstract contract ERC721Minter is PaymentSplitterUpgradeable, AccessControlEnume
     }
 
     function setStartingBlock(uint256 startingBlock_) external onlyRole(CREATOR_ROLE) {
+        require(!isStartingBlockLocked, "ERC721Minter: startingBlock is locked");
         startingBlock = startingBlock_;
+    }
+
+    function lockStartingBlock() external onlyRole(CREATOR_ROLE) {
+        isStartingBlockLocked = true;
     }
 }
