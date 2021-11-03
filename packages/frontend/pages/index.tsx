@@ -39,7 +39,7 @@ import {
 } from '../lib/contractUtils'
 import {
   ERC721DAODeployer__factory,
-  FixedPriceMinter__factory,
+  FixedPriceSequentialMinter__factory,
   FixedPriceSpecificIDMinter__factory,
 } from '../types/typechain'
 import {
@@ -230,7 +230,7 @@ function HomeIndex(): JSX.Element {
       let extraInitCallData
       if (state.minterConfig.implementationIndex == 0) {
         extraInitCallData =
-          FixedPriceMinter__factory.createInterface().encodeFunctionData(
+          FixedPriceSequentialMinter__factory.createInterface().encodeFunctionData(
             'init',
             [
               state.minterConfig.maxTokens,

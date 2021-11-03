@@ -5,8 +5,8 @@ import {
   ERC721DAOToken__factory,
   CloneFactory,
   CloneFactory__factory,
-  FixedPriceMinter,
-  FixedPriceMinter__factory,
+  FixedPriceSequentialMinter,
+  FixedPriceSequentialMinter__factory,
   ERC721Governor,
   ERC721Governor__factory,
   ERC721Timelock,
@@ -110,7 +110,7 @@ export const attachToken = (
   return new ERC721DAOToken__factory(deployer).attach(instance);
 };
 
-export const deployFixedPriceMinter = async (
+export const deployFixedPriceSequentialMinter = async (
   deployer: SignerWithAddress,
   ownerAddress: string,
   tokenAddress: string,
@@ -121,7 +121,9 @@ export const deployFixedPriceMinter = async (
   payees: string[],
   shares: BigNumberish[]
 ) => {
-  const minter = await new FixedPriceMinter__factory(deployer).deploy();
+  const minter = await new FixedPriceSequentialMinter__factory(
+    deployer
+  ).deploy();
 
   await minter.initialize(
     ownerAddress,
@@ -243,7 +245,7 @@ export const deployGovernor = async (
 };
 
 export const deployMinter = async (deployer: SignerWithAddress) => {
-  return await new FixedPriceMinter__factory(deployer).deploy();
+  return await new FixedPriceSequentialMinter__factory(deployer).deploy();
 };
 
 export const propose = async (

@@ -22,14 +22,14 @@ import {
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  FixedPriceMinter,
+  FixedPriceSequentialMinter,
   ERC721DAOToken,
   ERC721Governor,
   ERC721Timelock,
   ERC721Timelock__factory,
   ERC721DAOToken__factory,
   ERC721Governor__factory,
-  FixedPriceMinter__factory,
+  FixedPriceSequentialMinter__factory,
   FixedPriceSpecificIDMinter__factory,
   FixedPriceSpecificIDMinter,
 } from "../../frontend/types/typechain";
@@ -71,13 +71,13 @@ let creator: Wallet;
 let tokenImpl: ERC721DAOToken;
 let timelockImpl: ERC721Timelock;
 let governorImpl: ERC721Governor;
-let simpleMinterImpl: FixedPriceMinter;
+let simpleMinterImpl: FixedPriceSequentialMinter;
 let idMinterImpl: FixedPriceSpecificIDMinter;
 
 let token: ERC721DAOToken;
 let timelock: ERC721Timelock;
 let governor: ERC721Governor;
-let simpleMinter: FixedPriceMinter;
+let simpleMinter: FixedPriceSequentialMinter;
 let idMinter: FixedPriceSpecificIDMinter;
 let deployer: ERC721DAODeployer;
 
@@ -107,7 +107,7 @@ const deploy = async () => {
   );
 };
 
-const cloneWithFixedPriceMinter = async () => {
+const cloneWithFixedPriceSequentialMinter = async () => {
   const tx = await deployer.clone(
     creator.address,
     {
@@ -141,7 +141,7 @@ const cloneWithFixedPriceMinter = async () => {
   token = new ERC721DAOToken__factory(signer).attach(event?.args?.token);
   timelock = new ERC721Timelock__factory(signer).attach(event?.args?.timelock);
   governor = new ERC721Governor__factory(signer).attach(event?.args?.governor);
-  simpleMinter = new FixedPriceMinter__factory(signer).attach(
+  simpleMinter = new FixedPriceSequentialMinter__factory(signer).attach(
     event?.args?.minter
   );
 
@@ -191,8 +191,8 @@ const cloneWithIDMinter = async () => {
 describe("End to end flows", () => {
   before(deploy);
 
-  describe("Using FixedPriceMinter", async () => {
-    before(cloneWithFixedPriceMinter);
+  describe("Using FixedPriceSequentialMinter", async () => {
+    before(cloneWithFixedPriceSequentialMinter);
 
     it("lets users mint", async () => {
       let expectedMinterBalance = 0;

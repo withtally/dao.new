@@ -3,13 +3,13 @@ import { ethers } from "hardhat";
 import { solidity } from "ethereum-waffle";
 import {
   deployToken,
-  deployFixedPriceMinter,
+  deployFixedPriceSequentialMinter,
   initToken,
   CREATOR_ROLE,
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  FixedPriceMinter,
+  FixedPriceSequentialMinter,
   ERC721DAOToken,
 } from "../../frontend/types/typechain";
 import { BigNumberish } from "@ethersproject/bignumber";
@@ -24,8 +24,8 @@ const TOKEN_PRICE = ethers.utils.parseEther(TOKEN_PRICE_ETH.toString());
 const MAX_MINTS_PER_WALLET = 10;
 const STARTING_BLOCK = 1;
 
-describe("FixedPriceMinter", () => {
-  let minter: FixedPriceMinter;
+describe("FixedPriceSequentialMinter", () => {
+  let minter: FixedPriceSequentialMinter;
   let token: ERC721DAOToken;
   let deployer: SignerWithAddress,
     user: SignerWithAddress,
@@ -41,7 +41,7 @@ describe("FixedPriceMinter", () => {
     const payees: string[] = [await deployer.getAddress()];
     const shares: BigNumberish[] = [100];
 
-    minter = await deployFixedPriceMinter(
+    minter = await deployFixedPriceSequentialMinter(
       deployer,
       creator.address,
       token.address,
@@ -142,7 +142,7 @@ describe("FixedPriceMinter", () => {
           value: ethers.utils.parseEther((TOKEN_PRICE_ETH * 2).toString()),
         })
       ).to.be.revertedWith(
-        "FixedPriceMinter: Minting this many would exceed supply!"
+        "FixedPriceSequentialMinter: Minting this many would exceed supply!"
       );
     });
 
@@ -151,7 +151,9 @@ describe("FixedPriceMinter", () => {
         minter.connect(user).mint(3, {
           value: ethers.utils.parseEther((TOKEN_PRICE_ETH * 2).toString()),
         })
-      ).to.be.revertedWith("FixedPriceMinter: not enough ether sent!");
+      ).to.be.revertedWith(
+        "FixedPriceSequentialMinter: not enough ether sent!"
+      );
     });
 
     it("should not mint before starting block", async () => {
@@ -231,7 +233,7 @@ describe("FixedPriceMinter", () => {
       await expect(
         minter.connect(creator).ownerMint(user.address, 1)
       ).to.be.revertedWith(
-        "FixedPriceMinter: Minting this many would exceed supply!"
+        "FixedPriceSequentialMinter: Minting this many would exceed supply!"
       );
     });
   });

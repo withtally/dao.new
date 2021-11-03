@@ -10,7 +10,7 @@ import {
   ERC721DAOToken__factory,
   ERC721Governor__factory,
   ERC721Timelock__factory,
-  FixedPriceMinter__factory,
+  FixedPriceSequentialMinter__factory,
   Multicall__factory,
   ERC721DAODeployer__factory,
   ERC721DAODeployer,
@@ -48,8 +48,8 @@ async function main() {
     "ERC721Governor"
   );
   const simpleMinterImpl = await deployContract(
-    new FixedPriceMinter__factory(deployer),
-    "FixedPriceMinter"
+    new FixedPriceSequentialMinter__factory(deployer),
+    "FixedPriceSequentialMinter"
   );
   const idMinterImpl = await deployContract(
     new FixedPriceSpecificIDMinter__factory(deployer),

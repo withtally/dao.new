@@ -2,13 +2,13 @@ import { useContractCall, useContractFunction } from '@usedapp/core'
 import { Contract, utils } from 'ethers'
 import { Interface } from 'ethers/lib/utils'
 import ERC721MinterABI from '../../artifacts/contracts/ERC721Minter.sol/ERC721Minter.json'
-import FixedPriceMinterABI from '../../artifacts/contracts/FixedPriceMinter.sol/FixedPriceMinter.json'
+import FixedPriceSequentialMinterABI from '../../artifacts/contracts/FixedPriceSequentialMinter.sol/FixedPriceSequentialMinter.json'
 import FixedPriceSpecificIDMinterABI from '../../artifacts/contracts/FixedPriceSpecificIDMinter.sol/FixedPriceSpecificIDMinter.json'
 import config from '../../config'
 
 const ERC721MinterAbi: Interface = new utils.Interface(ERC721MinterABI.abi)
-const FixedPriceMinterAbi: Interface = new utils.Interface(
-  FixedPriceMinterABI.abi
+const FixedPriceSequentialMinterAbi: Interface = new utils.Interface(
+  FixedPriceSequentialMinterABI.abi
 )
 const FixedPriceSpecificIDMinterAbi: Interface = new utils.Interface(
   FixedPriceSpecificIDMinterABI.abi
@@ -26,7 +26,7 @@ export const useIsSaleActive = () => {
 }
 
 export const useIncrementalMinterMintPrice = () => {
-  return useMintPrice(FixedPriceMinterAbi)
+  return useMintPrice(FixedPriceSequentialMinterAbi)
 }
 
 export const useSpecificIdMinterMintPrice = () => {
@@ -47,7 +47,7 @@ function useMintPrice(abi: utils.Interface) {
 export const useMaxMintPerTx = () => {
   const [maxMintPerTx] =
     useContractCall({
-      abi: FixedPriceMinterAbi,
+      abi: FixedPriceSequentialMinterAbi,
       address: config.minterAddress,
       method: 'maxMintsPerTx',
       args: [],
@@ -56,7 +56,10 @@ export const useMaxMintPerTx = () => {
 }
 
 export const useIncrementalMinterMint = () => {
-  const contract = new Contract(config.minterAddress, FixedPriceMinterAbi)
+  const contract = new Contract(
+    config.minterAddress,
+    FixedPriceSequentialMinterAbi
+  )
   const { state, send } = useContractFunction(contract, 'mint')
   return send
 }
