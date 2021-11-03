@@ -6,7 +6,6 @@ export const hashString = (str: string) => {
   return keccak256(toUtf8Bytes(str))
 }
 
-export const ADMIN_ROLE = hashString('ADMIN_ROLE')
 export const DEFAULT_TOKEN_SUPPLY = 10000
 export const DEFAULT_TOKEN_PRICE = 0.01
 export const DEFAULT_MAX_MINTS = 10

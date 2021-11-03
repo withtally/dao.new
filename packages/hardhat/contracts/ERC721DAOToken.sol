@@ -8,10 +8,12 @@ import "./ERC721CheckpointableUpgradable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
 contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerableUpgradeable {
-    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public constant MINTER_ADMIN_ROLE = keccak256("MINTER_ADMIN_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
+    bytes32 public constant BURNER_ADMIN_ROLE = keccak256("BURNER_ADMIN_ROLE");
     bytes32 public constant BASE_URI_ROLE = keccak256("BASE_URI_ROLE");
+    bytes32 public constant BASE_URI_ADMIN_ROLE = keccak256("BASE_URI_ADMIN_ROLE");
 
     string public baseURI = "";
     string private contractInfoFilename = "project.json";
@@ -41,11 +43,9 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
         __ERC721_init(name_, symbol_);
         baseURI = baseURI_;
 
-        // set roles administrator
-        _setRoleAdmin(ADMIN_ROLE, ADMIN_ROLE);
-        _setRoleAdmin(MINTER_ROLE, ADMIN_ROLE);
-        _setRoleAdmin(BURNER_ROLE, ADMIN_ROLE);
-        _setRoleAdmin(BASE_URI_ROLE, ADMIN_ROLE);
+        _setRoleAdmin(MINTER_ROLE, MINTER_ADMIN_ROLE);
+        _setRoleAdmin(BURNER_ROLE, BURNER_ADMIN_ROLE);
+        _setRoleAdmin(BASE_URI_ROLE, BASE_URI_ADMIN_ROLE);
 
         // assign roles
         for (uint256 i = 0; i < roles.length; i++) {
@@ -84,11 +84,27 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
         return baseURI;
     }
 
-    function getAdminRole() external pure returns (bytes32) {
-        return ADMIN_ROLE;
-    }
-
     function getMinterRole() external pure returns (bytes32) {
         return MINTER_ROLE;
+    }
+
+    function getMinterAdminRole() external pure returns (bytes32) {
+        return MINTER_ADMIN_ROLE;
+    }
+
+    function getBurnerRole() external pure returns (bytes32) {
+        return BURNER_ROLE;
+    }
+
+    function getBurnerAdminRole() external pure returns (bytes32) {
+        return BURNER_ADMIN_ROLE;
+    }
+
+    function getBaseURIRole() external pure returns (bytes32) {
+        return BASE_URI_ROLE;
+    }
+
+    function getBaseURIAdminRole() external pure returns (bytes32) {
+        return BASE_URI_ADMIN_ROLE;
     }
 }

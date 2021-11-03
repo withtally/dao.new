@@ -25,17 +25,22 @@ export const hashString = (str: string) => {
   return keccak256(toUtf8Bytes(str));
 };
 
-export const ADMIN_ROLE = hashString("ADMIN_ROLE");
+export const DEFAULT_ADMIN_ROLE = ethers.constants.HashZero;
 export const MINTER_ROLE = hashString("MINTER_ROLE");
+export const MINTER_ADMIN_ROLE = hashString("MINTER_ADMIN_ROLE");
 export const BURNER_ROLE = hashString("BURNER_ROLE");
+export const BURNER_ADMIN_ROLE = hashString("BURNER_ADMIN_ROLE");
 export const BASE_URI_ROLE = hashString("BASE_URI_ROLE");
+export const BASE_URI_ADMIN_ROLE = hashString("BASE_URI_ADMIN_ROLE");
 export const CREATOR_ROLE = hashString("CREATOR_ROLE");
 
 export const defaultRoles = [
-  ADMIN_ROLE,
   MINTER_ROLE,
+  MINTER_ADMIN_ROLE,
   BURNER_ROLE,
+  BURNER_ADMIN_ROLE,
   BASE_URI_ROLE,
+  BASE_URI_ADMIN_ROLE,
 ];
 
 export type TestSigners = {
@@ -190,7 +195,7 @@ export const defaultAssignees = async (
   deployer: SignerWithAddress
 ): Promise<string[]> => {
   const addr = await deployer.getAddress();
-  return [addr, addr, addr, addr];
+  return [addr, addr, addr, addr, addr, addr];
 };
 
 export const initToken = async (
@@ -207,10 +212,12 @@ export const initToken = async (
   const actualBaseURIer = baseURIer || deployer;
 
   const rolesAssignees = [
-    actualAdmin,
     actualMinter,
+    actualAdmin,
     actualBurner,
+    actualAdmin,
     actualBaseURIer,
+    actualAdmin,
   ];
 
   await token.initialize(

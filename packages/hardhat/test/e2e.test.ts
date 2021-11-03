@@ -12,6 +12,13 @@ import {
   setNextBlockTimestamp,
   createTransferProp,
   deployAndInitDeployer,
+  MINTER_ADMIN_ROLE,
+  BURNER_ADMIN_ROLE,
+  BASE_URI_ADMIN_ROLE,
+  MINTER_ROLE,
+  BURNER_ROLE,
+  BASE_URI_ROLE,
+  DEFAULT_ADMIN_ROLE,
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
@@ -323,6 +330,57 @@ describe("End to end flows", () => {
       await idMinter.release(timelock.address);
       expect(await ethers.provider.getBalance(timelock.address)).to.equal(
         expectedDAOProfit
+      );
+    });
+  });
+
+  describe("Token Roles", async () => {
+    before(cloneWithIDMinter);
+
+    it("creator is admin of all roles: minter, burner and base URI, and doesn't have default admin", async () => {
+      expect(await token.hasRole(MINTER_ADMIN_ROLE, creator.address)).to.be
+        .true;
+      expect(await token.hasRole(BURNER_ADMIN_ROLE, creator.address)).to.be
+        .true;
+      expect(await token.hasRole(BASE_URI_ADMIN_ROLE, creator.address)).to.be
+        .true;
+
+      // DEFAULT_ADMIN_ROLE can be risky, best not to have it.
+      expect(await token.hasRole(DEFAULT_ADMIN_ROLE, creator.address)).to.be
+        .false;
+    });
+
+    it("creator can assign minter, burner and base URI roles", async () => {
+      await token.connect(creator).grantRole(MINTER_ROLE, rando.address);
+      await token.connect(creator).grantRole(BURNER_ROLE, user3.address);
+      await token.connect(creator).grantRole(BASE_URI_ROLE, user2.address);
+    });
+
+    it("creator can renounce admin roles and then cannot assign them any longer", async () => {
+      await token
+        .connect(creator)
+        .renounceRole(MINTER_ADMIN_ROLE, creator.address);
+      await token
+        .connect(creator)
+        .renounceRole(BURNER_ADMIN_ROLE, creator.address);
+      await token
+        .connect(creator)
+        .renounceRole(BASE_URI_ADMIN_ROLE, creator.address);
+
+      await expect(
+        token.connect(creator).grantRole(MINTER_ROLE, user1.address)
+      ).to.revertedWith(
+        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x70480ee89cb38eff00b7d23da25713d52ce19c6ed428691d22c58b2f615e3d67`
+      );
+      await expect(
+        token.connect(creator).grantRole(BURNER_ROLE, user2.address)
+      ).to.revertedWith(
+        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0xc8d1ad9d415224b751d781cc8214ccfe7c47716e13229475443f04f1ebddadc6`
+      );
+      await expect(
+        token.connect(creator).grantRole(BASE_URI_ROLE, user3.address)
+      ).to.revertedWith(
+        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0xe0d0d9e49dfab9a7a7b34707b3c82b3f11c47969a80cdc398ea138bce37e99a9`
       );
     });
   });
