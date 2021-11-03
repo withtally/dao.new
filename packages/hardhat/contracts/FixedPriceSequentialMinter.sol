@@ -4,21 +4,19 @@
 
 pragma solidity ^0.8.6;
 
-import { ERC721Minter } from "./ERC721Minter.sol";
+import { FixedPriceFixedSupplyMinter } from "./FixedPriceFixedSupplyMinter.sol";
 
-contract FixedPriceSequentialMinter is ERC721Minter {
-    uint256 public maxTokens;
-    uint256 public tokenPrice;
-    uint256 public nextTokenId;
+contract FixedPriceSequentialMinter is FixedPriceFixedSupplyMinter {
     uint256 public maxMintsPerTx;
+    uint256 public nextTokenId;
 
     function init(
         uint256 maxTokens_,
         uint256 tokenPrice_,
         uint256 maxMintsPerTx_
     ) public initializer {
-        maxTokens = maxTokens_;
-        tokenPrice = tokenPrice_;
+        __FixedPriceFixedSupplyMinter_init(maxTokens_, tokenPrice_);
+
         maxMintsPerTx = maxMintsPerTx_;
         nextTokenId = 1;
     }

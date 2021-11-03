@@ -169,44 +169,6 @@ describe("FixedPriceSequentialMinter", () => {
     });
   });
 
-  describe("Starting Block", async () => {
-    it("should allow the creator to set the starting block", async () => {
-      const newValue = STARTING_BLOCK + 123;
-
-      await minter.connect(creator).setStartingBlock(newValue);
-
-      expect((await minter.startingBlock()).toNumber()).equals(newValue);
-    });
-
-    it("should prevent the creator from setting the starting block once it's locked", async () => {
-      await minter.connect(creator).lockStartingBlock();
-
-      await expect(
-        minter.connect(creator).setStartingBlock(STARTING_BLOCK + 123)
-      ).to.revertedWith("ERC721Minter: startingBlock is locked");
-    });
-
-    it("should prevent non-creators from setting starting block", async () => {
-      expect(await minter.hasRole(CREATOR_ROLE, user2.address)).to.be.false;
-
-      await expect(
-        minter.connect(user2).setStartingBlock(STARTING_BLOCK + 123)
-      ).to.be.revertedWith(
-        `AccessControl: account ${user2.address.toLowerCase()} is missing role 0x828634d95e775031b9ff576b159a8509d3053581a8c9c4d7d86899e0afcd882f`
-      );
-    });
-
-    it("should prevent non-creators from locking starting block", async () => {
-      expect(await minter.hasRole(CREATOR_ROLE, user2.address)).to.be.false;
-
-      await expect(
-        minter.connect(user2).lockStartingBlock()
-      ).to.be.revertedWith(
-        `AccessControl: account ${user2.address.toLowerCase()} is missing role 0x828634d95e775031b9ff576b159a8509d3053581a8c9c4d7d86899e0afcd882f`
-      );
-    });
-  });
-
   describe("Mint special", async () => {
     it("should mint to the to address", async () => {
       await minter.connect(creator).ownerMint(user.address, 2);
@@ -235,6 +197,110 @@ describe("FixedPriceSequentialMinter", () => {
       ).to.be.revertedWith(
         "FixedPriceSequentialMinter: Minting this many would exceed supply!"
       );
+    });
+  });
+
+  describe("ERC721Minter", async () => {
+    describe("Starting Block", async () => {
+      it("should allow the creator to set the starting block", async () => {
+        const newValue = STARTING_BLOCK + 123;
+
+        await minter.connect(creator).setStartingBlock(newValue);
+
+        expect((await minter.startingBlock()).toNumber()).equals(newValue);
+      });
+
+      it("should prevent the creator from setting the starting block once it's locked", async () => {
+        await minter.connect(creator).lockStartingBlock();
+
+        await expect(
+          minter.connect(creator).setStartingBlock(STARTING_BLOCK + 123)
+        ).to.revertedWith("ERC721Minter: startingBlock is locked");
+      });
+
+      it("should prevent non-creators from setting starting block", async () => {
+        expect(await minter.hasRole(CREATOR_ROLE, user2.address)).to.be.false;
+
+        await expect(
+          minter.connect(user2).setStartingBlock(STARTING_BLOCK + 123)
+        ).to.be.revertedWith(
+          `AccessControl: account ${user2.address.toLowerCase()} is missing role 0x828634d95e775031b9ff576b159a8509d3053581a8c9c4d7d86899e0afcd882f`
+        );
+      });
+
+      it("should prevent non-creators from locking starting block", async () => {
+        expect(await minter.hasRole(CREATOR_ROLE, user2.address)).to.be.false;
+
+        await expect(
+          minter.connect(user2).lockStartingBlock()
+        ).to.be.revertedWith(
+          `AccessControl: account ${user2.address.toLowerCase()} is missing role 0x828634d95e775031b9ff576b159a8509d3053581a8c9c4d7d86899e0afcd882f`
+        );
+      });
+    });
+  });
+
+  describe("FixedPriceFixedSupplyMinter", async () => {
+    describe("Max Tokens", async () => {
+      it("should let creator set", async () => {
+        const newValue = MAX_TOKENS + 123;
+
+        await minter.connect(creator).setMaxTokens(newValue);
+
+        expect(await minter.maxTokens()).to.equal(newValue);
+      });
+
+      it("should block non-creators from setting", async () => {
+        const newValue = MAX_TOKENS + 123;
+
+        await expect(
+          minter.connect(user3).setMaxTokens(newValue)
+        ).to.be.revertedWith(
+          `AccessControl: account ${user3.address.toLowerCase()} is missing role 0x828634d95e775031b9ff576b159a8509d3053581a8c9c4d7d86899e0afcd882f`
+        );
+      });
+
+      it("should let creator lock, and block setting once locked", async () => {
+        await minter.connect(creator).lockMaxTokens();
+        expect(await minter.isMaxTokensLocked()).to.be.true;
+
+        await expect(
+          minter.connect(creator).setMaxTokens(1234)
+        ).to.be.revertedWith(
+          "FixedPriceFixedSupplyMinter: maxTokens is locked"
+        );
+      });
+    });
+
+    describe("Token Price", async () => {
+      it("should let creator set", async () => {
+        const newValue = TOKEN_PRICE.add(4321);
+
+        await minter.connect(creator).setTokenPrice(newValue);
+
+        expect(await minter.tokenPrice()).to.equal(newValue);
+      });
+
+      it("should block non-creators from setting", async () => {
+        const newValue = TOKEN_PRICE.add(4321);
+
+        await expect(
+          minter.connect(user3).setTokenPrice(newValue)
+        ).to.be.revertedWith(
+          `AccessControl: account ${user3.address.toLowerCase()} is missing role 0x828634d95e775031b9ff576b159a8509d3053581a8c9c4d7d86899e0afcd882f`
+        );
+      });
+
+      it("should let creator lock, and block setting once locked", async () => {
+        await minter.connect(creator).lockTokenPrice();
+        expect(await minter.isTokenPriceLocked()).to.be.true;
+
+        await expect(
+          minter.connect(creator).setTokenPrice(1234)
+        ).to.be.revertedWith(
+          "FixedPriceFixedSupplyMinter: tokenPrice is locked"
+        );
+      });
     });
   });
 });

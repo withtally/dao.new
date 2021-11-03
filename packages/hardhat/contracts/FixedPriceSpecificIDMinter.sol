@@ -4,15 +4,11 @@
 
 pragma solidity ^0.8.6;
 
-import { ERC721Minter } from "./ERC721Minter.sol";
+import { FixedPriceFixedSupplyMinter } from "./FixedPriceFixedSupplyMinter.sol";
 
-contract FixedPriceSpecificIDMinter is ERC721Minter {
-    uint256 public maxTokens;
-    uint256 public tokenPrice;
-
+contract FixedPriceSpecificIDMinter is FixedPriceFixedSupplyMinter {
     function init(uint256 maxTokens_, uint256 tokenPrice_) public initializer {
-        maxTokens = maxTokens_;
-        tokenPrice = tokenPrice_;
+        __FixedPriceFixedSupplyMinter_init(maxTokens_, tokenPrice_);
     }
 
     function mint(uint256 tokenId) external payable whenNotPaused afterStartingBlock {
