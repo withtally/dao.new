@@ -26,6 +26,7 @@ export const hashString = (str: string) => {
 };
 
 export const DEFAULT_ADMIN_ROLE = ethers.constants.HashZero;
+export const ADMINS_ADMIN_ROLE = hashString("ADMINS_ADMIN_ROLE");
 export const MINTER_ROLE = hashString("MINTER_ROLE");
 export const MINTER_ADMIN_ROLE = hashString("MINTER_ADMIN_ROLE");
 export const BURNER_ROLE = hashString("BURNER_ROLE");

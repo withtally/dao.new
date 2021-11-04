@@ -19,6 +19,7 @@ import {
   BURNER_ROLE,
   BASE_URI_ROLE,
   DEFAULT_ADMIN_ROLE,
+  ADMINS_ADMIN_ROLE,
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
@@ -356,7 +357,31 @@ describe("End to end flows", () => {
       await token.connect(creator).grantRole(BASE_URI_ROLE, user2.address);
     });
 
-    it("creator can renounce admin roles and then cannot assign them any longer", async () => {
+    it("creator can assign the admin roles to the DAO", async () => {
+      await token
+        .connect(creator)
+        .grantRole(MINTER_ADMIN_ROLE, timelock.address);
+      await token
+        .connect(creator)
+        .grantRole(BURNER_ADMIN_ROLE, timelock.address);
+      await token
+        .connect(creator)
+        .grantRole(BASE_URI_ADMIN_ROLE, timelock.address);
+      await token
+        .connect(creator)
+        .grantRole(ADMINS_ADMIN_ROLE, timelock.address);
+
+      expect(await token.hasRole(MINTER_ADMIN_ROLE, timelock.address)).to.be
+        .true;
+      expect(await token.hasRole(BURNER_ADMIN_ROLE, timelock.address)).to.be
+        .true;
+      expect(await token.hasRole(BASE_URI_ADMIN_ROLE, timelock.address)).to.be
+        .true;
+      expect(await token.hasRole(ADMINS_ADMIN_ROLE, timelock.address)).to.be
+        .true;
+    });
+
+    it("creator can renounce admin roles and then cannot assign roles any longer", async () => {
       await token
         .connect(creator)
         .renounceRole(MINTER_ADMIN_ROLE, creator.address);
@@ -381,6 +406,37 @@ describe("End to end flows", () => {
         token.connect(creator).grantRole(BASE_URI_ROLE, user3.address)
       ).to.revertedWith(
         `AccessControl: account ${creator.address.toLowerCase()} is missing role 0xe0d0d9e49dfab9a7a7b34707b3c82b3f11c47969a80cdc398ea138bce37e99a9`
+      );
+    });
+
+    it("creator can renounce the super admin role, and then cannot assign admin roles", async () => {
+      expect(await token.hasRole(ADMINS_ADMIN_ROLE, creator.address)).to.be
+        .true;
+      await token
+        .connect(creator)
+        .renounceRole(ADMINS_ADMIN_ROLE, creator.address);
+      expect(await token.hasRole(ADMINS_ADMIN_ROLE, creator.address)).to.be
+        .false;
+
+      await expect(
+        token.connect(creator).grantRole(ADMINS_ADMIN_ROLE, timelock.address)
+      ).to.be.revertedWith(
+        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
+      );
+      await expect(
+        token.connect(creator).grantRole(MINTER_ADMIN_ROLE, timelock.address)
+      ).to.be.revertedWith(
+        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
+      );
+      await expect(
+        token.connect(creator).grantRole(BURNER_ADMIN_ROLE, timelock.address)
+      ).to.be.revertedWith(
+        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
+      );
+      await expect(
+        token.connect(creator).grantRole(BASE_URI_ADMIN_ROLE, timelock.address)
+      ).to.be.revertedWith(
+        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
       );
     });
   });

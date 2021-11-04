@@ -68,17 +68,19 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721Minter minterClone = ERC721Minter(payable(address(minters[minterParams.implementationIndex]).clone()));
 
         {
-            bytes32[] memory roles = new bytes32[](4);
-            roles[0] = token.getMinterAdminRole();
-            roles[1] = token.getBurnerAdminRole();
-            roles[2] = token.getBaseURIAdminRole();
-            roles[3] = token.getMinterRole();
+            bytes32[] memory roles = new bytes32[](5);
+            roles[0] = token.getAdminsAdminRole();
+            roles[1] = token.getMinterAdminRole();
+            roles[2] = token.getBurnerAdminRole();
+            roles[3] = token.getBaseURIAdminRole();
+            roles[4] = token.getMinterRole();
 
-            address[] memory rolesAssignees = new address[](4);
+            address[] memory rolesAssignees = new address[](5);
             rolesAssignees[0] = creatorAddress;
             rolesAssignees[1] = creatorAddress;
             rolesAssignees[2] = creatorAddress;
-            rolesAssignees[3] = address(minterClone);
+            rolesAssignees[3] = creatorAddress;
+            rolesAssignees[4] = address(minterClone);
 
             tokenClone.initialize(tokenParams.name, tokenParams.symbol, tokenParams.baseURI, roles, rolesAssignees);
         }

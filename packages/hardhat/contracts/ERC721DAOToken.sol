@@ -14,6 +14,7 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
     bytes32 public constant BURNER_ADMIN_ROLE = keccak256("BURNER_ADMIN_ROLE");
     bytes32 public constant BASE_URI_ROLE = keccak256("BASE_URI_ROLE");
     bytes32 public constant BASE_URI_ADMIN_ROLE = keccak256("BASE_URI_ADMIN_ROLE");
+    bytes32 public constant ADMINS_ADMIN_ROLE = keccak256("ADMINS_ADMIN_ROLE");
 
     string public baseURI = "";
     string private contractInfoFilename = "project.json";
@@ -43,6 +44,10 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
         __ERC721_init(name_, symbol_);
         baseURI = baseURI_;
 
+        _setRoleAdmin(ADMINS_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
+        _setRoleAdmin(MINTER_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
+        _setRoleAdmin(BURNER_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
+        _setRoleAdmin(BASE_URI_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
         _setRoleAdmin(MINTER_ROLE, MINTER_ADMIN_ROLE);
         _setRoleAdmin(BURNER_ROLE, BURNER_ADMIN_ROLE);
         _setRoleAdmin(BASE_URI_ROLE, BASE_URI_ADMIN_ROLE);
@@ -106,5 +111,9 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
 
     function getBaseURIAdminRole() external pure returns (bytes32) {
         return BASE_URI_ADMIN_ROLE;
+    }
+
+    function getAdminsAdminRole() external pure returns (bytes32) {
+        return ADMINS_ADMIN_ROLE;
     }
 }
