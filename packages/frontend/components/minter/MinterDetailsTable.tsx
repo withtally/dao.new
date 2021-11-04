@@ -43,7 +43,7 @@ export const MinterDetailsTable = ({ isSaleActive, tokenPrice }) => {
           )
         }
       })
-  })
+  }, [])
 
   const raribleLink = () => {
     // TODO: support mainnet
