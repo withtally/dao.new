@@ -20,6 +20,7 @@ import {
   BASE_URI_ROLE,
   DEFAULT_ADMIN_ROLE,
   ADMINS_ADMIN_ROLE,
+  proposeAndExecute,
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
@@ -274,6 +275,80 @@ describe("End to end flows", () => {
       expect(() =>
         governor.execute(targets, values, callDatas, descriptionHash)
       ).to.changeEtherBalance(rando, TOKEN_PRICE);
+    });
+
+    describe("Governance Parameter Changes", async () => {
+      it("allows changing proposal threshold via proposals", async () => {
+        const newValue = (await governor.proposalThreshold()).add(1);
+        const calldata = governor.interface.encodeFunctionData(
+          "setProposalThreshold",
+          [newValue]
+        );
+
+        await proposeAndExecute(user1, governor, {
+          targets: [governor.address],
+          values: [0],
+          callDatas: [calldata],
+          description: "description",
+          descriptionHash: hashString("description"),
+        });
+
+        expect(await governor.proposalThreshold()).to.equal(newValue);
+      });
+
+      it("allows changing voting delay via proposals", async () => {
+        const newValue = (await governor.votingDelay()).add(1);
+        const calldata = governor.interface.encodeFunctionData(
+          "setVotingDelay",
+          [newValue]
+        );
+
+        await proposeAndExecute(user1, governor, {
+          targets: [governor.address],
+          values: [0],
+          callDatas: [calldata],
+          description: "description",
+          descriptionHash: hashString("description"),
+        });
+
+        expect(await governor.votingDelay()).to.equal(newValue);
+      });
+
+      it("allows changing voting period via proposals", async () => {
+        const newValue = (await governor.votingPeriod()).add(1);
+        const calldata = governor.interface.encodeFunctionData(
+          "setVotingPeriod",
+          [newValue]
+        );
+
+        await proposeAndExecute(user1, governor, {
+          targets: [governor.address],
+          values: [0],
+          callDatas: [calldata],
+          description: "description",
+          descriptionHash: hashString("description"),
+        });
+
+        expect(await governor.votingPeriod()).to.equal(newValue);
+      });
+
+      it("allows changing quorum numerator via proposals", async () => {
+        const newValue = (await governor.quorumNumerator()).add(1);
+        const calldata = governor.interface.encodeFunctionData(
+          "updateQuorumNumerator",
+          [newValue]
+        );
+
+        await proposeAndExecute(user1, governor, {
+          targets: [governor.address],
+          values: [0],
+          callDatas: [calldata],
+          description: "description",
+          descriptionHash: hashString("description"),
+        });
+
+        expect(await governor.quorumNumerator()).to.equal(newValue);
+      });
     });
   });
 
