@@ -4,7 +4,7 @@
 
 pragma solidity ^0.8.6;
 
-import { ERC721DAOToken } from "./ERC721DAOToken.sol";
+import { ERC721DAOToken } from "../token/ERC721DAOToken.sol";
 import { PaymentSplitterUpgradeable } from "@openzeppelin/contracts-upgradeable/finance/PaymentSplitterUpgradeable.sol";
 import { AccessControlEnumerableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 import { PausableUpgradeable } from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";

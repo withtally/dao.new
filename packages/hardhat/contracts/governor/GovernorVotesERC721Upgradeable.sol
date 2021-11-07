@@ -4,9 +4,9 @@
 
 pragma solidity ^0.8.6;
 
-import {GovernorUpgradeable} from "@openzeppelin/contracts-upgradeable/governance/GovernorUpgradeable.sol";
-import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import {ERC721DAOToken} from "./ERC721DAOToken.sol";
+import { GovernorUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/GovernorUpgradeable.sol";
+import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import { ERC721DAOToken } from "../token/ERC721DAOToken.sol";
 
 abstract contract GovernorVotesERC721Upgradeable is Initializable, GovernorUpgradeable {
     ERC721DAOToken public token;

@@ -5,10 +5,10 @@ pragma solidity ^0.8.6;
 import { OwnableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import { ClonesUpgradeable } from "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
 import { AddressUpgradeable } from "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
-import { ERC721DAOToken } from "./ERC721DAOToken.sol";
-import { ERC721Timelock } from "./ERC721Timelock.sol";
-import { ERC721Governor } from "./ERC721Governor.sol";
-import { ERC721Minter } from "./ERC721Minter.sol";
+import { ERC721DAOToken } from "./token/ERC721DAOToken.sol";
+import { ERC721Timelock } from "./governor/ERC721Timelock.sol";
+import { ERC721Governor } from "./governor/ERC721Governor.sol";
+import { ERC721Minter } from "./minters/ERC721Minter.sol";
 
 contract ERC721DAODeployer is OwnableUpgradeable {
     using ClonesUpgradeable for address;

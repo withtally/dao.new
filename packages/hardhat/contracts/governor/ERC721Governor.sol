@@ -4,7 +4,7 @@
 
 pragma solidity ^0.8.6;
 
-import { ERC721DAOToken } from "./ERC721DAOToken.sol";
+import { ERC721DAOToken } from "../token/ERC721DAOToken.sol";
 import { GovernorVotesERC721QuorumFractionUpgradeable } from "./GovernorVotesERC721QuorumFractionUpgradeable.sol";
 import { GovernorCountingSimpleUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorCountingSimpleUpgradeable.sol";
 import { GovernorTimelockControlUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorTimelockControlUpgradeable.sol";
