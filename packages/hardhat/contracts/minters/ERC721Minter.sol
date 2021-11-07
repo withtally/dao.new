@@ -5,6 +5,7 @@
 pragma solidity ^0.8.6;
 
 import { ERC721DAOToken } from "../token/ERC721DAOToken.sol";
+import { MintingFilter } from "./MintingFilter.sol";
 import { PaymentSplitterUpgradeable } from "@openzeppelin/contracts-upgradeable/finance/PaymentSplitterUpgradeable.sol";
 import { AccessControlEnumerableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 import { PausableUpgradeable } from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
@@ -16,11 +17,19 @@ abstract contract ERC721Minter is PaymentSplitterUpgradeable, AccessControlEnume
     bytes32 public constant CREATOR_ROLE = keccak256("CREATOR_ROLE");
 
     ERC721DAOToken public token;
+    MintingFilter public mintingFilter;
     uint256 public startingBlock;
     bool public isStartingBlockLocked;
 
     modifier afterStartingBlock() {
         require(block.number >= startingBlock, "ERC721Minter: Sale hasn't started yet!");
+        _;
+    }
+
+    modifier senderPassesFilter() {
+        if (address(mintingFilter) != address(0)) {
+            require(mintingFilter.meetsRequirements(_msgSender()), "ERC721Minter: mintingFilter requirements not met");
+        }
         _;
     }
 
@@ -62,5 +71,9 @@ abstract contract ERC721Minter is PaymentSplitterUpgradeable, AccessControlEnume
 
     function lockStartingBlock() external onlyRole(CREATOR_ROLE) {
         isStartingBlockLocked = true;
+    }
+
+    function setMintingFilter(MintingFilter mintingFilter_) external onlyRole(CREATOR_ROLE) {
+        mintingFilter = mintingFilter_;
     }
 }

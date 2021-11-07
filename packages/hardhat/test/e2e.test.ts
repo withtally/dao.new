@@ -37,6 +37,7 @@ import {
 } from "../../frontend/types/typechain";
 import { ERC721DAODeployer } from "../../frontend/types/typechain/ERC721DAODeployer";
 import { Wallet } from "@ethersproject/wallet";
+import { NFTHolderMintingFilter__factory } from "../../frontend/types/typechain/factories/NFTHolderMintingFilter__factory";
 
 chai.use(solidity);
 const { expect } = chai;
@@ -350,6 +351,60 @@ describe("End to end flows", () => {
         expect(await governor.quorumNumerator()).to.equal(newValue);
       });
     });
+
+    describe("With NFTHolderMintingFilter", async () => {
+      before(async () => {
+        const otherToken = await new ERC721DAOToken__factory(signer).deploy();
+        await otherToken.initialize(
+          "Name",
+          "Symbol",
+          "baseURI",
+          [MINTER_ROLE],
+          [signer.address]
+        );
+
+        const deployedFilter = await new NFTHolderMintingFilter__factory(
+          signer
+        ).deploy();
+        await deployedFilter.initialize([otherToken.address], [2]);
+
+        await simpleMinter
+          .connect(creator)
+          .setMintingFilter(deployedFilter.address);
+
+        otherToken.connect(signer).mint(user3.address, 1);
+        otherToken.connect(signer).mint(user3.address, 2);
+        otherToken.connect(signer).mint(user2.address, 3);
+      });
+
+      it("blocks minting for users who don't have enough of the filter token", async () => {
+        await expect(
+          simpleMinter.connect(user1).mint(1, {
+            value: TOKEN_PRICE,
+          })
+        ).to.be.revertedWith(
+          "ERC721Minter: mintingFilter requirements not met"
+        );
+
+        await expect(
+          simpleMinter.connect(user2).mint(1, {
+            value: TOKEN_PRICE,
+          })
+        ).to.be.revertedWith(
+          "ERC721Minter: mintingFilter requirements not met"
+        );
+      });
+
+      it("allows minting for users who have enough of the filter token", async () => {
+        const expectedBalance = (await token.balanceOf(user3.address)).add(1);
+
+        await simpleMinter.connect(user3).mint(1, {
+          value: TOKEN_PRICE,
+        });
+
+        expect(await token.balanceOf(user3.address)).to.equal(expectedBalance);
+      });
+    });
   });
 
   describe("Using FixedPriceSpecificIDMinter", async () => {
@@ -407,6 +462,60 @@ describe("End to end flows", () => {
       expect(await ethers.provider.getBalance(timelock.address)).to.equal(
         expectedDAOProfit
       );
+    });
+
+    describe("With NFTHolderMintingFilter", async () => {
+      before(async () => {
+        const otherToken = await new ERC721DAOToken__factory(signer).deploy();
+        await otherToken.initialize(
+          "Name",
+          "Symbol",
+          "baseURI",
+          [MINTER_ROLE],
+          [signer.address]
+        );
+
+        const deployedFilter = await new NFTHolderMintingFilter__factory(
+          signer
+        ).deploy();
+        await deployedFilter.initialize([otherToken.address], [2]);
+
+        await idMinter
+          .connect(creator)
+          .setMintingFilter(deployedFilter.address);
+
+        otherToken.connect(signer).mint(user3.address, 1);
+        otherToken.connect(signer).mint(user3.address, 2);
+        otherToken.connect(signer).mint(user2.address, 3);
+      });
+
+      it("blocks minting for users who don't have enough of the filter token", async () => {
+        await expect(
+          idMinter.connect(user1).mint(1, {
+            value: TOKEN_PRICE,
+          })
+        ).to.be.revertedWith(
+          "ERC721Minter: mintingFilter requirements not met"
+        );
+
+        await expect(
+          idMinter.connect(user2).mint(1, {
+            value: TOKEN_PRICE,
+          })
+        ).to.be.revertedWith(
+          "ERC721Minter: mintingFilter requirements not met"
+        );
+      });
+
+      it("allows minting for users who have enough of the filter token", async () => {
+        const expectedBalance = (await token.balanceOf(user3.address)).add(1);
+
+        await idMinter.connect(user3).mint(1234, {
+          value: TOKEN_PRICE,
+        });
+
+        expect(await token.balanceOf(user3.address)).to.equal(expectedBalance);
+      });
     });
   });
 

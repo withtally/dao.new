@@ -11,7 +11,7 @@ contract FixedPriceSpecificIDMinter is FixedPriceFixedSupplyMinter {
         __FixedPriceFixedSupplyMinter_init(maxTokens_, tokenPrice_);
     }
 
-    function mint(uint256 tokenId) external payable whenNotPaused afterStartingBlock {
+    function mint(uint256 tokenId) external payable whenNotPaused afterStartingBlock senderPassesFilter {
         require(msg.value >= tokenPrice, "FixedPriceSpecificIDMinter: not enough ether sent!");
 
         // TODO do we want to enforce no contracts?
