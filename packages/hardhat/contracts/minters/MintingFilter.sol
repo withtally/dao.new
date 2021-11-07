@@ -7,5 +7,5 @@ pragma solidity ^0.8.6;
 import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 abstract contract MintingFilter is Initializable {
-    function meetsRequirements(address buyer) public virtual returns (bool);
+    function meetsRequirements(address buyer) public view virtual returns (bool);
 }
