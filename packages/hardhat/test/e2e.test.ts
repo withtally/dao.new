@@ -37,7 +37,7 @@ import {
 } from "../../frontend/types/typechain";
 import { ERC721DAODeployer } from "../../frontend/types/typechain/ERC721DAODeployer";
 import { Wallet } from "@ethersproject/wallet";
-import { NFTHolderMintingFilter__factory } from "../../frontend/types/typechain/factories/NFTHolderMintingFilter__factory";
+import { RequiredNFTsMintingFilter__factory } from "../../frontend/types/typechain/factories/RequiredNFTsMintingFilter__factory";
 
 chai.use(solidity);
 const { expect } = chai;
@@ -363,7 +363,7 @@ describe("End to end flows", () => {
           [signer.address]
         );
 
-        const deployedFilter = await new NFTHolderMintingFilter__factory(
+        const deployedFilter = await new RequiredNFTsMintingFilter__factory(
           signer
         ).deploy();
         await deployedFilter.initialize([otherToken.address], [2]);
@@ -475,7 +475,7 @@ describe("End to end flows", () => {
           [signer.address]
         );
 
-        const deployedFilter = await new NFTHolderMintingFilter__factory(
+        const deployedFilter = await new RequiredNFTsMintingFilter__factory(
           signer
         ).deploy();
         await deployedFilter.initialize([otherToken.address], [2]);
