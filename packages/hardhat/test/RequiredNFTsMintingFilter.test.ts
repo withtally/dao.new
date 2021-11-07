@@ -2,19 +2,20 @@ import chai from "chai";
 import { ethers } from "hardhat";
 import { solidity } from "ethereum-waffle";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { NFTHolderMintingFilter } from "../../frontend/types/typechain/NFTHolderMintingFilter";
-import { NFTHolderMintingFilter__factory } from "../../frontend/types/typechain/factories/NFTHolderMintingFilter__factory";
+
 import {
   ERC721DAOToken,
   ERC721DAOToken__factory,
 } from "../../frontend/types/typechain";
 import { MINTER_ROLE } from "./utils";
+import { RequiredNFTsMintingFilter } from "../../frontend/types/typechain/RequiredNFTsMintingFilter";
+import { RequiredNFTsMintingFilter__factory } from "../../frontend/types/typechain/factories/RequiredNFTsMintingFilter__factory";
 
 chai.use(solidity);
 const { expect } = chai;
 
-describe("NFTHolderMintingFilter", async () => {
-  let filter: NFTHolderMintingFilter;
+describe("RequiredNFTsMintingFilter", async () => {
+  let filter: RequiredNFTsMintingFilter;
   let signer: SignerWithAddress;
   let snapshotId: number;
   let tokens: ERC721DAOToken[] = [];
@@ -51,19 +52,19 @@ describe("NFTHolderMintingFilter", async () => {
       [minter.address]
     );
 
-    filter = await new NFTHolderMintingFilter__factory(signer).deploy();
+    filter = await new RequiredNFTsMintingFilter__factory(signer).deploy();
     await filter.initialize([tokens[0].address, tokens[1].address], [1, 2]);
   });
 
   it("reverts if initialized with wrong arity", async () => {
-    const otherFilter = await new NFTHolderMintingFilter__factory(
+    const otherFilter = await new RequiredNFTsMintingFilter__factory(
       signer
     ).deploy();
 
     await expect(
       otherFilter.initialize([tokens[0].address], [1, 2])
     ).to.be.revertedWith(
-      "NFTHolderMintingFilter: tokens and minBalances arity mismatch"
+      "RequiredNFTsMintingFilter: tokens and minBalances arity mismatch"
     );
   });
 
