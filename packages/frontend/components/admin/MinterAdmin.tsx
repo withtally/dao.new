@@ -22,10 +22,10 @@ export const MinterAdmin = () => {
 
   return (
     <>
-      {/* <Box>Contract address: {config.minterAddress}</Box>
+      <Box>Contract address: {config.minterAddress}</Box>
       <HStack>
         <Box>Token price: {showEther(tokenPrice)}</Box>
-        <form onSubmit={}>
+        <form>
           <HStack>
             <NumberInput min={0} defaultValue={tokenPrice}>
               <NumberInputField />
@@ -34,8 +34,7 @@ export const MinterAdmin = () => {
           </HStack>
         </form>
         <Button>Lock</Button>
-      </HStack> */}
-      <MinterDetailsTable isSaleActive={isSaleActive} tokenPrice={tokenPrice} />
+      </HStack>
     </>
   )
 }
