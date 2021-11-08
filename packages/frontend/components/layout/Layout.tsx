@@ -84,6 +84,11 @@ export const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
                   Home
                 </Link>
               </NextLink>
+              <NextLink href="/admin" passHref>
+                <Link px="4" py="1">
+                  Admin
+                </Link>
+              </NextLink>
               <NextLink href="/mint" passHref>
                 <Link px="4" py="1">
                   Mint
