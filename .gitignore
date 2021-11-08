@@ -48,3 +48,5 @@ packages/frontend/types/typechain/**
 
 
 secrets.json
+
+tmp/
