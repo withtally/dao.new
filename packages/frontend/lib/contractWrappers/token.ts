@@ -1,7 +1,7 @@
 import { useContractCall } from '@usedapp/core'
 import { utils } from 'ethers'
 import { Interface } from 'ethers/lib/utils'
-import ERC721DAOTokenABI from '../../artifacts/contracts/ERC721DAOToken.sol/ERC721DAOToken.json'
+import ERC721DAOTokenABI from '../../artifacts/contracts/token/ERC721DAOToken.sol/ERC721DAOToken.json'
 import config from '../../config'
 
 const tokenAbi: Interface = new utils.Interface(ERC721DAOTokenABI.abi)
