@@ -5,6 +5,7 @@
 pragma solidity ^0.8.6;
 
 import "./ERC721CheckpointableUpgradable.sol";
+import "../lib/SVGPlaceholder.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
 contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerableUpgradeable {
@@ -18,6 +19,7 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
 
     string public baseURI = "";
     string private contractInfoFilename = "project.json";
+    bool public baseURIEnabled;
 
     event BaseURIChanged(string newURI);
     event ContractInfoFilenameChanged(string newFilename);
@@ -71,6 +73,14 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
     function setBaseURI(string memory baseURI_) public onlyRole(BASE_URI_ROLE) {
         baseURI = baseURI_;
         emit BaseURIChanged(baseURI_);
+    }
+
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        if (baseURIEnabled) {
+            return super.tokenURI(tokenId);
+        } else {
+            return SVGPlaceholder.placeholderTokenUri(name(), tokenId);
+        }
     }
 
     function setContractInfoFilename(string memory contractInfoFilename_) public onlyRole(BASE_URI_ROLE) {
