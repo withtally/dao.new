@@ -1,9 +1,9 @@
 import { useContractCall, useContractFunction } from '@usedapp/core'
 import { Contract, utils } from 'ethers'
 import { Interface } from 'ethers/lib/utils'
-import ERC721MinterABI from '../../artifacts/contracts/ERC721Minter.sol/ERC721Minter.json'
-import FixedPriceSequentialMinterABI from '../../artifacts/contracts/FixedPriceSequentialMinter.sol/FixedPriceSequentialMinter.json'
-import FixedPriceSpecificIDMinterABI from '../../artifacts/contracts/FixedPriceSpecificIDMinter.sol/FixedPriceSpecificIDMinter.json'
+import ERC721MinterABI from '../../artifacts/contracts/minters/ERC721Minter.sol/ERC721Minter.json'
+import FixedPriceSequentialMinterABI from '../../artifacts/contracts/minters/FixedPriceSequentialMinter.sol/FixedPriceSequentialMinter.json'
+import FixedPriceSpecificIDMinterABI from '../../artifacts/contracts/minters/FixedPriceSpecificIDMinter.sol/FixedPriceSpecificIDMinter.json'
 import config from '../../config'
 
 const ERC721MinterAbi: Interface = new utils.Interface(ERC721MinterABI.abi)

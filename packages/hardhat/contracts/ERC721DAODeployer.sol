@@ -9,6 +9,7 @@ import { ERC721DAOToken } from "./token/ERC721DAOToken.sol";
 import { ERC721Timelock } from "./governor/ERC721Timelock.sol";
 import { ERC721Governor } from "./governor/ERC721Governor.sol";
 import { ERC721Minter } from "./minters/ERC721Minter.sol";
+import { MintingFilter } from "./minters/filters/MintingFilter.sol";
 
 contract ERC721DAODeployer is OwnableUpgradeable {
     using ClonesUpgradeable for address;
@@ -41,19 +42,28 @@ contract ERC721DAODeployer is OwnableUpgradeable {
     ERC721Timelock public timelock;
     ERC721Governor public governor;
     ERC721Minter[] public minters;
+    MintingFilter[] public mintingFilters;
 
-    event ImplementationsSet(address token, address timelock, address governor, address[] minters);
+    event ImplementationsSet(
+        address token,
+        address timelock,
+        address governor,
+        address[] minters,
+        address[] mintingFilters
+    );
     event NewClone(address token, address timelock, address governor, address minter);
+    event NewMintingFilterClone(address mintingFilter);
 
     function initialize(
         ERC721DAOToken token_,
         ERC721Timelock timelock_,
         ERC721Governor governor_,
-        ERC721Minter[] calldata minters_
+        ERC721Minter[] calldata minters_,
+        MintingFilter[] calldata mintingFilters_
     ) public initializer {
         __Ownable_init();
 
-        _setImplementations(token_, timelock_, governor_, minters_);
+        _setImplementations(token_, timelock_, governor_, minters_, mintingFilters_);
     }
 
     function clone(
@@ -126,33 +136,65 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         emit NewClone(address(tokenClone), address(timelockClone), address(governorClone), address(minterClone));
     }
 
+    function cloneMintingFilter(uint256 implIndex, bytes calldata initData) external returns (address) {
+        require(implIndex < mintingFilters.length, "ERC721DAODeployer: implIndex out of bounds");
+
+        address newClone = address(mintingFilters[implIndex]).clone();
+        newClone.functionCall(initData);
+
+        emit NewMintingFilterClone(newClone);
+
+        return newClone;
+    }
+
     function setImplementations(
         ERC721DAOToken token_,
         ERC721Timelock timelock_,
         ERC721Governor governor_,
-        ERC721Minter[] calldata minters_
+        ERC721Minter[] calldata minters_,
+        MintingFilter[] calldata mintingFilters_
     ) external onlyOwner {
-        _setImplementations(token_, timelock_, governor_, minters_);
+        _setImplementations(token_, timelock_, governor_, minters_, mintingFilters_);
     }
 
     function _setImplementations(
         ERC721DAOToken token_,
         ERC721Timelock timelock_,
         ERC721Governor governor_,
-        ERC721Minter[] calldata minters_
+        ERC721Minter[] calldata minters_,
+        MintingFilter[] calldata mintingFilters_
     ) internal {
         token = token_;
         timelock = timelock_;
         governor = governor_;
         minters = minters_;
+        mintingFilters = mintingFilters_;
 
-        emit ImplementationsSet(address(token_), address(timelock_), address(governor_), mintersToAddresses(minters_));
+        emit ImplementationsSet(
+            address(token_),
+            address(timelock_),
+            address(governor_),
+            mintersToAddresses(minters_),
+            mintingFiltersToAddresses(mintingFilters_)
+        );
     }
 
     function mintersToAddresses(ERC721Minter[] calldata minters_) private pure returns (address[] memory) {
         address[] memory addrs = new address[](minters_.length);
         for (uint256 i = 0; i < minters_.length; i++) {
             addrs[i] = address(minters_[i]);
+        }
+        return addrs;
+    }
+
+    function mintingFiltersToAddresses(MintingFilter[] calldata mintingFilters_)
+        private
+        pure
+        returns (address[] memory)
+    {
+        address[] memory addrs = new address[](mintingFilters_.length);
+        for (uint256 i = 0; i < mintingFilters_.length; i++) {
+            addrs[i] = address(mintingFilters_[i]);
         }
         return addrs;
     }

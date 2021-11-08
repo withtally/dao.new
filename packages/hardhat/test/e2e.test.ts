@@ -21,6 +21,7 @@ import {
   DEFAULT_ADMIN_ROLE,
   ADMINS_ADMIN_ROLE,
   proposeAndExecute,
+  cloneMintingFilter,
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
@@ -34,6 +35,7 @@ import {
   FixedPriceSequentialMinter__factory,
   FixedPriceSpecificIDMinter__factory,
   FixedPriceSpecificIDMinter,
+  RequiredNFTsMintingFilter,
 } from "../../frontend/types/typechain";
 import { ERC721DAODeployer } from "../../frontend/types/typechain/ERC721DAODeployer";
 import { Wallet } from "@ethersproject/wallet";
@@ -76,6 +78,7 @@ let timelockImpl: ERC721Timelock;
 let governorImpl: ERC721Governor;
 let simpleMinterImpl: FixedPriceSequentialMinter;
 let idMinterImpl: FixedPriceSpecificIDMinter;
+let requiredNFTFilterImpl: RequiredNFTsMintingFilter;
 
 let token: ERC721DAOToken;
 let timelock: ERC721Timelock;
@@ -83,6 +86,8 @@ let governor: ERC721Governor;
 let simpleMinter: FixedPriceSequentialMinter;
 let idMinter: FixedPriceSpecificIDMinter;
 let deployer: ERC721DAODeployer;
+let requiredNFTFilter: RequiredNFTsMintingFilter;
+let requiredToken: ERC721DAOToken;
 
 const deploy = async () => {
   [signer, user1, user2, user3, rando] = await ethers.getSigners();
@@ -101,12 +106,17 @@ const deploy = async () => {
   governorImpl = await deployGovernor(signer);
   simpleMinterImpl = await deployMinter(signer);
   idMinterImpl = await new FixedPriceSpecificIDMinter__factory(signer).deploy();
+  requiredNFTFilterImpl = await new RequiredNFTsMintingFilter__factory(
+    signer
+  ).deploy();
+
   deployer = await deployAndInitDeployer(
     signer,
     tokenImpl,
     timelockImpl,
     governorImpl,
-    [simpleMinterImpl.address, idMinterImpl.address]
+    [simpleMinterImpl.address, idMinterImpl.address],
+    [requiredNFTFilterImpl.address]
   );
 };
 
@@ -189,6 +199,72 @@ const cloneWithIDMinter = async () => {
   );
 
   await idMinter.connect(creator).unpause();
+};
+
+const cloneWithSequentialMinterAndRequiredNFTFilter = async () => {
+  const tx = await deployer.clone(
+    creator.address,
+    {
+      name: "MyToken",
+      symbol: "MT",
+      baseURI: BASE_URI,
+    },
+    {
+      name: "GovName",
+      proposalThreshold: PROP_THRESHOLD,
+      votingDelay: VOTING_DELAY,
+      votingPeriod: VOTING_PERIOD,
+      quorumNumerator: QUORUM_NUMERATOR,
+      timelockDelay: TIMELOCK_DELAY,
+    },
+    {
+      implementationIndex: 0,
+      startingBlock: STARTING_BLOCK,
+      creatorShares: FOUNDER_SHARES,
+      daoShares: DAO_SHARES,
+      extraInitCallData: simpleMinterImpl.interface.encodeFunctionData("init", [
+        MAX_TOKENS,
+        TOKEN_PRICE,
+        MAX_MINTS_PER_WALLET,
+      ]),
+    }
+  );
+  const receipt = await tx.wait();
+  const event = receipt.events?.find((e) => e.event == "NewClone");
+
+  token = new ERC721DAOToken__factory(signer).attach(event?.args?.token);
+  timelock = new ERC721Timelock__factory(signer).attach(event?.args?.timelock);
+  governor = new ERC721Governor__factory(signer).attach(event?.args?.governor);
+  simpleMinter = new FixedPriceSequentialMinter__factory(signer).attach(
+    event?.args?.minter
+  );
+
+  requiredToken = await new ERC721DAOToken__factory(signer).deploy();
+  await requiredToken.initialize(
+    "Name",
+    "Symbol",
+    "baseURI",
+    [MINTER_ROLE],
+    [signer.address]
+  );
+
+  const filterCloneAddress = await cloneMintingFilter(
+    deployer,
+    0,
+    requiredNFTFilterImpl.interface.encodeFunctionData("initialize", [
+      [requiredToken.address],
+      [2],
+    ])
+  );
+  requiredNFTFilter = new RequiredNFTsMintingFilter__factory(signer).attach(
+    filterCloneAddress
+  );
+
+  await simpleMinter
+    .connect(creator)
+    .setMintingFilter(requiredNFTFilter.address);
+
+  await simpleMinter.connect(creator).unpause();
 };
 
 describe("End to end flows", () => {
@@ -352,29 +428,13 @@ describe("End to end flows", () => {
       });
     });
 
-    describe("With NFTHolderMintingFilter", async () => {
+    describe("With MintingFilter", async () => {
       before(async () => {
-        const otherToken = await new ERC721DAOToken__factory(signer).deploy();
-        await otherToken.initialize(
-          "Name",
-          "Symbol",
-          "baseURI",
-          [MINTER_ROLE],
-          [signer.address]
-        );
+        await cloneWithSequentialMinterAndRequiredNFTFilter();
 
-        const deployedFilter = await new RequiredNFTsMintingFilter__factory(
-          signer
-        ).deploy();
-        await deployedFilter.initialize([otherToken.address], [2]);
-
-        await simpleMinter
-          .connect(creator)
-          .setMintingFilter(deployedFilter.address);
-
-        otherToken.connect(signer).mint(user3.address, 1);
-        otherToken.connect(signer).mint(user3.address, 2);
-        otherToken.connect(signer).mint(user2.address, 3);
+        requiredToken.connect(signer).mint(user3.address, 1);
+        requiredToken.connect(signer).mint(user3.address, 2);
+        requiredToken.connect(signer).mint(user2.address, 3);
       });
 
       it("blocks minting for users who don't have enough of the filter token", async () => {
