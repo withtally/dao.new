@@ -96,4 +96,46 @@ describe("ERC721DAOToken", () => {
       expect(await token.getPastTotalSupply(txn2.blockNumber)).to.be.equal(2);
     });
   });
+
+  describe("token URI", async () => {
+    it("returns placeholder SVG before base URI is set", async () => {
+      const tokenURI: string = await token.tokenURI(123);
+      expect(tokenURI).to.satisfy((s: string) =>
+        s.startsWith("data:application/json;base64")
+      );
+
+      const json = JSON.parse(atob(tokenURI.split(",")[1]));
+      expect(json["name"]).to.be.equal("AwesomeToken token #123");
+      expect(json["description"]).to.be.equal(
+        "Placeholder art for AwesomeToken token #123"
+      );
+
+      expect(json["image"]).to.satisfy((s: string) =>
+        s.startsWith("data:image/svg+xml")
+      );
+      const svg = atob(json["image"].split(",")[1]);
+      expect(svg).to.satisfy((s: string) => s.startsWith("<svg"));
+    });
+
+    it("uses baseURI once enabled", async () => {
+      await (await token.mint(user1Address, 1)).wait();
+
+      await token.setBaseURIEnabled(true);
+      const tokenURI: string = await token.tokenURI(1);
+
+      expect(tokenURI).to.be.equal("BaseURI1");
+    });
+
+    it("uses placeholder if baseURIEnabled is disabled", async () => {
+      await (await token.mint(user1Address, 1)).wait();
+
+      await token.setBaseURIEnabled(true);
+      await token.setBaseURIEnabled(false);
+      const tokenURI: string = await token.tokenURI(1);
+
+      expect(tokenURI).to.satisfy((s: string) =>
+        s.startsWith("data:application/json;base64")
+      );
+    });
+  });
 });

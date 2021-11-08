@@ -23,6 +23,7 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
 
     event BaseURIChanged(string newURI);
     event ContractInfoFilenameChanged(string newFilename);
+    event BaseURIEnabledChanged(bool baseURIEnabled);
 
     function supportsInterface(bytes4 interfaceId)
         public
@@ -73,6 +74,11 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
     function setBaseURI(string memory baseURI_) public onlyRole(BASE_URI_ROLE) {
         baseURI = baseURI_;
         emit BaseURIChanged(baseURI_);
+    }
+
+    function setBaseURIEnabled(bool baseURIEnabled_) public onlyRole(BASE_URI_ROLE) {
+        baseURIEnabled = baseURIEnabled_;
+        emit BaseURIEnabledChanged(baseURIEnabled_);
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {

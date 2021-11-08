@@ -7,9 +7,10 @@ pragma solidity ^0.8.6;
 import { Base64 } from "base64-sol/base64.sol";
 
 library SVGPlaceholder {
-    function placeholderTokenUri(string memory tokenName, uint256 tokenId) public pure returns (string memory) {
+    function placeholderTokenUri(string memory tokenName, uint256 tokenId) internal pure returns (string memory) {
         string memory tokenIdStr = toString(tokenId);
         string memory text = string(abi.encodePacked(tokenName, " token #", tokenIdStr));
+        string memory description = string(abi.encodePacked("Placeholder art for ", text));
         string[5] memory parts;
         parts[
             0
@@ -25,7 +26,9 @@ library SVGPlaceholder {
                     abi.encodePacked(
                         '{"name": "',
                         text,
-                        '", "description": "Placeholder!", "image": "data:image/svg+xml;base64,',
+                        '", "description": "',
+                        description,
+                        '", "image": "data:image/svg+xml;base64,',
                         Base64.encode(bytes(svg)),
                         '"}'
                     )
