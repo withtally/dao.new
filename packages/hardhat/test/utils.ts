@@ -5,7 +5,6 @@ import {
   ERC721DAOToken__factory,
   CloneFactory,
   CloneFactory__factory,
-  FixedPriceSequentialMinter,
   FixedPriceSequentialMinter__factory,
   ERC721Governor,
   ERC721Governor__factory,
@@ -182,14 +181,16 @@ export const deployAndInitDeployer = async (
   token: ERC721DAOToken,
   timelock: ERC721Timelock,
   governor: ERC721Governor,
-  minters: string[]
+  minters: string[],
+  mintingFilters: string[]
 ): Promise<ERC721DAODeployer> => {
   const instance = await new ERC721DAODeployer__factory(deployer).deploy();
   await instance.initialize(
     token.address,
     timelock.address,
     governor.address,
-    minters
+    minters,
+    mintingFilters
   );
   return instance;
 };
@@ -247,6 +248,17 @@ export const deployGovernor = async (
 
 export const deployMinter = async (deployer: SignerWithAddress) => {
   return await new FixedPriceSequentialMinter__factory(deployer).deploy();
+};
+
+export const cloneMintingFilter = async (
+  deployer: ERC721DAODeployer,
+  implIndex: number,
+  initData: string
+): Promise<string> => {
+  const tx = await deployer.cloneMintingFilter(implIndex, initData);
+  const receipt = await tx.wait();
+  const event = receipt.events?.find((e) => e.event == "NewMintingFilterClone");
+  return event?.args?.mintingFilter;
 };
 
 export const propose = async (
