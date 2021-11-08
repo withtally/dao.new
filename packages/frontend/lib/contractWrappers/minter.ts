@@ -4,6 +4,7 @@ import { Interface } from 'ethers/lib/utils'
 import ERC721MinterABI from '../../artifacts/contracts/minters/ERC721Minter.sol/ERC721Minter.json'
 import FixedPriceSequentialMinterABI from '../../artifacts/contracts/minters/FixedPriceSequentialMinter.sol/FixedPriceSequentialMinter.json'
 import FixedPriceSpecificIDMinterABI from '../../artifacts/contracts/minters/FixedPriceSpecificIDMinter.sol/FixedPriceSpecificIDMinter.json'
+import FixedPriceFixedSupplyMinterABI from '../../artifacts/contracts/minters/FixedPriceFixedSupplyMinter.sol/FixedPriceFixedSupplyMinter.json'
 import config from '../../config'
 
 const ERC721MinterAbi: Interface = new utils.Interface(ERC721MinterABI.abi)
@@ -12,6 +13,10 @@ const FixedPriceSequentialMinterAbi: Interface = new utils.Interface(
 )
 const FixedPriceSpecificIDMinterAbi: Interface = new utils.Interface(
   FixedPriceSpecificIDMinterABI.abi
+)
+
+const FixedPriceFixedSupplyMinterAbi: Interface = new utils.Interface(
+  FixedPriceFixedSupplyMinterABI.abi
 )
 
 export const useIsSaleActive = () => {
@@ -94,4 +99,12 @@ export const useStartingBlock = () => {
       args: [],
     }) || []
   return startBlock && startBlock.toNumber()
+}
+
+export const useFixedPriceSupplyMinterFunction = (functionName: string) => {
+  const contract = new Contract(
+    config.minterAddress,
+    FixedPriceFixedSupplyMinterAbi
+  )
+  return useContractFunction(contract, functionName)
 }
