@@ -15,6 +15,9 @@ import {
   ERC721DAODeployer__factory,
   ERC721DAODeployer,
   FixedPriceSpecificIDMinter__factory,
+  RequiredNFTsMintingFilter__factory,
+  RejectedNFTsMintingFilter__factory,
+  CompositeMintingFilter__factory,
 } from "../../frontend/types/typechain";
 
 const contractAddressFile = `${config.paths.artifacts}/contracts/contractAddress.ts`;
@@ -47,6 +50,10 @@ async function main() {
     new ERC721Governor__factory(deployer),
     "ERC721Governor"
   );
+
+  /*
+   *  Minters
+   */
   const simpleMinterImpl = await deployContract(
     new FixedPriceSequentialMinter__factory(deployer),
     "FixedPriceSequentialMinter"
@@ -55,6 +62,26 @@ async function main() {
     new FixedPriceSpecificIDMinter__factory(deployer),
     "FixedPriceSpecificIDMinter"
   );
+
+  /*
+   *  Minting Filters
+   */
+  const requiredNFTMintingFilter = await deployContract(
+    new RequiredNFTsMintingFilter__factory(deployer),
+    "RequiredNFTsMintingFilter"
+  );
+  const rejectedNFTsMintingFilter = await deployContract(
+    new RejectedNFTsMintingFilter__factory(deployer),
+    "RejectedNFTsMintingFilter"
+  );
+  const compositeMintingFilter = await deployContract(
+    new CompositeMintingFilter__factory(deployer),
+    "CompositeMintingFilter"
+  );
+
+  /*
+   *  Deployer
+   */
   const deployerContract = (await deployContract(
     new ERC721DAODeployer__factory(deployer),
     "ERC721DAODeployer"
@@ -64,7 +91,12 @@ async function main() {
     tokenImpl.address,
     timelockImpl.address,
     governorImpl.address,
-    [simpleMinterImpl.address, idMinterImpl.address]
+    [simpleMinterImpl.address, idMinterImpl.address],
+    [
+      requiredNFTMintingFilter.address,
+      rejectedNFTsMintingFilter.address,
+      compositeMintingFilter.address,
+    ]
   );
 }
 
