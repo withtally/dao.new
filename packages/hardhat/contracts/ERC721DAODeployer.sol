@@ -77,33 +77,8 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721Governor governorClone = ERC721Governor(address(governor).clone());
         ERC721Minter minterClone = ERC721Minter(payable(address(minters[minterParams.implementationIndex]).clone()));
 
-        {
-            bytes32[] memory roles = new bytes32[](5);
-            roles[0] = token.getAdminsAdminRole();
-            roles[1] = token.getMinterAdminRole();
-            roles[2] = token.getBurnerAdminRole();
-            roles[3] = token.getBaseURIAdminRole();
-            roles[4] = token.getMinterRole();
-
-            address[] memory rolesAssignees = new address[](5);
-            rolesAssignees[0] = creatorAddress;
-            rolesAssignees[1] = creatorAddress;
-            rolesAssignees[2] = creatorAddress;
-            rolesAssignees[3] = creatorAddress;
-            rolesAssignees[4] = address(minterClone);
-
-            tokenClone.initialize(tokenParams.name, tokenParams.symbol, tokenParams.baseURI, roles, rolesAssignees);
-        }
-
-        {
-            address[] memory proposers = new address[](1);
-            proposers[0] = address(governorClone);
-            address[] memory executors = new address[](1);
-            executors[0] = address(0);
-
-            timelockClone.initialize(governorParams.timelockDelay, proposers, executors);
-        }
-
+        initToken(tokenClone, minterClone, creatorAddress, tokenParams);
+        initTimelock(timelockClone, governorClone, governorParams.timelockDelay);
         governorClone.initialize(
             governorParams.name,
             tokenClone,
@@ -113,27 +88,70 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             governorParams.votingPeriod,
             governorParams.quorumNumerator
         );
-
-        {
-            address[] memory payees = new address[](2);
-            payees[0] = creatorAddress;
-            payees[1] = address(timelockClone);
-
-            uint256[] memory shares = new uint256[](2);
-            shares[0] = minterParams.creatorShares;
-            shares[1] = minterParams.daoShares;
-
-            minterClone.initialize(
-                creatorAddress,
-                tokenClone,
-                minterParams.startingBlock,
-                payees,
-                shares,
-                minterParams.extraInitCallData
-            );
-        }
+        initMinter(minterClone, timelockClone, tokenClone, minterParams, creatorAddress);
 
         emit NewClone(address(tokenClone), address(timelockClone), address(governorClone), address(minterClone));
+    }
+
+    function initToken(
+        ERC721DAOToken tokenClone,
+        ERC721Minter minterClone,
+        address creatorAddress,
+        TokenParams calldata tokenParams
+    ) private {
+        bytes32[] memory roles = new bytes32[](5);
+        roles[0] = token.getAdminsAdminRole();
+        roles[1] = token.getMinterAdminRole();
+        roles[2] = token.getBurnerAdminRole();
+        roles[3] = token.getBaseURIAdminRole();
+        roles[4] = token.getMinterRole();
+
+        address[] memory rolesAssignees = new address[](5);
+        rolesAssignees[0] = creatorAddress;
+        rolesAssignees[1] = creatorAddress;
+        rolesAssignees[2] = creatorAddress;
+        rolesAssignees[3] = creatorAddress;
+        rolesAssignees[4] = address(minterClone);
+
+        tokenClone.initialize(tokenParams.name, tokenParams.symbol, tokenParams.baseURI, roles, rolesAssignees);
+    }
+
+    function initTimelock(
+        ERC721Timelock timelockClone,
+        ERC721Governor governorClone,
+        uint256 timelockDelay
+    ) private {
+        address[] memory proposers = new address[](1);
+        proposers[0] = address(governorClone);
+        address[] memory executors = new address[](1);
+        executors[0] = address(0);
+
+        timelockClone.initialize(timelockDelay, proposers, executors);
+    }
+
+    function initMinter(
+        ERC721Minter minterClone,
+        ERC721Timelock timelockClone,
+        ERC721DAOToken tokenClone,
+        MinterParams calldata minterParams,
+        address creatorAddress
+    ) private {
+        address[] memory payees = new address[](2);
+        payees[0] = creatorAddress;
+        payees[1] = address(timelockClone);
+
+        uint256[] memory shares = new uint256[](2);
+        shares[0] = minterParams.creatorShares;
+        shares[1] = minterParams.daoShares;
+
+        minterClone.initialize(
+            creatorAddress,
+            tokenClone,
+            minterParams.startingBlock,
+            payees,
+            shares,
+            minterParams.extraInitCallData
+        );
     }
 
     function cloneMintingFilter(uint256 implIndex, bytes calldata initData) external returns (address) {
