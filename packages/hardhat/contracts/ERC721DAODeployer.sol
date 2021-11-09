@@ -38,6 +38,12 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         bytes extraInitCallData;
     }
 
+    struct MintingFilterParams {
+        bool useMintingFilter;
+        uint256 implementationIndex;
+        bytes initCallData;
+    }
+
     ERC721DAOToken public token;
     ERC721Timelock public timelock;
     ERC721Governor public governor;
@@ -51,8 +57,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         address[] minters,
         address[] mintingFilters
     );
-    event NewClone(address token, address timelock, address governor, address minter);
-    event NewMintingFilterClone(address mintingFilter);
+    event NewClone(address token, address timelock, address governor, address minter, address mintingFilter);
 
     function initialize(
         ERC721DAOToken token_,
@@ -70,8 +75,14 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         address creatorAddress,
         TokenParams calldata tokenParams,
         GovernorParams calldata governorParams,
-        MinterParams calldata minterParams
+        MinterParams calldata minterParams,
+        MintingFilterParams calldata mintingFilterParams
     ) external {
+        require(
+            minterParams.implementationIndex < minters.length,
+            "ERC721DAODeployer: minter implementationIndex out of bounds"
+        );
+
         ERC721DAOToken tokenClone = ERC721DAOToken(address(token).clone());
         ERC721Timelock timelockClone = ERC721Timelock(payable(address(timelock).clone()));
         ERC721Governor governorClone = ERC721Governor(address(governor).clone());
@@ -89,8 +100,16 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             governorParams.quorumNumerator
         );
         initMinter(minterClone, timelockClone, tokenClone, minterParams, creatorAddress);
+        MintingFilter mintingFilter = cloneAndInitMintingFilter(mintingFilterParams);
+        minterClone.setMintingFilter(mintingFilter);
 
-        emit NewClone(address(tokenClone), address(timelockClone), address(governorClone), address(minterClone));
+        emit NewClone(
+            address(tokenClone),
+            address(timelockClone),
+            address(governorClone),
+            address(minterClone),
+            address(mintingFilter)
+        );
     }
 
     function initToken(
@@ -154,15 +173,22 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         );
     }
 
-    function cloneMintingFilter(uint256 implIndex, bytes calldata initData) external returns (address) {
-        require(implIndex < mintingFilters.length, "ERC721DAODeployer: implIndex out of bounds");
+    function cloneAndInitMintingFilter(MintingFilterParams calldata mintingFilterParams)
+        private
+        returns (MintingFilter)
+    {
+        if (!mintingFilterParams.useMintingFilter) {
+            return MintingFilter(address(0));
+        }
+        require(
+            mintingFilterParams.implementationIndex < mintingFilters.length,
+            "ERC721DAODeployer: mintingFilter implementationIndex out of bounds"
+        );
 
-        address newClone = address(mintingFilters[implIndex]).clone();
-        newClone.functionCall(initData);
+        address newClone = address(mintingFilters[mintingFilterParams.implementationIndex]).clone();
+        newClone.functionCall(mintingFilterParams.initCallData);
 
-        emit NewMintingFilterClone(newClone);
-
-        return newClone;
+        return MintingFilter(newClone);
     }
 
     function setImplementations(

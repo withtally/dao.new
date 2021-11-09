@@ -250,17 +250,6 @@ export const deployMinter = async (deployer: SignerWithAddress) => {
   return await new FixedPriceSequentialMinter__factory(deployer).deploy();
 };
 
-export const cloneMintingFilter = async (
-  deployer: ERC721DAODeployer,
-  implIndex: number,
-  initData: string
-): Promise<string> => {
-  const tx = await deployer.cloneMintingFilter(implIndex, initData);
-  const receipt = await tx.wait();
-  const event = receipt.events?.find((e) => e.event == "NewMintingFilterClone");
-  return event?.args?.mintingFilter;
-};
-
 export const propose = async (
   proposer: SignerWithAddress,
   governor: ERC721Governor,

@@ -97,11 +97,18 @@ type MinterParams = {
   extraInitCallData: BytesLike
 }
 
+type MintingFilterParmas = {
+  useMintingFilter: boolean
+  implementationIndex: number
+  initCallData: BytesLike
+}
+
 type StateType = {
   isLoading: boolean
   tokenConfig: TokenParams
   governorConfig: GovernorParams
   minterConfig: MinterParams
+  mintingFilterConfig: MintingFilterParmas
   clones: CloneAddresses
 }
 type ActionType =
@@ -153,6 +160,11 @@ const initialState: StateType = {
     votingPeriod: DEFAULT_VOTING_PERIOD,
     quorumNumerator: DEFAULT_QUORUM_NUMERATOR,
     timelockDelay: DEFAULT_TIMELOCK_DELAY,
+  },
+  mintingFilterConfig: {
+    useMintingFilter: false,
+    implementationIndex: 0,
+    initCallData: [],
   },
   clones: null,
 }
@@ -257,7 +269,8 @@ function HomeIndex(): JSX.Element {
           ...state.minterConfig,
           extraInitCallData: extraInitCallData,
           ...getSharesByCreatorPercentage(state.minterConfig.creatorPercentage),
-        }
+        },
+        state.mintingFilterConfig
       )
       const receipt = await tx.wait()
       const event = receipt.events?.find((e) => e.event == 'NewClone')
