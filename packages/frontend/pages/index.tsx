@@ -41,6 +41,7 @@ import {
   ERC721DAODeployer__factory,
   FixedPriceSequentialMinter__factory,
   FixedPriceSpecificIDMinter__factory,
+  RequiredNFTsMintingFilter__factory,
 } from '../types/typechain'
 import {
   Table,
@@ -52,6 +53,7 @@ import {
   Td,
   TableCaption,
 } from '@chakra-ui/react'
+import { MintingFilterForm } from '../components/MintingFilterForm'
 
 /**
  * Constants & Helpers
@@ -97,10 +99,14 @@ type MinterParams = {
   extraInitCallData: BytesLike
 }
 
-type MintingFilterParmas = {
+export type MintingFilterToken = {
+  address: string
+  minBalance: number
+}
+
+export type MintingFilterParmas = {
   useMintingFilter: boolean
-  implementationIndex: number
-  initCallData: BytesLike
+  tokens: MintingFilterToken[]
 }
 
 type StateType = {
@@ -127,6 +133,10 @@ type ActionType =
   | {
       type: 'SET_GOVERNOR_CONFIG'
       governorConfig: StateType['governorConfig']
+    }
+  | {
+      type: 'SET_MINTING_FILTER_CONFIG'
+      mintingFilterConfig: StateType['mintingFilterConfig']
     }
   | {
       type: 'SET_CLONES'
@@ -163,8 +173,7 @@ const initialState: StateType = {
   },
   mintingFilterConfig: {
     useMintingFilter: false,
-    implementationIndex: 0,
-    initCallData: [],
+    tokens: [],
   },
   clones: null,
 }
@@ -191,6 +200,11 @@ function reducer(state: StateType, action: ActionType): StateType {
       return {
         ...state,
         governorConfig: action.governorConfig,
+      }
+    case 'SET_MINTING_FILTER_CONFIG':
+      return {
+        ...state,
+        mintingFilterConfig: action.mintingFilterConfig,
       }
     case 'SET_CLONES':
       return {
@@ -261,6 +275,24 @@ function HomeIndex(): JSX.Element {
           )
       }
 
+      // Until we add form validations, filtering out anything shorter than an ETH address
+      const cleanTokens = state.mintingFilterConfig.tokens.filter(
+        (t) => t.address.length === 42
+      )
+
+      const mintingFilterParams = {
+        useMintingFilter: state.mintingFilterConfig.useMintingFilter,
+        implementationIndex: 0,
+        initCallData:
+          RequiredNFTsMintingFilter__factory.createInterface().encodeFunctionData(
+            'initialize',
+            [
+              cleanTokens.map((t) => t.address),
+              cleanTokens.map((t) => t.minBalance),
+            ]
+          ),
+      }
+
       const tx = await deployer.clone(
         account,
         state.tokenConfig,
@@ -270,7 +302,7 @@ function HomeIndex(): JSX.Element {
           extraInitCallData: extraInitCallData,
           ...getSharesByCreatorPercentage(state.minterConfig.creatorPercentage),
         },
-        state.mintingFilterConfig
+        mintingFilterParams
       )
       const receipt = await tx.wait()
       const event = receipt.events?.find((e) => e.event == 'NewClone')
@@ -455,6 +487,13 @@ function HomeIndex(): JSX.Element {
     })
   }
 
+  function onMintingFilterConfigChange(newValues: MintingFilterParmas) {
+    dispatch({
+      type: 'SET_MINTING_FILTER_CONFIG',
+      mintingFilterConfig: newValues,
+    })
+  }
+
   return (
     <Layout>
       <Heading as="h1" mb="8" px={4}>
@@ -635,6 +674,13 @@ function HomeIndex(): JSX.Element {
               <></>
             )}
           </VStack>
+          <Heading as="h3" size="lg" mb={6} mt={6}>
+            2.1 Buyer Filtering
+          </Heading>
+          <MintingFilterForm
+            values={state.mintingFilterConfig}
+            onValuesChange={onMintingFilterConfigChange}
+          />
           <Heading as="h2" mb={6} mt={6}>
             3. Governor
           </Heading>
