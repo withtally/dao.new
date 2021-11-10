@@ -17,8 +17,8 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
     bytes32 public constant BASE_URI_ADMIN_ROLE = keccak256("BASE_URI_ADMIN_ROLE");
     bytes32 public constant ADMINS_ADMIN_ROLE = keccak256("ADMINS_ADMIN_ROLE");
 
-    string public baseURI = "";
-    string private contractInfoFilename = "project.json";
+    string public baseURI;
+    string private contractInfoFilename;
     bool public baseURIEnabled;
 
     event BaseURIChanged(string newURI);
@@ -46,6 +46,7 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
 
         __ERC721_init(name_, symbol_);
         baseURI = baseURI_;
+        contractInfoFilename = "project.json";
 
         _setRoleAdmin(ADMINS_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
         _setRoleAdmin(MINTER_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
