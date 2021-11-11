@@ -27,8 +27,9 @@ import {
   useFixedPriceSequentialMinterFunction,
   usePauseSale,
   useUnpauseSale,
+  useMintingFilter,
 } from '../../lib/contractWrappers/minter'
-import { MinterDetailsTable } from '../minter/MinterDetailsTable'
+import { MintingFilterEditForm } from '../MintingFilterEditForm'
 
 export const MinterAdmin = () => {
   const [formTokenPrice, setFormTokenPrice] = useState('')
@@ -66,6 +67,8 @@ export const MinterAdmin = () => {
   const isSaleActive = useIsSaleActive()
   const { send: pauseSale, state: pauseSaleState } = usePauseSale()
   const { send: unpauseSale, state: unpauseSaleState } = useUnpauseSale()
+
+  const mintingFilterAddress = useMintingFilter()
 
   const showEther = (wei: BigNumberish) => {
     if (wei) {
@@ -120,9 +123,9 @@ export const MinterAdmin = () => {
   return (
     <>
       <Box>Contract address: {config.minterAddress}</Box>
-      <VStack spacing={8} alignItems="flex-start">
+      <VStack spacing={16} alignItems="flex-start">
         <VStack spacing={4} alignItems="flex-start">
-          <Heading as="h3" size="sm">
+          <Heading as="h3" size="md">
             Token price
           </Heading>
           <HStack>
@@ -163,7 +166,7 @@ export const MinterAdmin = () => {
           </HStack>
         </VStack>
         <VStack spacing={4} alignItems="flex-start">
-          <Heading as="h3" size="sm">
+          <Heading as="h3" size="md">
             Max token supply
           </Heading>
           <HStack>
@@ -205,7 +208,7 @@ export const MinterAdmin = () => {
           </HStack>
         </VStack>
         <VStack spacing={4} alignItems="flex-start">
-          <Heading as="h3" size="sm">
+          <Heading as="h3" size="md">
             Sale start block
           </Heading>
           <HStack>
@@ -248,7 +251,7 @@ export const MinterAdmin = () => {
           </HStack>
         </VStack>
         <VStack spacing={4} alignItems="flex-start">
-          <Heading as="h3" size="sm">
+          <Heading as="h3" size="md">
             Owner mint
           </Heading>
           <form onSubmit={onOwnerMintSubmit}>
@@ -304,7 +307,7 @@ export const MinterAdmin = () => {
           </HStack>
         </VStack>
         <VStack spacing={4} alignItems="flex-start">
-          <Heading as="h3" size="sm">
+          <Heading as="h3" size="md">
             Sale status
           </Heading>
           <HStack>
@@ -320,6 +323,18 @@ export const MinterAdmin = () => {
             </Button>
           </HStack>
         </VStack>
+        {mintingFilterAddress !== undefined ? (
+          <VStack spacing={4} alignItems="flex-start">
+            <Heading as="h3" size="md">
+              Buyer filtering
+            </Heading>
+            <MintingFilterEditForm
+              mintingFilterAddress={mintingFilterAddress}
+            />
+          </VStack>
+        ) : (
+          <></>
+        )}
       </VStack>
     </>
   )

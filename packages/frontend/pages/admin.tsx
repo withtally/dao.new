@@ -19,7 +19,9 @@ const Mint = () => {
         <Heading size="xl">Admin</Heading>
         <Heading size="lg">Minter contract</Heading>
         <MinterAdmin />
-        <Heading size="lg">NFT contract</Heading>
+        <Heading size="lg" pt={16}>
+          NFT contract
+        </Heading>
         TODO
         <Box mt={20}>
           <hr></hr>

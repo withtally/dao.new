@@ -181,3 +181,14 @@ export const useIsOwnerMintLocked = () => {
     }) || []
   return isOwnerMintLocked
 }
+
+export const useMintingFilter = () => {
+  const [mintingFilter] =
+    useContractCall({
+      abi: ERC721MinterAbi,
+      address: config.minterAddress,
+      method: 'mintingFilter',
+      args: [],
+    }) || []
+  return mintingFilter
+}
