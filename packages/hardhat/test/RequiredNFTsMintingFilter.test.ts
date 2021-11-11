@@ -20,6 +20,7 @@ describe("RequiredNFTsMintingFilter", async () => {
   let snapshotId: number;
   let tokens: ERC721DAOToken[] = [];
   let minter: SignerWithAddress;
+  let creator: SignerWithAddress;
   let user1: SignerWithAddress;
   let user2: SignerWithAddress;
 
@@ -32,7 +33,7 @@ describe("RequiredNFTsMintingFilter", async () => {
   });
 
   before(async () => {
-    [signer, minter, user1, user2] = await ethers.getSigners();
+    [signer, minter, creator, user1, user2] = await ethers.getSigners();
 
     tokens.push(await new ERC721DAOToken__factory(signer).deploy());
     await tokens[0].initialize(
@@ -53,7 +54,11 @@ describe("RequiredNFTsMintingFilter", async () => {
     );
 
     filter = await new RequiredNFTsMintingFilter__factory(signer).deploy();
-    await filter.initialize([tokens[0].address, tokens[1].address], [1, 2]);
+    await filter.initialize(
+      creator.address,
+      [tokens[0].address, tokens[1].address],
+      [1, 2]
+    );
   });
 
   it("reverts if initialized with wrong arity", async () => {
@@ -62,9 +67,9 @@ describe("RequiredNFTsMintingFilter", async () => {
     ).deploy();
 
     await expect(
-      otherFilter.initialize([tokens[0].address], [1, 2])
+      otherFilter.initialize(creator.address, [tokens[0].address], [1, 2])
     ).to.be.revertedWith(
-      "RequiredNFTsMintingFilter: tokens and minBalances arity mismatch"
+      "NFTsMintingFilter: tokens and minBalances arity mismatch"
     );
   });
 
@@ -87,5 +92,20 @@ describe("RequiredNFTsMintingFilter", async () => {
     await tokens[1].connect(minter).mint(user1.address, 1);
 
     expect(await filter.meetsRequirements(user1.address)).to.be.false;
+  });
+
+  it("block non-creators from setting token filters", async () => {
+    await expect(
+      filter.connect(user1).setTokenFilters([tokens[0].address], [3])
+    ).to.be.revertedWith("Ownable: caller is not the owner");
+  });
+
+  it("lets creator set token filters", async () => {
+    await filter.connect(creator).setTokenFilters([tokens[0].address], [4]);
+
+    const newFilters = await filter.getTokenFilters();
+    expect(newFilters.length).to.equal(1);
+    expect(newFilters[0].token).to.equal(tokens[0].address);
+    expect(newFilters[0].minBalance).to.equal(4);
   });
 });

@@ -10,7 +10,9 @@ import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 contract CompositeMintingFilter is MintingFilter {
     MintingFilter[] public mintingFilters;
 
-    function initialize(MintingFilter[] memory mintingFilters_) public initializer {
+    function initialize(address creator, MintingFilter[] memory mintingFilters_) public initializer {
+        __MintingFilter_init(creator);
+
         mintingFilters = mintingFilters_;
     }
 

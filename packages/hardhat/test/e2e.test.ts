@@ -250,7 +250,7 @@ const cloneWithSequentialMinterAndRequiredNFTFilter = async () => {
       implementationIndex: 0,
       initCallData: requiredNFTFilterImpl.interface.encodeFunctionData(
         "initialize",
-        [[requiredToken.address], [2]]
+        [creator.address, [requiredToken.address], [2]]
       ),
     }
   );
@@ -524,7 +524,9 @@ describe("End to end flows", () => {
       );
     });
 
-    describe("With NFTHolderMintingFilter", async () => {
+    describe("With RequiredNFTsMintingFilter", async () => {
+      let mintingFilter: RequiredNFTsMintingFilter;
+
       before(async () => {
         const otherToken = await new ERC721DAOToken__factory(signer).deploy();
         await otherToken.initialize(
@@ -535,14 +537,16 @@ describe("End to end flows", () => {
           [signer.address]
         );
 
-        const deployedFilter = await new RequiredNFTsMintingFilter__factory(
+        mintingFilter = await new RequiredNFTsMintingFilter__factory(
           signer
         ).deploy();
-        await deployedFilter.initialize([otherToken.address], [2]);
+        await mintingFilter.initialize(
+          creator.address,
+          [otherToken.address],
+          [2]
+        );
 
-        await idMinter
-          .connect(creator)
-          .setMintingFilter(deployedFilter.address);
+        await idMinter.connect(creator).setMintingFilter(mintingFilter.address);
 
         otherToken.connect(signer).mint(user3.address, 1);
         otherToken.connect(signer).mint(user3.address, 2);
@@ -575,6 +579,33 @@ describe("End to end flows", () => {
         });
 
         expect(await token.balanceOf(user3.address)).to.equal(expectedBalance);
+      });
+
+      it("allows creator to set new token filters", async () => {
+        const tokenFilters = await mintingFilter.getTokenFilters();
+        const newMinBalance = tokenFilters[0].minBalance.add(10);
+
+        await mintingFilter
+          .connect(creator)
+          .setTokenFilters([tokenFilters[0].token], [newMinBalance]);
+
+        expect((await mintingFilter.tokenFilters(0)).minBalance).to.equal(
+          newMinBalance
+        );
+        expect(await mintingFilter.tokenFiltersCount()).to.equal(1);
+      });
+
+      it("blocks non-creators from setting new token filters", async () => {
+        const tokenFilters = await mintingFilter.getTokenFilters();
+
+        await expect(
+          mintingFilter
+            .connect(user1)
+            .setTokenFilters(
+              [tokenFilters[0].token],
+              [tokenFilters[0].minBalance.add(123)]
+            )
+        ).to.be.revertedWith("Ownable: caller is not the owner");
       });
     });
   });

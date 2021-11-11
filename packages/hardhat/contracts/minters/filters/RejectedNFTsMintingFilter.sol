@@ -4,28 +4,9 @@
 
 pragma solidity ^0.8.6;
 
-import { MintingFilter } from "./MintingFilter.sol";
-import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import { NFTsMintingFilter } from "./NFTsMintingFilter.sol";
 
-contract RejectedNFTsMintingFilter is MintingFilter {
-    struct TokenFilter {
-        IERC721 token;
-        uint256 minBalance;
-    }
-
-    TokenFilter[] public tokenFilters;
-
-    function initialize(IERC721[] memory tokens, uint256[] memory minBalances) public initializer {
-        require(
-            tokens.length == minBalances.length,
-            "RejectedNFTsMintingFilter: tokens and minBalances arity mismatch"
-        );
-
-        for (uint256 i = 0; i < tokens.length; i++) {
-            tokenFilters.push(TokenFilter(tokens[i], minBalances[i]));
-        }
-    }
-
+contract RejectedNFTsMintingFilter is NFTsMintingFilter {
     function meetsRequirements(address buyer) public view override returns (bool) {
         for (uint256 i = 0; i < tokenFilters.length; i++) {
             TokenFilter storage filter = tokenFilters[i];

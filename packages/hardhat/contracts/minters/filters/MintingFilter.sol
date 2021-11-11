@@ -4,8 +4,13 @@
 
 pragma solidity ^0.8.6;
 
-import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import { OwnableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-abstract contract MintingFilter is Initializable {
+abstract contract MintingFilter is OwnableUpgradeable {
+    function __MintingFilter_init(address creator) internal initializer {
+        __Ownable_init();
+        transferOwnership(creator);
+    }
+
     function meetsRequirements(address buyer) public view virtual returns (bool);
 }

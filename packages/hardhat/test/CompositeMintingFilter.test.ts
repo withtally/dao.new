@@ -24,6 +24,7 @@ describe("CompositeMintingFilter", async () => {
   let requiredToken: ERC721DAOToken;
   let rejectedToken: ERC721DAOToken;
   let minter: SignerWithAddress;
+  let creator: SignerWithAddress;
   let user1: SignerWithAddress;
   let requiredFilter: RequiredNFTsMintingFilter;
   let rejectedFilter: RejectedNFTsMintingFilter;
@@ -37,7 +38,7 @@ describe("CompositeMintingFilter", async () => {
   });
 
   before(async () => {
-    [signer, minter, user1] = await ethers.getSigners();
+    [signer, minter, creator, user1] = await ethers.getSigners();
 
     requiredToken = await new ERC721DAOToken__factory(signer).deploy();
     await requiredToken.initialize(
@@ -50,7 +51,11 @@ describe("CompositeMintingFilter", async () => {
     requiredFilter = await new RequiredNFTsMintingFilter__factory(
       signer
     ).deploy();
-    await requiredFilter.initialize([requiredToken.address], [1]);
+    await requiredFilter.initialize(
+      creator.address,
+      [requiredToken.address],
+      [1]
+    );
 
     rejectedToken = await new ERC721DAOToken__factory(signer).deploy();
     await rejectedToken.initialize(
@@ -63,10 +68,17 @@ describe("CompositeMintingFilter", async () => {
     rejectedFilter = await new RejectedNFTsMintingFilter__factory(
       signer
     ).deploy();
-    await rejectedFilter.initialize([rejectedToken.address], [1]);
+    await rejectedFilter.initialize(
+      creator.address,
+      [rejectedToken.address],
+      [1]
+    );
 
     filter = await new CompositeMintingFilter__factory(signer).deploy();
-    await filter.initialize([requiredFilter.address, rejectedFilter.address]);
+    await filter.initialize(creator.address, [
+      requiredFilter.address,
+      rejectedFilter.address,
+    ]);
   });
 
   it("returns true when both filters return true", async () => {
