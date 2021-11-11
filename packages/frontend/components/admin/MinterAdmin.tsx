@@ -17,6 +17,8 @@ import {
   useIncrementalMinterIsTokenPriceLocked,
   useIncrementalMinterMaxTokens,
   useIncrementalMinterIsMaxTokensLocked,
+  useStartingBlock,
+  useIsStartingBlockLocked,
 } from '../../lib/contractWrappers/minter'
 import { MinterDetailsTable } from '../minter/MinterDetailsTable'
 
@@ -36,6 +38,14 @@ export const MinterAdmin = () => {
     useFixedPriceSupplyMinterFunction('setMaxTokens')
   const { send: lockMaxTokens, state: lockMaxTokensState } =
     useFixedPriceSupplyMinterFunction('lockMaxTokens')
+
+  const [formStartingBlock, setFormStartingBlock] = useState('')
+  const startingBlock = useStartingBlock()
+  const isStartingBlockLocked = useIsStartingBlockLocked()
+  const { send: setStartingBlock, state: setStartingBlockState } =
+    useFixedPriceSupplyMinterFunction('setStartingBlock')
+  const { send: lockStartingBlock, state: lockStartingBlockState } =
+    useFixedPriceSupplyMinterFunction('lockStartingBlock')
 
   const isSaleActive = useIsSaleActive()
 
@@ -61,6 +71,15 @@ export const MinterAdmin = () => {
 
   const onLockMaxTokensClick = () => {
     lockMaxTokens()
+  }
+
+  const onStartingBlockSubmit = (e) => {
+    e.preventDefault()
+    setStartingBlock(parseInt(formStartingBlock))
+  }
+
+  const onLockStartingBlockClick = () => {
+    lockStartingBlock()
   }
 
   return (
@@ -113,7 +132,9 @@ export const MinterAdmin = () => {
             Max token supply
           </Heading>
           <HStack>
-            <Text>Current: {maxTokens ? maxTokens.toString() : ''}</Text>
+            <Text>
+              Current: {maxTokens !== undefined ? maxTokens.toString() : ''}
+            </Text>
             <form onSubmit={onMaxTokensSubmit}>
               <HStack>
                 <NumberInput
@@ -143,6 +164,49 @@ export const MinterAdmin = () => {
               isDisabled={isMaxTokensLocked}
               onClick={onLockMaxTokensClick}
               isLoading={lockMaxTokensState.status === 'Mining'}
+            >
+              Lock
+            </Button>
+          </HStack>
+        </VStack>
+        <VStack spacing={4} alignItems="flex-start">
+          <Heading as="h3" size="sm">
+            Sale start block
+          </Heading>
+          <HStack>
+            <Text>
+              Current:{' '}
+              {startingBlock !== undefined ? startingBlock.toString() : ''}
+            </Text>
+            <form onSubmit={onStartingBlockSubmit}>
+              <HStack>
+                <NumberInput
+                  min={0}
+                  value={formStartingBlock}
+                  onChange={(s) => {
+                    setFormStartingBlock(s)
+                  }}
+                >
+                  <NumberInputField />
+                </NumberInput>
+                <Button
+                  type="submit"
+                  isLoading={setStartingBlockState.status === 'Mining'}
+                  isDisabled={isStartingBlockLocked}
+                >
+                  Update
+                </Button>
+              </HStack>
+            </form>
+          </HStack>
+          <HStack>
+            <Text>
+              Lock status: {isStartingBlockLocked ? 'Locked' : 'Unlocked'}
+            </Text>
+            <Button
+              isDisabled={isStartingBlockLocked}
+              onClick={onLockStartingBlockClick}
+              isLoading={lockStartingBlockState.status === 'Mining'}
             >
               Lock
             </Button>

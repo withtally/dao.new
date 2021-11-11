@@ -146,6 +146,17 @@ export const useStartingBlock = () => {
   return startBlock && startBlock.toNumber()
 }
 
+export const useIsStartingBlockLocked = () => {
+  const [isStartingBlockLocked] =
+    useContractCall({
+      abi: ERC721MinterAbi,
+      address: config.minterAddress,
+      method: 'isStartingBlockLocked',
+      args: [],
+    }) || []
+  return isStartingBlockLocked
+}
+
 export const useFixedPriceSupplyMinterFunction = (functionName: string) => {
   const contract = new Contract(
     config.minterAddress,
