@@ -5,6 +5,10 @@ import {
   NumberInputField,
   Heading,
   Text,
+  Input,
+  FormControl,
+  FormLabel,
+  FormHelperText,
 } from '@chakra-ui/react'
 import { BigNumberish } from '@ethersproject/bignumber'
 import { formatEther, parseEther, parseUnits } from 'ethers/lib/utils'
@@ -19,6 +23,8 @@ import {
   useIncrementalMinterIsMaxTokensLocked,
   useStartingBlock,
   useIsStartingBlockLocked,
+  useIsOwnerMintLocked,
+  useFixedPriceSequentialMinterFunction,
 } from '../../lib/contractWrappers/minter'
 import { MinterDetailsTable } from '../minter/MinterDetailsTable'
 
@@ -46,6 +52,14 @@ export const MinterAdmin = () => {
     useFixedPriceSupplyMinterFunction('setStartingBlock')
   const { send: lockStartingBlock, state: lockStartingBlockState } =
     useFixedPriceSupplyMinterFunction('lockStartingBlock')
+
+  const [ownerMintTo, setOwnerMintTo] = useState('')
+  const [ownerMintAmount, setOwnerMintAmount] = useState('')
+  const isOwnerMintLocked = useIsOwnerMintLocked()
+  const { send: ownerMint, state: ownerMintState } =
+    useFixedPriceSequentialMinterFunction('ownerMint')
+  const { send: lockOwnerMint, state: lockOwnerMintState } =
+    useFixedPriceSupplyMinterFunction('lockOwnerMint')
 
   const isSaleActive = useIsSaleActive()
 
@@ -80,6 +94,15 @@ export const MinterAdmin = () => {
 
   const onLockStartingBlockClick = () => {
     lockStartingBlock()
+  }
+
+  const onOwnerMintSubmit = (e) => {
+    e.preventDefault()
+    ownerMint(ownerMintTo, parseInt(ownerMintAmount))
+  }
+
+  const onLockOwnerMintClick = () => {
+    lockOwnerMint()
   }
 
   return (
@@ -207,6 +230,63 @@ export const MinterAdmin = () => {
               isDisabled={isStartingBlockLocked}
               onClick={onLockStartingBlockClick}
               isLoading={lockStartingBlockState.status === 'Mining'}
+            >
+              Lock
+            </Button>
+          </HStack>
+        </VStack>
+        <VStack spacing={4} alignItems="flex-start">
+          <Heading as="h3" size="sm">
+            Owner mint
+          </Heading>
+          <form onSubmit={onOwnerMintSubmit}>
+            <VStack spacing={4} alignItems="flex-start">
+              <FormControl>
+                <FormLabel>To</FormLabel>
+                <Input
+                  type="text"
+                  value={ownerMintTo}
+                  onChange={(s) => {
+                    setOwnerMintTo(s.target.value)
+                  }}
+                />
+                <FormHelperText>
+                  The Ethereum wallet address of the recipient.
+                </FormHelperText>
+              </FormControl>
+              <FormControl>
+                <FormLabel>Amount</FormLabel>
+                <NumberInput
+                  min={0}
+                  value={ownerMintAmount}
+                  onChange={(s) => {
+                    setOwnerMintAmount(s)
+                  }}
+                >
+                  <NumberInputField />
+                </NumberInput>
+                <FormHelperText>
+                  How many tokens to mint to the recipient.
+                </FormHelperText>
+              </FormControl>
+              <Button
+                type="submit"
+                isLoading={ownerMintState.status === 'Mining'}
+                isDisabled={isOwnerMintLocked}
+              >
+                Mint
+              </Button>
+            </VStack>
+          </form>
+
+          <HStack>
+            <Text>
+              Lock status: {isOwnerMintLocked ? 'Locked' : 'Unlocked'}
+            </Text>
+            <Button
+              isDisabled={isOwnerMintLocked}
+              onClick={onLockOwnerMintClick}
+              isLoading={lockOwnerMintState.status === 'Mining'}
             >
               Lock
             </Button>

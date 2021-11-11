@@ -164,3 +164,22 @@ export const useFixedPriceSupplyMinterFunction = (functionName: string) => {
   )
   return useContractFunction(contract, functionName)
 }
+
+export const useFixedPriceSequentialMinterFunction = (functionName: string) => {
+  const contract = new Contract(
+    config.minterAddress,
+    FixedPriceSequentialMinterAbi
+  )
+  return useContractFunction(contract, functionName)
+}
+
+export const useIsOwnerMintLocked = () => {
+  const [isOwnerMintLocked] =
+    useContractCall({
+      abi: FixedPriceFixedSupplyMinterAbi,
+      address: config.minterAddress,
+      method: 'isOwnerMintLocked',
+      args: [],
+    }) || []
+  return isOwnerMintLocked
+}
