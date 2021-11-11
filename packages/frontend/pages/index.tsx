@@ -287,6 +287,7 @@ function HomeIndex(): JSX.Element {
           RequiredNFTsMintingFilter__factory.createInterface().encodeFunctionData(
             'initialize',
             [
+              account,
               cleanTokens.map((t) => t.address),
               cleanTokens.map((t) => t.minBalance),
             ]
