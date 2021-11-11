@@ -72,6 +72,7 @@ export const MinterAdmin = () => {
               <Button
                 type="submit"
                 isLoading={updateContractTokenPriceState.status === 'Mining'}
+                isDisabled={isTokenPriceLocked}
               >
                 Update
               </Button>
