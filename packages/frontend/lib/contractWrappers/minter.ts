@@ -64,6 +64,36 @@ function useIsTokenPriceLocked(abi: utils.Interface) {
   return isTokenPriceLocked
 }
 
+export const useIncrementalMinterMaxTokens = () => {
+  return useMaxTokens(FixedPriceSequentialMinterAbi)
+}
+
+function useMaxTokens(abi: utils.Interface) {
+  const [maxTokens] =
+    useContractCall({
+      abi: abi,
+      address: config.minterAddress,
+      method: 'maxTokens',
+      args: [],
+    }) || []
+  return maxTokens
+}
+
+export const useIncrementalMinterIsMaxTokensLocked = () => {
+  return useIsMaxTokensLocked(FixedPriceSequentialMinterAbi)
+}
+
+function useIsMaxTokensLocked(abi: utils.Interface) {
+  const [isMaxTokensLocked] =
+    useContractCall({
+      abi: abi,
+      address: config.minterAddress,
+      method: 'isMaxTokensLocked',
+      args: [],
+    }) || []
+  return isMaxTokensLocked
+}
+
 export const useMaxMintPerTx = () => {
   const [maxMintPerTx] =
     useContractCall({
