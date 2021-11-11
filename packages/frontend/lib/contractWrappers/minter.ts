@@ -49,6 +49,21 @@ function useMintPrice(abi: utils.Interface) {
   return tokenPrice
 }
 
+export const useIncrementalMinterIsTokenPriceLocked = () => {
+  return useIsTokenPriceLocked(FixedPriceSequentialMinterAbi)
+}
+
+function useIsTokenPriceLocked(abi: utils.Interface) {
+  const [isTokenPriceLocked] =
+    useContractCall({
+      abi: abi,
+      address: config.minterAddress,
+      method: 'isTokenPriceLocked',
+      args: [],
+    }) || []
+  return isTokenPriceLocked
+}
+
 export const useMaxMintPerTx = () => {
   const [maxMintPerTx] =
     useContractCall({

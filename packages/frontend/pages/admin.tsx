@@ -1,5 +1,5 @@
 import { Layout } from '../components/layout/Layout'
-import { Box, Container, Heading } from '@chakra-ui/react'
+import { Box, Container, Heading, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { MinterAdmin } from '../components/admin/MinterAdmin'
 import { ContractsTable } from '../components/admin/ContractsTable'
@@ -15,7 +15,7 @@ const Mint = () => {
 
   return (
     <Layout>
-      <Container maxW="container.lg">
+      <VStack maxW="container.lg" spacing={4} alignItems="flex-start" px={4}>
         <Heading size="xl">Admin</Heading>
         <Heading size="lg">Minter contract</Heading>
         <MinterAdmin />
@@ -30,7 +30,7 @@ const Mint = () => {
             tokenPrice={tokenPrice}
           />
         </Box>
-      </Container>
+      </VStack>
     </Layout>
   )
 }

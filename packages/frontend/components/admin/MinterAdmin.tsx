@@ -1,5 +1,11 @@
-import { Box, HStack } from '@chakra-ui/layout'
-import { Button, NumberInput, NumberInputField } from '@chakra-ui/react'
+import { Box, HStack, VStack } from '@chakra-ui/layout'
+import {
+  Button,
+  NumberInput,
+  NumberInputField,
+  Heading,
+  Text,
+} from '@chakra-ui/react'
 import { BigNumberish } from '@ethersproject/bignumber'
 import { formatEther, parseEther, parseUnits } from 'ethers/lib/utils'
 import React, { useState } from 'react'
@@ -8,11 +14,13 @@ import {
   useFixedPriceSupplyMinterFunction,
   useIncrementalMinterMintPrice,
   useIsSaleActive,
+  useIncrementalMinterIsTokenPriceLocked,
 } from '../../lib/contractWrappers/minter'
 import { MinterDetailsTable } from '../minter/MinterDetailsTable'
 
 export const MinterAdmin = () => {
   const tokenPrice = useIncrementalMinterMintPrice()
+  const isTokenPriceLocked = useIncrementalMinterIsTokenPriceLocked()
   const isSaleActive = useIsSaleActive()
   const {
     send: updateContractTokenPrice,
@@ -37,32 +45,50 @@ export const MinterAdmin = () => {
     updateContractTokenPrice(parseEther(formTokenPrice))
   }
 
+  const lockTokenPrice = () => {
+    updateContractLockTokenPrice()
+  }
+
   return (
     <>
       <Box>Contract address: {config.minterAddress}</Box>
-      <HStack>
-        <Box>Token price: {showEther(tokenPrice)}</Box>
-        <form onSubmit={updateTokenPrice}>
-          <HStack>
-            <NumberInput
-              min={0}
-              value={formTokenPrice}
-              onChange={(s) => {
-                setFormTokenPrice(s)
-              }}
-            >
-              <NumberInputField />
-            </NumberInput>
-            <Button
-              type="submit"
-              isLoading={updateContractTokenPriceState.status === 'Mining'}
-            >
-              Update
-            </Button>
-          </HStack>
-        </form>
-        <Button>Lock</Button>
-      </HStack>
+      <VStack spacing={4} alignItems="flex-start">
+        <Heading as="h3" size="sm">
+          Token price
+        </Heading>
+        <HStack>
+          <Text>Current: {showEther(tokenPrice)}</Text>
+          <form onSubmit={updateTokenPrice}>
+            <HStack>
+              <NumberInput
+                min={0}
+                value={formTokenPrice}
+                onChange={(s) => {
+                  setFormTokenPrice(s)
+                }}
+              >
+                <NumberInputField />
+              </NumberInput>
+              <Button
+                type="submit"
+                isLoading={updateContractTokenPriceState.status === 'Mining'}
+              >
+                Update
+              </Button>
+            </HStack>
+          </form>
+        </HStack>
+        <HStack>
+          <Text>Lock status: {isTokenPriceLocked ? 'Locked' : 'Unlocked'}</Text>
+          <Button
+            isDisabled={isTokenPriceLocked}
+            onClick={lockTokenPrice}
+            isLoading={updateContractLockTokenPriceState.status === 'Mining'}
+          >
+            Lock
+          </Button>
+        </HStack>
+      </VStack>
     </>
   )
 }
