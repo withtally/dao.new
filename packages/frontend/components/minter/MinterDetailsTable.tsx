@@ -22,8 +22,8 @@ export const MinterDetailsTable = ({ isSaleActive, tokenPrice }) => {
   const totalSupply = useTotalSupply()
   const [openseaLink, setOpenseaLink] = useState('')
   const { chainId } = useEthers()
-  const pauseSale = usePauseSale()
-  const unpauseSale = useUnpauseSale()
+  const { send: pauseSale } = usePauseSale()
+  const { send: unpauseSale } = useUnpauseSale()
   const startingBlock = useStartingBlock()
 
   useEffect(() => {

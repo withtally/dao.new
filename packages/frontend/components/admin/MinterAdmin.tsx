@@ -25,6 +25,8 @@ import {
   useIsStartingBlockLocked,
   useIsOwnerMintLocked,
   useFixedPriceSequentialMinterFunction,
+  usePauseSale,
+  useUnpauseSale,
 } from '../../lib/contractWrappers/minter'
 import { MinterDetailsTable } from '../minter/MinterDetailsTable'
 
@@ -62,6 +64,8 @@ export const MinterAdmin = () => {
     useFixedPriceSupplyMinterFunction('lockOwnerMint')
 
   const isSaleActive = useIsSaleActive()
+  const { send: pauseSale, state: pauseSaleState } = usePauseSale()
+  const { send: unpauseSale, state: unpauseSaleState } = useUnpauseSale()
 
   const showEther = (wei: BigNumberish) => {
     if (wei) {
@@ -103,6 +107,14 @@ export const MinterAdmin = () => {
 
   const onLockOwnerMintClick = () => {
     lockOwnerMint()
+  }
+
+  const onSaleStatusClick = () => {
+    if (isSaleActive) {
+      pauseSale()
+    } else {
+      unpauseSale()
+    }
   }
 
   return (
@@ -278,7 +290,6 @@ export const MinterAdmin = () => {
               </Button>
             </VStack>
           </form>
-
           <HStack>
             <Text>
               Lock status: {isOwnerMintLocked ? 'Locked' : 'Unlocked'}
@@ -289,6 +300,23 @@ export const MinterAdmin = () => {
               isLoading={lockOwnerMintState.status === 'Mining'}
             >
               Lock
+            </Button>
+          </HStack>
+        </VStack>
+        <VStack spacing={4} alignItems="flex-start">
+          <Heading as="h3" size="sm">
+            Sale status
+          </Heading>
+          <HStack>
+            <Text>Sale status: {isSaleActive ? 'Open' : 'Paused'}</Text>
+            <Button
+              onClick={onSaleStatusClick}
+              isLoading={
+                pauseSaleState.status === 'Mining' ||
+                unpauseSaleState.status === 'Mining'
+              }
+            >
+              {isSaleActive ? 'Pause' : 'Open'}
             </Button>
           </HStack>
         </VStack>

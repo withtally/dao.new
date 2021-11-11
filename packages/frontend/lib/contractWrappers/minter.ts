@@ -125,14 +125,12 @@ export const useSpecificIdMinterMint = () => {
 
 export const usePauseSale = () => {
   const contract = new Contract(config.minterAddress, ERC721MinterAbi)
-  const { send } = useContractFunction(contract, 'pause')
-  return send
+  return useContractFunction(contract, 'pause')
 }
 
 export const useUnpauseSale = () => {
   const contract = new Contract(config.minterAddress, ERC721MinterAbi)
-  const { send } = useContractFunction(contract, 'unpause')
-  return send
+  return useContractFunction(contract, 'unpause')
 }
 
 export const useStartingBlock = () => {
