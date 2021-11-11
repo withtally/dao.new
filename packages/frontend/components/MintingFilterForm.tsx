@@ -117,7 +117,7 @@ export const MintingFilterForm = ({
         <Switch
           id="buyer-filtering"
           onChange={onSwitchChange}
-          checked={values.useMintingFilter}
+          isChecked={values.useMintingFilter}
         />
       </FormControl>
       <Text color="gray.500" fontSize="sm">
