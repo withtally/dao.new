@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { parseEther } from 'ethers/lib/utils'
 import React, { useState } from 'react'
-import config from '../../config'
+import config, { MinterType } from '../../config'
 import {
   useFixedPriceSupplyMinterFunction,
   useIncrementalMinterMintPrice,
@@ -27,6 +27,7 @@ import {
   usePauseSale,
   useUnpauseSale,
   useMintingFilter,
+  useFixedPriceSpecificIDMinterFunction,
 } from '../../lib/contractWrappers/minter'
 import { MintingFilterEditForm } from '../MintingFilterEditForm'
 import { PaymentSplitterAdminForm } from './PaymentSplitterAdminForm'
@@ -59,9 +60,12 @@ export const MinterAdmin = () => {
 
   const [ownerMintTo, setOwnerMintTo] = useState('')
   const [ownerMintAmount, setOwnerMintAmount] = useState('')
+  const [ownerMintTokenID, setOwnerMintTokenID] = useState('')
   const isOwnerMintLocked = useIsOwnerMintLocked()
-  const { send: ownerMint, state: ownerMintState } =
+  const { send: sequentialOwnerMint, state: sequentialOwnerMintState } =
     useFixedPriceSequentialMinterFunction('ownerMint')
+  const { send: idOwnerMint, state: idOwnerMintState } =
+    useFixedPriceSpecificIDMinterFunction('ownerMint')
   const { send: lockOwnerMint, state: lockOwnerMintState } =
     useFixedPriceSupplyMinterFunction('lockOwnerMint')
 
@@ -100,7 +104,11 @@ export const MinterAdmin = () => {
 
   const onOwnerMintSubmit = (e) => {
     e.preventDefault()
-    ownerMint(ownerMintTo, parseInt(ownerMintAmount))
+    if (config.minterType === MinterType.FixedPriceSequentialMinter) {
+      sequentialOwnerMint(ownerMintTo, parseInt(ownerMintAmount))
+    } else {
+      idOwnerMint(ownerMintTo, parseInt(ownerMintTokenID))
+    }
   }
 
   const onLockOwnerMintClick = () => {
@@ -265,23 +273,43 @@ export const MinterAdmin = () => {
                 </FormHelperText>
               </FormControl>
               <FormControl>
-                <FormLabel>Amount</FormLabel>
+                <FormLabel>
+                  {config.minterType === MinterType.FixedPriceSequentialMinter
+                    ? 'Amount'
+                    : 'Token ID'}
+                </FormLabel>
                 <NumberInput
                   min={0}
-                  value={ownerMintAmount}
+                  value={
+                    config.minterType === MinterType.FixedPriceSequentialMinter
+                      ? ownerMintAmount
+                      : ownerMintTokenID
+                  }
                   onChange={(s) => {
-                    setOwnerMintAmount(s)
+                    if (
+                      config.minterType ===
+                      MinterType.FixedPriceSequentialMinter
+                    ) {
+                      setOwnerMintAmount(s)
+                    } else {
+                      setOwnerMintTokenID(s)
+                    }
                   }}
                 >
                   <NumberInputField />
                 </NumberInput>
                 <FormHelperText>
-                  How many tokens to mint to the recipient.
+                  {config.minterType === MinterType.FixedPriceSequentialMinter
+                    ? 'How many tokens to mint to the recipient.'
+                    : 'The ID of the token to mint.'}
                 </FormHelperText>
               </FormControl>
               <Button
                 type="submit"
-                isLoading={ownerMintState.status === 'Mining'}
+                isLoading={
+                  sequentialOwnerMintState.status === 'Mining' ||
+                  idOwnerMintState.status === 'Mining'
+                }
                 isDisabled={isOwnerMintLocked}
               >
                 Mint
