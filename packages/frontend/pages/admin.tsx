@@ -3,6 +3,7 @@ import { Box, Container, Heading, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { MinterAdmin } from '../components/admin/MinterAdmin'
 import { TokenAdmin } from '../components/admin/TokenAdmin'
+import { GovernanceAdmin } from '../components/admin/GovernanceAdmin'
 import { ContractsTable } from '../components/admin/ContractsTable'
 import { MinterDetailsTable } from '../components/minter/MinterDetailsTable'
 import {
@@ -28,6 +29,10 @@ const Mint = () => {
           NFT contract
         </Heading>
         <TokenAdmin />
+        <Heading as="h2" size="xl">
+          Governance
+        </Heading>
+        <GovernanceAdmin />
         <Box mt={20} pt={20}>
           <hr></hr>
           <Heading>Old implementation</Heading>

@@ -9,6 +9,7 @@ interface Config {
   minterAddress: string
   tokenAddress: string
   timelockAddress: string
+  governorAddress: string
   minterType: MinterType
 }
 
@@ -18,14 +19,16 @@ export const CHAIN_ID: SupportedChains = ChainId.Localhost
 
 const config: Record<SupportedChains, Config> = {
   [ChainId.Localhost]: {
-    minterAddress: '0x4A94A6E187aD7Ec240477bC323Cb09a4009dE4f3',
-    tokenAddress: '0x2F68354deC4C21D5E38a20de57D32C4164336585',
-    timelockAddress: '0xD759EB708B9Eb7271Af848E7D99Ac4957B7F3c14',
-    minterType: MinterType.FixedPriceSpecificIDMinter,
+    tokenAddress: '0x0F9019Dd30C7Cc5774d4883fba933aA0Caba9424',
+    minterAddress: '0xFBec6C619Bd3D9adc2b13bE16ab79Ba66E607374',
+    governorAddress: '0xCeB5f7D6404389B0Fc4e2C87b125Ecfed2Bfd462',
+    timelockAddress: '0x6e374a88Ca77981Ca2c6502F164ADb8ACe9f7BB6',
+    minterType: MinterType.FixedPriceSequentialMinter,
   },
   [ChainId.Rinkeby]: {
-    minterAddress: '0x1b186cD7707c939A839fE176976Da66C2E0C21BD',
     tokenAddress: '0x743C9A45Ef6896437895C4d997e0EA15fA032553',
+    minterAddress: '0x1b186cD7707c939A839fE176976Da66C2E0C21BD',
+    governorAddress: '',
     timelockAddress: '0x3E0772678afD58880acCe775FEf48042889b7399',
     minterType: MinterType.FixedPriceSequentialMinter,
   },
