@@ -10,8 +10,7 @@ import {
   FormLabel,
   FormHelperText,
 } from '@chakra-ui/react'
-import { BigNumberish } from '@ethersproject/bignumber'
-import { formatEther, parseEther, parseUnits } from 'ethers/lib/utils'
+import { parseEther } from 'ethers/lib/utils'
 import React, { useState } from 'react'
 import config from '../../config'
 import {
@@ -30,6 +29,8 @@ import {
   useMintingFilter,
 } from '../../lib/contractWrappers/minter'
 import { MintingFilterEditForm } from '../MintingFilterEditForm'
+import { PaymentSplitterAdminForm } from './PaymentSplitterAdminForm'
+import { showEther } from '../../lib/utils'
 
 export const MinterAdmin = () => {
   const [formTokenPrice, setFormTokenPrice] = useState('')
@@ -69,12 +70,6 @@ export const MinterAdmin = () => {
   const { send: unpauseSale, state: unpauseSaleState } = useUnpauseSale()
 
   const mintingFilterAddress = useMintingFilter()
-
-  const showEther = (wei: BigNumberish) => {
-    if (wei) {
-      return `Ξ ${formatEther(wei)}`
-    }
-  }
 
   const onTokenPriceSubmit = (e) => {
     e.preventDefault()
@@ -335,6 +330,12 @@ export const MinterAdmin = () => {
         ) : (
           <></>
         )}
+        <VStack spacing={4} alignItems="flex-start">
+          <Heading as="h3" size="md">
+            Balance and funds release
+          </Heading>
+          <PaymentSplitterAdminForm />
+        </VStack>
       </VStack>
     </>
   )

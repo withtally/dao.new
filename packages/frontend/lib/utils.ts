@@ -1,9 +1,11 @@
+import { BigNumberish } from '@ethersproject/bignumber'
 import { UnsupportedChainIdError } from '@web3-react/core'
 import {
   NoEthereumProviderError,
   UserRejectedRequestError as UserRejectedRequestErrorInjected,
 } from '@web3-react/injected-connector'
 import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from '@web3-react/walletconnect-connector'
+import { formatEther } from 'ethers/lib/utils'
 
 // From https://github.com/NoahZinsmeister/web3-react/blob/v6/example/pages/index.tsx
 // Parses the possible errors provided by web3-react
@@ -20,5 +22,11 @@ export function getErrorMessage(error: Error): string {
   } else {
     console.error(error)
     return 'An unknown error occurred. Check the console for more details.'
+  }
+}
+
+export function showEther(wei: BigNumberish) {
+  if (wei) {
+    return `Ξ ${formatEther(wei)}`
   }
 }

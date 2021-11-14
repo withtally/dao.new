@@ -1,4 +1,8 @@
-import { useContractCall, useContractFunction } from '@usedapp/core'
+import {
+  useContractCall,
+  useContractFunction,
+  useEtherBalance,
+} from '@usedapp/core'
 import { Contract, utils } from 'ethers'
 import { Interface } from 'ethers/lib/utils'
 import ERC721MinterABI from '../../artifacts/contracts/minters/ERC721Minter.sol/ERC721Minter.json'
@@ -191,4 +195,41 @@ export const useMintingFilter = () => {
       args: [],
     }) || []
   return mintingFilter
+}
+
+export const useMinterETHBalance = () => {
+  return useEtherBalance(config.minterAddress)
+}
+
+export const usePayeeGetter = (index: number) => {
+  const [address] =
+    useContractCall({
+      abi: ERC721MinterAbi,
+      address: config.minterAddress,
+      method: 'payee',
+      args: [index],
+    }) || []
+  return address
+}
+
+export const useSharesGetter = (address: string) => {
+  const [shares] =
+    useContractCall({
+      abi: ERC721MinterAbi,
+      address: config.minterAddress,
+      method: 'shares',
+      args: [address],
+    }) || []
+  return shares && shares.toNumber()
+}
+
+export const useTotalShares = () => {
+  const [totalShares] =
+    useContractCall({
+      abi: ERC721MinterAbi,
+      address: config.minterAddress,
+      method: 'totalShares',
+      args: [],
+    }) || []
+  return totalShares && totalShares.toNumber()
 }
