@@ -5,11 +5,13 @@
 pragma solidity ^0.8.6;
 
 import { Base64 } from "base64-sol/base64.sol";
+import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 
 library SVGPlaceholder {
+    using StringsUpgradeable for uint256;
+
     function placeholderTokenUri(string memory tokenName, uint256 tokenId) internal pure returns (string memory) {
-        string memory tokenIdStr = toString(tokenId);
-        string memory text = string(abi.encodePacked(tokenName, " token #", tokenIdStr));
+        string memory text = string(abi.encodePacked(tokenName, " token #", tokenId.toString()));
         string memory description = string(abi.encodePacked("Placeholder art for ", text));
         string[5] memory parts;
         parts[
@@ -37,27 +39,5 @@ library SVGPlaceholder {
         );
         string memory output = string(abi.encodePacked("data:application/json;base64,", json));
         return output;
-    }
-
-    function toString(uint256 value) internal pure returns (string memory) {
-        // Inspired by OraclizeAPI's implementation - MIT license
-        // https://github.com/oraclize/ethereum-api/blob/b42146b063c7d6ee1358846c198246239e9360e8/oraclizeAPI_0.4.25.sol
-
-        if (value == 0) {
-            return "0";
-        }
-        uint256 temp = value;
-        uint256 digits;
-        while (temp != 0) {
-            digits++;
-            temp /= 10;
-        }
-        bytes memory buffer = new bytes(digits);
-        while (value != 0) {
-            digits -= 1;
-            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
-            value /= 10;
-        }
-        return string(buffer);
     }
 }
