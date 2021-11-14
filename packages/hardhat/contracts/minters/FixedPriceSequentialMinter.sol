@@ -10,6 +10,7 @@ contract FixedPriceSequentialMinter is FixedPriceFixedSupplyMinter {
     uint256 public maxMintsPerTx;
     uint256 public nextTokenId;
 
+    // this is expected to be called as part of ERC721Minter's initialize function extraInitCallData_
     function init(
         uint256 maxTokens_,
         uint256 tokenPrice_,
