@@ -2,6 +2,7 @@ import { Layout } from '../components/layout/Layout'
 import { Box, Container, Heading, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { MinterAdmin } from '../components/admin/MinterAdmin'
+import { TokenAdmin } from '../components/admin/TokenAdmin'
 import { ContractsTable } from '../components/admin/ContractsTable'
 import { MinterDetailsTable } from '../components/minter/MinterDetailsTable'
 import {
@@ -15,15 +16,19 @@ const Mint = () => {
 
   return (
     <Layout>
-      <VStack maxW="container.lg" spacing={4} alignItems="flex-start" px={4}>
-        <Heading size="xl">Admin</Heading>
-        <Heading size="lg">Minter contract</Heading>
+      <VStack maxW="container.lg" spacing={16} alignItems="flex-start" px={4}>
+        <Heading as="h1" size="2xl">
+          Admin
+        </Heading>
+        <Heading as="h2" size="xl">
+          Minter contract
+        </Heading>
         <MinterAdmin />
-        <Heading size="lg" pt={16}>
+        <Heading as="h2" size="xl">
           NFT contract
         </Heading>
-        TODO
-        <Box mt={20}>
+        <TokenAdmin />
+        <Box mt={20} pt={20}>
           <hr></hr>
           <Heading>Old implementation</Heading>
           <ContractsTable />
