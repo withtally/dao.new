@@ -99,6 +99,7 @@ describe("ERC721DAOToken", () => {
 
   describe("token URI", async () => {
     it("returns placeholder SVG before base URI is set", async () => {
+      await token.setBaseURIEnabled(false);
       const tokenURI: string = await token.tokenURI(123);
       expect(tokenURI).to.satisfy((s: string) =>
         s.startsWith("data:application/json;base64")
@@ -136,6 +137,32 @@ describe("ERC721DAOToken", () => {
       expect(tokenURI).to.satisfy((s: string) =>
         s.startsWith("data:application/json;base64")
       );
+    });
+
+    it("enables baseURI if providing non empty base uri in constructor", async () => {
+      [deployer, user, user2] = await ethers.getSigners();
+      const token = await deployAndInitDAOToken(
+        deployer,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        "the base uri"
+      );
+      expect(await token.baseURIEnabled()).to.be.true;
+    });
+
+    it("disabled baseURI if providing empty base uri in constructor", async () => {
+      [deployer, user, user2] = await ethers.getSigners();
+      const token = await deployAndInitDAOToken(
+        deployer,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        ""
+      );
+      expect(await token.baseURIEnabled()).to.be.false;
     });
   });
 });

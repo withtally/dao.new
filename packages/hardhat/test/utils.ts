@@ -90,7 +90,8 @@ export const deployAndInitDAOToken = async (
   admin?: SignerWithAddress,
   minter?: SignerWithAddress,
   burner?: SignerWithAddress,
-  baseURIer?: SignerWithAddress
+  baseURIer?: SignerWithAddress,
+  baseURI?: string
 ): Promise<ERC721DAOToken> => {
   const token = await new ERC721DAOToken__factory(deployer).deploy();
 
@@ -100,7 +101,8 @@ export const deployAndInitDAOToken = async (
     admin?.address,
     minter?.address,
     burner?.address,
-    baseURIer?.address
+    baseURIer?.address,
+    baseURI
   );
 };
 
@@ -211,7 +213,8 @@ export const initToken = async (
   admin?: string,
   minter?: string,
   burner?: string,
-  baseURIer?: string
+  baseURIer?: string,
+  baseURI: string = "BaseURI"
 ) => {
   const actualAdmin = admin || deployer;
   const actualMinter = minter || deployer;
@@ -230,7 +233,7 @@ export const initToken = async (
   await token.initialize(
     "AwesomeToken",
     "ASM",
-    "BaseURI",
+    baseURI,
     "some contract JSON URI",
     defaultRoles,
     rolesAssignees

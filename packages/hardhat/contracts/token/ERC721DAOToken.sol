@@ -50,6 +50,9 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
 
         __ERC721_init(name_, symbol_);
         baseURI = baseURI_;
+        if (bytes(baseURI_).length > 0) {
+            baseURIEnabled = true;
+        }
         contractInfoURI = contractInfoURI_;
 
         _setRoleAdmin(ADMINS_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
