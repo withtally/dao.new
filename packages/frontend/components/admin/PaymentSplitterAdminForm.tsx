@@ -9,11 +9,11 @@ import {
   useFixedPriceSupplyMinterFunction,
 } from '../../lib/contractWrappers/minter'
 
-export const PaymentSplitterAdminForm = () => {
+export const PaymentSplitterAdminForm = ({
+  creatorPayeeAddress,
+  daoPayeeAddress,
+}) => {
   const ethBalance = useMinterETHBalance()
-
-  const creatorPayeeAddress = usePayeeGetter(0)
-  const daoPayeeAddress = usePayeeGetter(1)
 
   const creatorShares = useSharesGetter(creatorPayeeAddress)
   const daoShares = useSharesGetter(daoPayeeAddress)

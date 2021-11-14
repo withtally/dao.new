@@ -28,6 +28,7 @@ import {
   useUnpauseSale,
   useMintingFilter,
   useFixedPriceSpecificIDMinterFunction,
+  usePayeeGetter,
 } from '../../lib/contractWrappers/minter'
 import { MintingFilterEditForm } from '../MintingFilterEditForm'
 import { PaymentSplitterAdminForm } from './PaymentSplitterAdminForm'
@@ -74,6 +75,8 @@ export const MinterAdmin = () => {
   const { send: unpauseSale, state: unpauseSaleState } = useUnpauseSale()
 
   const mintingFilterAddress = useMintingFilter()
+  const creatorPayeeAddress = usePayeeGetter(0)
+  const daoPayeeAddress = usePayeeGetter(1)
 
   const onTokenPriceSubmit = (e) => {
     e.preventDefault()
@@ -362,7 +365,15 @@ export const MinterAdmin = () => {
           <Heading as="h3" size="md">
             Balance and funds release
           </Heading>
-          <PaymentSplitterAdminForm />
+          {creatorPayeeAddress !== undefined &&
+          daoPayeeAddress !== undefined ? (
+            <PaymentSplitterAdminForm
+              creatorPayeeAddress={creatorPayeeAddress}
+              daoPayeeAddress={daoPayeeAddress}
+            />
+          ) : (
+            <></>
+          )}
         </VStack>
       </VStack>
     </>
