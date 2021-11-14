@@ -33,6 +33,7 @@ export const BURNER_ADMIN_ROLE = hashString("BURNER_ADMIN_ROLE");
 export const BASE_URI_ROLE = hashString("BASE_URI_ROLE");
 export const BASE_URI_ADMIN_ROLE = hashString("BASE_URI_ADMIN_ROLE");
 export const CREATOR_ROLE = hashString("CREATOR_ROLE");
+const zeroAddress = "0x0000000000000000000000000000000000000000";
 
 export const defaultRoles = [
   MINTER_ROLE,
@@ -131,6 +132,7 @@ export const deployFixedPriceSequentialMinter = async (
     startingBlock,
     payees,
     shares,
+    zeroAddress,
     minter.interface.encodeFunctionData("init", [
       maxTokens,
       tokenPrice,
@@ -162,6 +164,7 @@ export const deployIDMinter = async (
     startingBlock,
     payees,
     shares,
+    zeroAddress,
     minter.interface.encodeFunctionData("init", [maxTokens, tokenPrice])
   );
 

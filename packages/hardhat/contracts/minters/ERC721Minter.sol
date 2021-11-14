@@ -39,18 +39,17 @@ abstract contract ERC721Minter is PaymentSplitterUpgradeable, AccessControlEnume
         uint256 startingBlock_,
         address[] memory payees_,
         uint256[] memory shares_,
+        MintingFilter mintingFilter_,
         bytes memory extraInitCallData_
     ) public virtual initializer {
         _setRoleAdmin(CREATOR_ROLE, CREATOR_ROLE);
         _setupRole(CREATOR_ROLE, creator_);
 
-        // TODO do we keep the Deployer as admin?
-        _setupRole(CREATOR_ROLE, _msgSender());
-
         __PaymentSplitter_init(payees_, shares_);
 
         token = token_;
         startingBlock = startingBlock_;
+        mintingFilter = mintingFilter_;
         _pause();
 
         address(this).functionCall(extraInitCallData_);

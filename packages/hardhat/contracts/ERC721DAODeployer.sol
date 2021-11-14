@@ -100,9 +100,9 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             governorParams.votingPeriod,
             governorParams.quorumNumerator
         );
-        initMinter(minterClone, timelockClone, tokenClone, minterParams, creatorAddress);
+
         MintingFilter mintingFilter = cloneAndInitMintingFilter(mintingFilterParams);
-        minterClone.setMintingFilter(mintingFilter);
+        initMinter(minterClone, timelockClone, tokenClone, minterParams, creatorAddress, mintingFilter);
 
         emit NewClone(
             address(tokenClone),
@@ -163,7 +163,8 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721Timelock timelockClone,
         ERC721DAOToken tokenClone,
         MinterParams calldata minterParams,
-        address creatorAddress
+        address creatorAddress,
+        MintingFilter mintingFilter
     ) private {
         address[] memory payees = new address[](2);
         payees[0] = creatorAddress;
@@ -179,6 +180,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             minterParams.startingBlock,
             payees,
             shares,
+            mintingFilter,
             minterParams.extraInitCallData
         );
     }
