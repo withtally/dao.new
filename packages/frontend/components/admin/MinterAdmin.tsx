@@ -29,6 +29,7 @@ import {
   useMintingFilter,
   useFixedPriceSpecificIDMinterFunction,
   usePayeeGetter,
+  useMaxMintPerTx,
 } from '../../lib/contractWrappers/minter'
 import { MintingFilterEditForm } from '../MintingFilterEditForm'
 import { PaymentSplitterAdminForm } from './PaymentSplitterAdminForm'
@@ -77,6 +78,11 @@ export const MinterAdmin = () => {
   const mintingFilterAddress = useMintingFilter()
   const creatorPayeeAddress = usePayeeGetter(0)
   const daoPayeeAddress = usePayeeGetter(1)
+
+  let maxMintsPerTx
+  if (config.minterType === MinterType.FixedPriceSequentialMinter) {
+    maxMintsPerTx = useMaxMintPerTx()
+  }
 
   const onTokenPriceSubmit = (e) => {
     e.preventDefault()
@@ -213,6 +219,16 @@ export const MinterAdmin = () => {
             </Button>
           </HStack>
         </VStack>
+        {config.minterType === MinterType.FixedPriceSequentialMinter ? (
+          <VStack spacing={4} alignItems="flex-start">
+            <Heading as="h3" size="md">
+              Max mints per transaction
+            </Heading>
+            <Text>Value: {maxMintsPerTx}</Text>
+          </VStack>
+        ) : (
+          <></>
+        )}
         <VStack spacing={4} alignItems="flex-start">
           <Heading as="h3" size="md">
             Sale start block
