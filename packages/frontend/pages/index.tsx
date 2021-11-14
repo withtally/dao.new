@@ -42,7 +42,7 @@ import {
   FixedPriceSpecificIDMinter__factory,
   RequiredNFTsMintingFilter__factory,
 } from '../types/typechain'
-import { Table, Thead, Tbody, Tr, Td, TableCaption } from '@chakra-ui/react'
+import { Table, Thead, Tbody, Tr, Td, Th } from '@chakra-ui/react'
 import { MintingFilterForm } from '../components/MintingFilterForm'
 
 /**
