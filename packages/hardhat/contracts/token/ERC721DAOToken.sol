@@ -21,7 +21,7 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
     /**
      * @notice The IPFS URI of the project's metadata.
      */
-    string private contractInfoURI;
+    string public contractInfoURI;
     bool public baseURIEnabled;
 
     event BaseURIChanged(string newURI);
