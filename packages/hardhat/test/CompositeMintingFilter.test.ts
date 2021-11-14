@@ -45,6 +45,7 @@ describe("CompositeMintingFilter", async () => {
       "FirstToken",
       "FT",
       "",
+      "",
       [MINTER_ROLE],
       [minter.address]
     );
@@ -61,6 +62,7 @@ describe("CompositeMintingFilter", async () => {
     await rejectedToken.initialize(
       "SecondToken",
       "ST",
+      "",
       "",
       [MINTER_ROLE],
       [minter.address]

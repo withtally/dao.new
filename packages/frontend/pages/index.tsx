@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Divider,
   Heading,
   Input,
   Text,
@@ -43,16 +42,7 @@ import {
   FixedPriceSpecificIDMinter__factory,
   RequiredNFTsMintingFilter__factory,
 } from '../types/typechain'
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-} from '@chakra-ui/react'
+import { Table, Thead, Tbody, Tr, Td, TableCaption } from '@chakra-ui/react'
 import { MintingFilterForm } from '../components/MintingFilterForm'
 
 /**
@@ -78,6 +68,7 @@ type TokenParams = {
   name: string
   symbol: string
   baseURI: string
+  contractInfoURI: string
 }
 
 type GovernorParams = {
@@ -153,6 +144,7 @@ const initialState: StateType = {
     name: '',
     symbol: '',
     baseURI: '',
+    contractInfoURI: '',
   },
   minterConfig: {
     implementationIndex: 0,
@@ -368,6 +360,16 @@ function HomeIndex(): JSX.Element {
     })
   }
 
+  function onTokenContractInfoURIChange(e) {
+    dispatch({
+      type: 'SET_TOKEN_CONFIG',
+      tokenConfig: {
+        ...state.tokenConfig,
+        contractInfoURI: e.target.value,
+      },
+    })
+  }
+
   function onMinterMaxTokensChange(e) {
     dispatch({
       type: 'SET_MINTER_CONFIG',
@@ -541,6 +543,24 @@ function HomeIndex(): JSX.Element {
                   isExternal
                 >
                   ipfs://bafybeif4s7oom2ch6iv42yn7la4b3dnkud2dgujmnhuxuswekx4l6yz4me/
+                </Link>
+              </FormHelperText>
+            </FormControl>
+            <FormControl id="token-contractinfouri" isRequired>
+              <FormLabel>Contract Info URI</FormLabel>
+              <Input
+                type="text"
+                value={state.tokenConfig.contractInfoURI}
+                onChange={onTokenContractInfoURIChange}
+              />
+              <FormHelperText>
+                A link to a JSON file describing the token. Example from the
+                Nouns token:{' '}
+                <Link
+                  href="ipfs://QmZi1n79FqWt2tTLwCqiy6nLM6xLGRsEPQ5JmReJQKNNzX"
+                  isExternal
+                >
+                  ipfs://QmZi1n79FqWt2tTLwCqiy6nLM6xLGRsEPQ5JmReJQKNNzX
                 </Link>
               </FormHelperText>
             </FormControl>

@@ -228,6 +228,7 @@ export const initToken = async (
     "AwesomeToken",
     "ASM",
     "BaseURI",
+    "some contract JSON URI",
     defaultRoles,
     rolesAssignees
   );

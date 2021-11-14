@@ -125,6 +125,7 @@ const cloneWithFixedPriceSequentialMinter = async () => {
       name: "MyToken",
       symbol: "MT",
       baseURI: BASE_URI,
+      contractInfoURI: "",
     },
     {
       name: "GovName",
@@ -171,6 +172,7 @@ const cloneWithIDMinter = async () => {
       name: "MyToken",
       symbol: "MT",
       baseURI: BASE_URI,
+      contractInfoURI: "",
     },
     {
       name: "GovName",
@@ -215,6 +217,7 @@ const cloneWithSequentialMinterAndRequiredNFTFilter = async () => {
     "Name",
     "Symbol",
     "baseURI",
+    "",
     [MINTER_ROLE],
     [signer.address]
   );
@@ -225,6 +228,7 @@ const cloneWithSequentialMinterAndRequiredNFTFilter = async () => {
       name: "MyToken",
       symbol: "MT",
       baseURI: BASE_URI,
+      contractInfoURI: "",
     },
     {
       name: "GovName",
@@ -533,6 +537,7 @@ describe("End to end flows", () => {
           "Name",
           "Symbol",
           "baseURI",
+          "",
           [MINTER_ROLE],
           [signer.address]
         );

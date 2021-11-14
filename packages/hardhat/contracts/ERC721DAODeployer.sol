@@ -19,6 +19,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         string name;
         string symbol;
         string baseURI;
+        string contractInfoURI;
     }
 
     struct GovernorParams {
@@ -118,21 +119,30 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         address creatorAddress,
         TokenParams calldata tokenParams
     ) private {
-        bytes32[] memory roles = new bytes32[](5);
+        bytes32[] memory roles = new bytes32[](6);
         roles[0] = token.getAdminsAdminRole();
         roles[1] = token.getMinterAdminRole();
         roles[2] = token.getBurnerAdminRole();
         roles[3] = token.getBaseURIAdminRole();
-        roles[4] = token.getMinterRole();
+        roles[4] = token.getBaseURIRole();
+        roles[5] = token.getMinterRole();
 
-        address[] memory rolesAssignees = new address[](5);
+        address[] memory rolesAssignees = new address[](6);
         rolesAssignees[0] = creatorAddress;
         rolesAssignees[1] = creatorAddress;
         rolesAssignees[2] = creatorAddress;
         rolesAssignees[3] = creatorAddress;
-        rolesAssignees[4] = address(minterClone);
+        rolesAssignees[4] = creatorAddress;
+        rolesAssignees[5] = address(minterClone);
 
-        tokenClone.initialize(tokenParams.name, tokenParams.symbol, tokenParams.baseURI, roles, rolesAssignees);
+        tokenClone.initialize(
+            tokenParams.name,
+            tokenParams.symbol,
+            tokenParams.baseURI,
+            tokenParams.contractInfoURI,
+            roles,
+            rolesAssignees
+        );
     }
 
     function initTimelock(

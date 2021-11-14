@@ -40,6 +40,7 @@ describe("RequiredNFTsMintingFilter", async () => {
       "FirstToken",
       "FT",
       "",
+      "",
       [MINTER_ROLE],
       [minter.address]
     );
@@ -48,6 +49,7 @@ describe("RequiredNFTsMintingFilter", async () => {
     await tokens[1].initialize(
       "SecondToken",
       "ST",
+      "",
       "",
       [MINTER_ROLE],
       [minter.address]

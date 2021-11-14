@@ -55,6 +55,7 @@ describe("CloneFactory", () => {
       "NewToken",
       "NT",
       "BaseURI",
+      "",
       defaultRoles,
       assignees,
     ]);

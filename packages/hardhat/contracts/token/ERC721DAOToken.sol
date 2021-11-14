@@ -18,11 +18,14 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
     bytes32 public constant ADMINS_ADMIN_ROLE = keccak256("ADMINS_ADMIN_ROLE");
 
     string public baseURI;
-    string private contractInfoFilename;
+    /**
+     * @notice The IPFS URI of the project's metadata.
+     */
+    string private contractInfoURI;
     bool public baseURIEnabled;
 
     event BaseURIChanged(string newURI);
-    event ContractInfoFilenameChanged(string newFilename);
+    event ContractInfoURIChanged(string newContractInfoURI);
     event BaseURIEnabledChanged(bool baseURIEnabled);
 
     function supportsInterface(bytes4 interfaceId)
@@ -39,6 +42,7 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
         string memory name_,
         string memory symbol_,
         string memory baseURI_,
+        string memory contractInfoURI_,
         bytes32[] memory roles,
         address[] memory rolesAssignees
     ) public initializer {
@@ -46,7 +50,7 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
 
         __ERC721_init(name_, symbol_);
         baseURI = baseURI_;
-        contractInfoFilename = "project.json";
+        contractInfoURI = contractInfoURI_;
 
         _setRoleAdmin(ADMINS_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
         _setRoleAdmin(MINTER_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
@@ -90,16 +94,9 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
         }
     }
 
-    function setContractInfoFilename(string memory contractInfoFilename_) public onlyRole(BASE_URI_ROLE) {
-        contractInfoFilename = contractInfoFilename_;
-        emit ContractInfoFilenameChanged(contractInfoFilename_);
-    }
-
-    /**
-     * @notice The IPFS URI of the project's metadata.
-     */
-    function contractInfoURI() public view returns (string memory) {
-        return string(abi.encodePacked(baseURI, contractInfoFilename));
+    function setContractInfoURI(string memory contractInfoURI_) public onlyRole(BASE_URI_ROLE) {
+        contractInfoURI = contractInfoURI_;
+        emit ContractInfoURIChanged(contractInfoURI_);
     }
 
     function _baseURI() internal view override returns (string memory) {
