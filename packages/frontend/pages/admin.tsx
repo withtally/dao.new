@@ -1,11 +1,9 @@
 import { Layout } from '../components/layout/Layout'
-import { Box, Container, Heading, VStack } from '@chakra-ui/react'
+import { Heading, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { MinterAdmin } from '../components/admin/MinterAdmin'
 import { TokenAdmin } from '../components/admin/TokenAdmin'
 import { GovernanceAdmin } from '../components/admin/GovernanceAdmin'
-import { ContractsTable } from '../components/admin/ContractsTable'
-import { MinterDetailsTable } from '../components/minter/MinterDetailsTable'
 import {
   useIncrementalMinterMintPrice,
   useIsSaleActive,
@@ -33,15 +31,6 @@ const Mint = () => {
           Governance
         </Heading>
         <GovernanceAdmin />
-        <Box mt={20} pt={20}>
-          <hr></hr>
-          <Heading>Old implementation</Heading>
-          <ContractsTable />
-          <MinterDetailsTable
-            isSaleActive={isSaleActive}
-            tokenPrice={tokenPrice}
-          />
-        </Box>
       </VStack>
     </Layout>
   )
