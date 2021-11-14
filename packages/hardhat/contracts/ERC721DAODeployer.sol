@@ -122,18 +122,16 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         bytes32[] memory roles = new bytes32[](6);
         roles[0] = token.getAdminsAdminRole();
         roles[1] = token.getMinterAdminRole();
-        roles[2] = token.getBurnerAdminRole();
-        roles[3] = token.getBaseURIAdminRole();
-        roles[4] = token.getBaseURIRole();
-        roles[5] = token.getMinterRole();
+        roles[2] = token.getBaseURIAdminRole();
+        roles[3] = token.getBaseURIRole();
+        roles[4] = token.getMinterRole();
 
         address[] memory rolesAssignees = new address[](6);
         rolesAssignees[0] = creatorAddress;
         rolesAssignees[1] = creatorAddress;
         rolesAssignees[2] = creatorAddress;
         rolesAssignees[3] = creatorAddress;
-        rolesAssignees[4] = creatorAddress;
-        rolesAssignees[5] = address(minterClone);
+        rolesAssignees[4] = address(minterClone);
 
         tokenClone.initialize(
             tokenParams.name,

@@ -13,10 +13,8 @@ import {
   createTransferProp,
   deployAndInitDeployer,
   MINTER_ADMIN_ROLE,
-  BURNER_ADMIN_ROLE,
   BASE_URI_ADMIN_ROLE,
   MINTER_ROLE,
-  BURNER_ROLE,
   BASE_URI_ROLE,
   DEFAULT_ADMIN_ROLE,
   ADMINS_ADMIN_ROLE,
@@ -618,10 +616,8 @@ describe("End to end flows", () => {
   describe("Token Roles", async () => {
     before(cloneWithIDMinter);
 
-    it("creator is admin of all roles: minter, burner and base URI, and doesn't have default admin", async () => {
+    it("creator is admin of all roles: minter and base URI, and doesn't have default admin", async () => {
       expect(await token.hasRole(MINTER_ADMIN_ROLE, creator.address)).to.be
-        .true;
-      expect(await token.hasRole(BURNER_ADMIN_ROLE, creator.address)).to.be
         .true;
       expect(await token.hasRole(BASE_URI_ADMIN_ROLE, creator.address)).to.be
         .true;
@@ -631,9 +627,8 @@ describe("End to end flows", () => {
         .false;
     });
 
-    it("creator can assign minter, burner and base URI roles", async () => {
+    it("creator can assign minter and base URI roles", async () => {
       await token.connect(creator).grantRole(MINTER_ROLE, rando.address);
-      await token.connect(creator).grantRole(BURNER_ROLE, user3.address);
       await token.connect(creator).grantRole(BASE_URI_ROLE, user2.address);
     });
 
@@ -643,17 +638,12 @@ describe("End to end flows", () => {
         .grantRole(MINTER_ADMIN_ROLE, timelock.address);
       await token
         .connect(creator)
-        .grantRole(BURNER_ADMIN_ROLE, timelock.address);
-      await token
-        .connect(creator)
         .grantRole(BASE_URI_ADMIN_ROLE, timelock.address);
       await token
         .connect(creator)
         .grantRole(ADMINS_ADMIN_ROLE, timelock.address);
 
       expect(await token.hasRole(MINTER_ADMIN_ROLE, timelock.address)).to.be
-        .true;
-      expect(await token.hasRole(BURNER_ADMIN_ROLE, timelock.address)).to.be
         .true;
       expect(await token.hasRole(BASE_URI_ADMIN_ROLE, timelock.address)).to.be
         .true;
@@ -667,20 +657,12 @@ describe("End to end flows", () => {
         .renounceRole(MINTER_ADMIN_ROLE, creator.address);
       await token
         .connect(creator)
-        .renounceRole(BURNER_ADMIN_ROLE, creator.address);
-      await token
-        .connect(creator)
         .renounceRole(BASE_URI_ADMIN_ROLE, creator.address);
 
       await expect(
         token.connect(creator).grantRole(MINTER_ROLE, user1.address)
       ).to.revertedWith(
         `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x70480ee89cb38eff00b7d23da25713d52ce19c6ed428691d22c58b2f615e3d67`
-      );
-      await expect(
-        token.connect(creator).grantRole(BURNER_ROLE, user2.address)
-      ).to.revertedWith(
-        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0xc8d1ad9d415224b751d781cc8214ccfe7c47716e13229475443f04f1ebddadc6`
       );
       await expect(
         token.connect(creator).grantRole(BASE_URI_ROLE, user3.address)
@@ -705,11 +687,6 @@ describe("End to end flows", () => {
       );
       await expect(
         token.connect(creator).grantRole(MINTER_ADMIN_ROLE, timelock.address)
-      ).to.be.revertedWith(
-        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
-      );
-      await expect(
-        token.connect(creator).grantRole(BURNER_ADMIN_ROLE, timelock.address)
       ).to.be.revertedWith(
         `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
       );

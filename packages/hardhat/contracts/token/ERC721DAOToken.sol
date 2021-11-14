@@ -11,8 +11,6 @@ import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgrad
 contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerableUpgradeable {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant MINTER_ADMIN_ROLE = keccak256("MINTER_ADMIN_ROLE");
-    bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
-    bytes32 public constant BURNER_ADMIN_ROLE = keccak256("BURNER_ADMIN_ROLE");
     bytes32 public constant BASE_URI_ROLE = keccak256("BASE_URI_ROLE");
     bytes32 public constant BASE_URI_ADMIN_ROLE = keccak256("BASE_URI_ADMIN_ROLE");
     bytes32 public constant ADMINS_ADMIN_ROLE = keccak256("ADMINS_ADMIN_ROLE");
@@ -57,10 +55,8 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
 
         _setRoleAdmin(ADMINS_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
         _setRoleAdmin(MINTER_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
-        _setRoleAdmin(BURNER_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
         _setRoleAdmin(BASE_URI_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
         _setRoleAdmin(MINTER_ROLE, MINTER_ADMIN_ROLE);
-        _setRoleAdmin(BURNER_ROLE, BURNER_ADMIN_ROLE);
         _setRoleAdmin(BASE_URI_ROLE, BASE_URI_ADMIN_ROLE);
 
         // assign roles
@@ -112,14 +108,6 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
 
     function getMinterAdminRole() external pure returns (bytes32) {
         return MINTER_ADMIN_ROLE;
-    }
-
-    function getBurnerRole() external pure returns (bytes32) {
-        return BURNER_ROLE;
-    }
-
-    function getBurnerAdminRole() external pure returns (bytes32) {
-        return BURNER_ADMIN_ROLE;
     }
 
     function getBaseURIRole() external pure returns (bytes32) {

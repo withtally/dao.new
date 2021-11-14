@@ -146,7 +146,6 @@ describe("ERC721DAOToken", () => {
         undefined,
         undefined,
         undefined,
-        undefined,
         "the base uri"
       );
       expect(await token.baseURIEnabled()).to.be.true;
@@ -156,7 +155,6 @@ describe("ERC721DAOToken", () => {
       [deployer, user, user2] = await ethers.getSigners();
       const token = await deployAndInitDAOToken(
         deployer,
-        undefined,
         undefined,
         undefined,
         undefined,

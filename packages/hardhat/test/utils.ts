@@ -28,8 +28,6 @@ export const DEFAULT_ADMIN_ROLE = ethers.constants.HashZero;
 export const ADMINS_ADMIN_ROLE = hashString("ADMINS_ADMIN_ROLE");
 export const MINTER_ROLE = hashString("MINTER_ROLE");
 export const MINTER_ADMIN_ROLE = hashString("MINTER_ADMIN_ROLE");
-export const BURNER_ROLE = hashString("BURNER_ROLE");
-export const BURNER_ADMIN_ROLE = hashString("BURNER_ADMIN_ROLE");
 export const BASE_URI_ROLE = hashString("BASE_URI_ROLE");
 export const BASE_URI_ADMIN_ROLE = hashString("BASE_URI_ADMIN_ROLE");
 export const CREATOR_ROLE = hashString("CREATOR_ROLE");
@@ -38,8 +36,6 @@ const zeroAddress = "0x0000000000000000000000000000000000000000";
 export const defaultRoles = [
   MINTER_ROLE,
   MINTER_ADMIN_ROLE,
-  BURNER_ROLE,
-  BURNER_ADMIN_ROLE,
   BASE_URI_ROLE,
   BASE_URI_ADMIN_ROLE,
 ];
@@ -89,7 +85,6 @@ export const deployAndInitDAOToken = async (
   deployer: SignerWithAddress,
   admin?: SignerWithAddress,
   minter?: SignerWithAddress,
-  burner?: SignerWithAddress,
   baseURIer?: SignerWithAddress,
   baseURI?: string
 ): Promise<ERC721DAOToken> => {
@@ -100,7 +95,6 @@ export const deployAndInitDAOToken = async (
     deployer.address,
     admin?.address,
     minter?.address,
-    burner?.address,
     baseURIer?.address,
     baseURI
   );
@@ -204,7 +198,7 @@ export const defaultAssignees = async (
   deployer: SignerWithAddress
 ): Promise<string[]> => {
   const addr = await deployer.getAddress();
-  return [addr, addr, addr, addr, addr, addr];
+  return [addr, addr, addr, addr];
 };
 
 export const initToken = async (
@@ -212,19 +206,15 @@ export const initToken = async (
   deployer: string,
   admin?: string,
   minter?: string,
-  burner?: string,
   baseURIer?: string,
   baseURI: string = "BaseURI"
 ) => {
   const actualAdmin = admin || deployer;
   const actualMinter = minter || deployer;
-  const actualBurner = burner || deployer;
   const actualBaseURIer = baseURIer || deployer;
 
   const rolesAssignees = [
     actualMinter,
-    actualAdmin,
-    actualBurner,
     actualAdmin,
     actualBaseURIer,
     actualAdmin,
