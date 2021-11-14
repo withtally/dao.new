@@ -24,10 +24,7 @@ contract FixedPriceSequentialMinter is FixedPriceFixedSupplyMinter {
 
     function mint(uint256 amount) external payable whenNotPaused afterStartingBlock senderPassesFilter {
         require(amount <= maxMintsPerTx, "FixedPriceSequentialMinter: There is a limit on minting too many at a time!");
-
         require(msg.value >= tokenPrice * amount, "FixedPriceSequentialMinter: not enough ether sent!");
-        // TODO do we want to enforce no contracts?
-        require(_msgSender() == tx.origin, "FixedPriceSequentialMinter: No contracts!");
 
         mintBatch(_msgSender(), amount);
     }
