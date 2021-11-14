@@ -528,7 +528,7 @@ function HomeIndex(): JSX.Element {
               />
               <FormHelperText>e.g. LOOT.</FormHelperText>
             </FormControl>
-            <FormControl id="token-baseuri" isRequired>
+            <FormControl id="token-baseuri">
               <FormLabel>Base URI</FormLabel>
               <Input
                 type="text"
@@ -544,6 +544,10 @@ function HomeIndex(): JSX.Element {
                 >
                   ipfs://bafybeif4s7oom2ch6iv42yn7la4b3dnkud2dgujmnhuxuswekx4l6yz4me/
                 </Link>
+                <br />
+                <br />
+                If you don't yet have art on IPFS, you can leave this empty and
+                your NFTs will have a placeholder image.
               </FormHelperText>
             </FormControl>
             <FormControl id="token-contractinfouri" isRequired>
