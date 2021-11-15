@@ -21,6 +21,8 @@ import {
   proposeAndExecute,
   ROYALTIES_ADMIN_ROLE,
   ROYALTIES_ROLE,
+  PROXY_REGISTRY_ADMIN_ROLE,
+  PROXY_REGISTRY_ROLE,
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
@@ -40,6 +42,15 @@ import { ERC721DAODeployer } from "../../frontend/types/typechain/ERC721DAODeplo
 import { Wallet } from "@ethersproject/wallet";
 import { RequiredNFTsMintingFilter__factory } from "../../frontend/types/typechain/factories/RequiredNFTsMintingFilter__factory";
 import { parseEther } from "@ethersproject/units";
+import {
+  deployMockContract,
+  MockContract,
+} from "@ethereum-waffle/mock-contract";
+import IProxyRegistryBuild from "../../frontend/artifacts/contracts/lib/IProxyRegistry.sol/IProxyRegistry.json";
+import { MockProvider } from "@ethereum-waffle/provider";
+import { IProxyRegistry } from "../../frontend/types/typechain/IProxyRegistry";
+import { ProxyRegistryMock__factory } from "../../frontend/types/typechain/factories/ProxyRegistryMock__factory";
+import { ProxyRegistryMock } from "../../frontend/types/typechain/ProxyRegistryMock";
 
 chai.use(solidity);
 const { expect } = chai;
@@ -87,6 +98,11 @@ let simpleMinter: FixedPriceSequentialMinter;
 let idMinter: FixedPriceSpecificIDMinter;
 let deployer: ERC721DAODeployer;
 let requiredToken: ERC721DAOToken;
+let mockProxyRegistry: ProxyRegistryMock;
+
+const deployMockProxyRegistry = async () => {
+  mockProxyRegistry = await new ProxyRegistryMock__factory(signer).deploy();
+};
 
 const deploy = async () => {
   [signer, user1, user2, user3, rando] = await ethers.getSigners();
@@ -541,6 +557,113 @@ describe("End to end flows", () => {
         );
       });
     });
+
+    describe("ProxyRegisttry", async () => {
+      beforeEach(async () => {
+        await deployMockProxyRegistry();
+      });
+
+      it("lets creator enable proxy registry and set its address", async () => {
+        expect(await token.proxyRegistryEnabled()).to.be.false;
+        await token.connect(creator).setProxyRegistryEnabled(true);
+        expect(await token.proxyRegistryEnabled()).to.be.true;
+
+        expect(await token.proxyRegistry()).to.equal(
+          ethers.constants.AddressZero
+        );
+        await token
+          .connect(creator)
+          .setProxyRegistry(mockProxyRegistry.address);
+        expect(await token.proxyRegistry()).to.equal(mockProxyRegistry.address);
+
+        await token
+          .connect(creator)
+          .setProxyRegistry(ethers.constants.AddressZero);
+        await token.connect(creator).setProxyRegistryEnabled(false);
+        expect(await token.proxyRegistry()).to.equal(
+          ethers.constants.AddressZero
+        );
+        expect(await token.proxyRegistryEnabled()).to.be.false;
+
+        await token
+          .connect(creator)
+          .setProxyRegistryAndEnable(mockProxyRegistry.address);
+        expect(await token.proxyRegistryEnabled()).to.be.true;
+        expect(await token.proxyRegistry()).to.equal(mockProxyRegistry.address);
+      });
+
+      it("blocks non-creators from setting the proxy and enabling it", async () => {
+        await expect(
+          token.connect(rando).setProxyRegistryEnabled(true)
+        ).to.be.revertedWith(
+          `AccessControl: account ${rando.address.toLowerCase()} is missing role 0xc18654fb5816bebd145b69a69dc6bb85a6359482b746c9678021eb26e247f691'`
+        );
+
+        await expect(
+          token.connect(rando).setProxyRegistry(mockProxyRegistry.address)
+        ).to.be.revertedWith(
+          `AccessControl: account ${rando.address.toLowerCase()} is missing role 0xc18654fb5816bebd145b69a69dc6bb85a6359482b746c9678021eb26e247f691'`
+        );
+
+        await expect(
+          token
+            .connect(rando)
+            .setProxyRegistryAndEnable(mockProxyRegistry.address)
+        ).to.be.revertedWith(
+          `AccessControl: account ${rando.address.toLowerCase()} is missing role 0xc18654fb5816bebd145b69a69dc6bb85a6359482b746c9678021eb26e247f691'`
+        );
+      });
+
+      it("isApprovedForAll returns true when the operator is registered", async () => {
+        await token
+          .connect(creator)
+          .setProxyRegistryAndEnable(mockProxyRegistry.address);
+
+        const owner = user1;
+        const operator = user2;
+        await mockProxyRegistry.setReturnValueForOwner(
+          owner.address,
+          operator.address
+        );
+
+        expect(await token.isApprovedForAll(owner.address, operator.address)).to
+          .be.true;
+      });
+
+      it("isApprovedForAll returns false when the operator is not registered", async () => {
+        await token
+          .connect(creator)
+          .setProxyRegistryAndEnable(mockProxyRegistry.address);
+
+        const owner = user1;
+        const operator = user2;
+        await mockProxyRegistry.setReturnValueForOwner(
+          owner.address,
+          ethers.constants.AddressZero
+        );
+
+        expect(await token.isApprovedForAll(owner.address, operator.address)).to
+          .be.false;
+      });
+
+      it("isApprovedForAll returns true when the operator is not registered, but is approved via ERC721 approval", async () => {
+        await token
+          .connect(creator)
+          .setProxyRegistryAndEnable(mockProxyRegistry.address);
+
+        const owner = user1;
+        const operator = user2;
+        await mockProxyRegistry.setReturnValueForOwner(
+          owner.address,
+          operator.address
+        );
+
+        await token.connect(owner).setApprovalForAll(operator.address, true);
+
+        expect(await token.isApprovedForAll(owner.address, operator.address)).to
+          .be.true;
+      });
+    });
   });
 
   describe("Using FixedPriceSpecificIDMinter", async () => {
@@ -701,6 +824,8 @@ describe("End to end flows", () => {
         .true;
       expect(await token.hasRole(ROYALTIES_ADMIN_ROLE, creator.address)).to.be
         .true;
+      expect(await token.hasRole(PROXY_REGISTRY_ADMIN_ROLE, creator.address)).to
+        .be.true;
 
       // DEFAULT_ADMIN_ROLE can be risky, best not to have it.
       expect(await token.hasRole(DEFAULT_ADMIN_ROLE, creator.address)).to.be
@@ -711,6 +836,9 @@ describe("End to end flows", () => {
       await token.connect(creator).grantRole(MINTER_ROLE, rando.address);
       await token.connect(creator).grantRole(BASE_URI_ROLE, user2.address);
       await token.connect(creator).grantRole(ROYALTIES_ROLE, user3.address);
+      await token
+        .connect(creator)
+        .grantRole(PROXY_REGISTRY_ROLE, user1.address);
     });
 
     it("creator can assign the admin roles to the DAO", async () => {
@@ -725,6 +853,9 @@ describe("End to end flows", () => {
         .grantRole(ROYALTIES_ADMIN_ROLE, timelock.address);
       await token
         .connect(creator)
+        .grantRole(PROXY_REGISTRY_ADMIN_ROLE, timelock.address);
+      await token
+        .connect(creator)
         .grantRole(ADMINS_ADMIN_ROLE, timelock.address);
 
       expect(await token.hasRole(MINTER_ADMIN_ROLE, timelock.address)).to.be
@@ -733,6 +864,8 @@ describe("End to end flows", () => {
         .true;
       expect(await token.hasRole(ROYALTIES_ADMIN_ROLE, timelock.address)).to.be
         .true;
+      expect(await token.hasRole(PROXY_REGISTRY_ADMIN_ROLE, timelock.address))
+        .to.be.true;
       expect(await token.hasRole(ADMINS_ADMIN_ROLE, timelock.address)).to.be
         .true;
     });
@@ -747,6 +880,9 @@ describe("End to end flows", () => {
       await token
         .connect(creator)
         .renounceRole(ROYALTIES_ADMIN_ROLE, creator.address);
+      await token
+        .connect(creator)
+        .renounceRole(PROXY_REGISTRY_ADMIN_ROLE, creator.address);
 
       await expect(
         token.connect(creator).grantRole(MINTER_ROLE, user1.address)
@@ -762,6 +898,11 @@ describe("End to end flows", () => {
         token.connect(creator).grantRole(ROYALTIES_ROLE, rando.address)
       ).to.revertedWith(
         `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x0381f8bcf86f2b12a863dd00cfdf78e684eab780875b06ce2779aaa7475c64db`
+      );
+      await expect(
+        token.connect(creator).grantRole(PROXY_REGISTRY_ROLE, rando.address)
+      ).to.revertedWith(
+        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0xf8d9113c652f85b5d786c220fee7c2f4d9a34612f89b0401c1492016305e6382`
       );
     });
 
@@ -791,6 +932,13 @@ describe("End to end flows", () => {
       );
       await expect(
         token.connect(creator).grantRole(ROYALTIES_ADMIN_ROLE, timelock.address)
+      ).to.be.revertedWith(
+        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
+      );
+      await expect(
+        token
+          .connect(creator)
+          .grantRole(PROXY_REGISTRY_ADMIN_ROLE, timelock.address)
       ).to.be.revertedWith(
         `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
       );
