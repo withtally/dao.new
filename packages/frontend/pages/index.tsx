@@ -21,7 +21,7 @@ import {
 import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
 import { ethers, providers, utils, BigNumberish, BytesLike } from 'ethers'
 import React, { ChangeEvent, useReducer } from 'react'
-import { ERC721DAODeployerAddress as LOCAL_CONTRACT_ADDRESS } from '../artifacts/contracts/contractAddress'
+import { ERC721DAODeployerAddress as LOCAL_CONTRACT_ADDRESS } from '../../hardhat/artifacts/contracts/contractAddress'
 import { Layout } from '../components/layout/Layout'
 import {
   DEFAULT_TOKEN_SUPPLY,
@@ -41,7 +41,8 @@ import {
   FixedPriceSequentialMinter__factory,
   FixedPriceSpecificIDMinter__factory,
   RequiredNFTsMintingFilter__factory,
-} from '../types/typechain'
+} from 'nextjs-ethereum-starter-hardhat'
+
 import { Table, Thead, Tbody, Tr, Td, Th } from '@chakra-ui/react'
 import { MintingFilterForm } from '../components/MintingFilterForm'
 

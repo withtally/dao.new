@@ -25,6 +25,7 @@
     ]
   },
   "dependencies": {
+    "nextjs-ethereum-starter-hardhat": "1.0.0",
     "@apollo/client": "3.1.1",
     "@chakra-ui/react": "^1.6.3",
     "@chakra-ui/icons": "^1.0.17",

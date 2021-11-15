@@ -15,11 +15,7 @@ import {
   createTransferProp,
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import {
-  ERC721DAOToken,
-  ERC721Governor,
-  ERC721Timelock,
-} from "../../frontend/types/typechain";
+import { ERC721DAOToken, ERC721Governor, ERC721Timelock } from "../typechain";
 
 chai.use(solidity);
 const { expect } = chai;

@@ -8,7 +8,7 @@ import {
 } from '@usedapp/core'
 import type { AppProps } from 'next/app'
 import React from 'react'
-import { MulticallAddress } from '../artifacts/contracts/contractAddress'
+import { MulticallAddress } from '../../hardhat/artifacts/contracts/contractAddress'
 import { CHAIN_ID, secrets } from '../config'
 import { useApollo } from '../lib/apolloClient'
 

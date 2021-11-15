@@ -34,7 +34,7 @@ const config: HardhatUserConfig = {
     },
   },
   paths: {
-    artifacts: "../frontend/artifacts",
+    artifacts: "./artifacts",
   },
   networks: {
     hardhat: {
@@ -50,7 +50,7 @@ const config: HardhatUserConfig = {
     apiKey: `${etherscanApiKey}`,
   },
   typechain: {
-    outDir: "../frontend/types/typechain",
+    outDir: "./typechain",
   },
 };
 

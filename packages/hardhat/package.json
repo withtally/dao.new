@@ -3,7 +3,10 @@
   "author": "@huntarosan",
   "license": "MIT",
   "version": "1.0.0",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "scripts": {
+    "build:ts": "tsc -p tsconfig.json",
     "chain": "npx hardhat node --network hardhat",
     "clean": "npx hardhat clean",
     "compile": "npx hardhat compile",

@@ -8,10 +8,7 @@ import {
   CREATOR_ROLE,
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import {
-  FixedPriceSequentialMinter,
-  ERC721DAOToken,
-} from "../../frontend/types/typechain";
+import { FixedPriceSequentialMinter, ERC721DAOToken } from "../typechain";
 import { BigNumberish } from "@ethersproject/bignumber";
 
 chai.use(solidity);

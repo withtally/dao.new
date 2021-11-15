@@ -2,17 +2,14 @@ import chai from "chai";
 import { ethers } from "hardhat";
 import { solidity } from "ethereum-waffle";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import {
-  ERC721DAOToken,
-  ERC721DAOToken__factory,
-} from "../../frontend/types/typechain";
+import { ERC721DAOToken, ERC721DAOToken__factory } from "../typechain";
 import { MINTER_ROLE } from "./utils";
-import { RejectedNFTsMintingFilter__factory } from "../../frontend/types/typechain/factories/RejectedNFTsMintingFilter__factory";
-import { CompositeMintingFilter } from "../../frontend/types/typechain/CompositeMintingFilter";
-import { CompositeMintingFilter__factory } from "../../frontend/types/typechain/factories/CompositeMintingFilter__factory";
-import { RequiredNFTsMintingFilter__factory } from "../../frontend/types/typechain/factories/RequiredNFTsMintingFilter__factory";
-import { RequiredNFTsMintingFilter } from "../../frontend/types/typechain/RequiredNFTsMintingFilter";
-import { RejectedNFTsMintingFilter } from "../../frontend/types/typechain/RejectedNFTsMintingFilter";
+import { RejectedNFTsMintingFilter__factory } from "../typechain/factories/RejectedNFTsMintingFilter__factory";
+import { CompositeMintingFilter } from "../typechain/CompositeMintingFilter";
+import { CompositeMintingFilter__factory } from "../typechain/factories/CompositeMintingFilter__factory";
+import { RequiredNFTsMintingFilter__factory } from "../typechain/factories/RequiredNFTsMintingFilter__factory";
+import { RequiredNFTsMintingFilter } from "../typechain/RequiredNFTsMintingFilter";
+import { RejectedNFTsMintingFilter } from "../typechain/RejectedNFTsMintingFilter";
 
 chai.use(solidity);
 const { expect } = chai;
