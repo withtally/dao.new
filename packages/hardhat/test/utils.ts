@@ -11,12 +11,12 @@ import {
   ERC721Timelock,
   ERC721Timelock__factory,
   FixedPriceSpecificIDMinter__factory,
-} from "../../frontend/types/typechain";
+} from "../typechain";
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { BytesLike } from "@ethersproject/bignumber/node_modules/@ethersproject/bytes";
 import { ContractReceipt } from "@ethersproject/contracts";
-import { ERC721DAODeployer } from "../../frontend/types/typechain/ERC721DAODeployer";
-import { ERC721DAODeployer__factory } from "../../frontend/types/typechain/factories/ERC721DAODeployer__factory";
+import { ERC721DAODeployer } from "../typechain/ERC721DAODeployer";
+import { ERC721DAODeployer__factory } from "../typechain/factories/ERC721DAODeployer__factory";
 
 const keccak256 = ethers.utils.keccak256;
 const toUtf8Bytes = ethers.utils.toUtf8Bytes;

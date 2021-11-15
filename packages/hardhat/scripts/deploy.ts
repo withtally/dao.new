@@ -18,7 +18,7 @@ import {
   RequiredNFTsMintingFilter__factory,
   RejectedNFTsMintingFilter__factory,
   CompositeMintingFilter__factory,
-} from "../../frontend/types/typechain";
+} from "../typechain";
 
 const contractAddressFile = `${config.paths.artifacts}/contracts/contractAddress.ts`;
 

@@ -37,20 +37,13 @@ import {
   FixedPriceSpecificIDMinter__factory,
   FixedPriceSpecificIDMinter,
   RequiredNFTsMintingFilter,
-} from "../../frontend/types/typechain";
-import { ERC721DAODeployer } from "../../frontend/types/typechain/ERC721DAODeployer";
+} from "../typechain";
+import { ERC721DAODeployer } from "../typechain/ERC721DAODeployer";
 import { Wallet } from "@ethersproject/wallet";
-import { RequiredNFTsMintingFilter__factory } from "../../frontend/types/typechain/factories/RequiredNFTsMintingFilter__factory";
+import { RequiredNFTsMintingFilter__factory } from "../typechain/factories/RequiredNFTsMintingFilter__factory";
 import { parseEther } from "@ethersproject/units";
-import {
-  deployMockContract,
-  MockContract,
-} from "@ethereum-waffle/mock-contract";
-import IProxyRegistryBuild from "../../frontend/artifacts/contracts/lib/IProxyRegistry.sol/IProxyRegistry.json";
-import { MockProvider } from "@ethereum-waffle/provider";
-import { IProxyRegistry } from "../../frontend/types/typechain/IProxyRegistry";
-import { ProxyRegistryMock__factory } from "../../frontend/types/typechain/factories/ProxyRegistryMock__factory";
-import { ProxyRegistryMock } from "../../frontend/types/typechain/ProxyRegistryMock";
+import { ProxyRegistryMock__factory } from "../typechain/factories/ProxyRegistryMock__factory";
+import { ProxyRegistryMock } from "../typechain/ProxyRegistryMock";
 
 chai.use(solidity);
 const { expect } = chai;

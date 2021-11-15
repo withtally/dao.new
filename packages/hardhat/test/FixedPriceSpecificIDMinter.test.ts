@@ -3,10 +3,7 @@ import { ethers } from "hardhat";
 import { solidity } from "ethereum-waffle";
 import { deployToken, initToken, CREATOR_ROLE, deployIDMinter } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import {
-  ERC721DAOToken,
-  FixedPriceSpecificIDMinter,
-} from "../../frontend/types/typechain";
+import { ERC721DAOToken, FixedPriceSpecificIDMinter } from "../typechain";
 import { BigNumberish } from "@ethersproject/bignumber";
 
 chai.use(solidity);

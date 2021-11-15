@@ -3,7 +3,7 @@ import { ethers } from "hardhat";
 import { solidity } from "ethereum-waffle";
 import { deployAndInitDAOToken, mineBlock } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { ERC721DAOToken } from "../../frontend/types/typechain";
+import { ERC721DAOToken } from "../typechain";
 
 chai.use(solidity);
 const { expect } = chai;

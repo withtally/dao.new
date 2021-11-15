@@ -13,7 +13,7 @@ import {
   ERC721DAOToken,
   CloneFactory,
   ERC721DAOToken__factory,
-} from "../../frontend/types/typechain";
+} from "../typechain";
 import { isBytesLike } from "@ethersproject/bignumber/node_modules/@ethersproject/bytes";
 
 chai.use(solidity);

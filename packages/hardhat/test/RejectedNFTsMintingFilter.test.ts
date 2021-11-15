@@ -2,13 +2,10 @@ import chai from "chai";
 import { ethers } from "hardhat";
 import { solidity } from "ethereum-waffle";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import {
-  ERC721DAOToken,
-  ERC721DAOToken__factory,
-} from "../../frontend/types/typechain";
+import { ERC721DAOToken, ERC721DAOToken__factory } from "../typechain";
+import { RejectedNFTsMintingFilter__factory } from "../typechain/factories/RejectedNFTsMintingFilter__factory";
+import { RejectedNFTsMintingFilter } from "../typechain/RejectedNFTsMintingFilter";
 import { initToken } from "./utils";
-import { RejectedNFTsMintingFilter__factory } from "../../frontend/types/typechain/factories/RejectedNFTsMintingFilter__factory";
-import { RejectedNFTsMintingFilter } from "../../frontend/types/typechain/RejectedNFTsMintingFilter";
 
 chai.use(solidity);
 const { expect } = chai;
