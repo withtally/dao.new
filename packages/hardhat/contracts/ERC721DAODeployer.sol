@@ -10,6 +10,7 @@ import { ERC721Timelock } from "./governor/ERC721Timelock.sol";
 import { ERC721Governor } from "./governor/ERC721Governor.sol";
 import { ERC721Minter } from "./minters/ERC721Minter.sol";
 import { MintingFilter } from "./minters/filters/MintingFilter.sol";
+import { IRoyaltyInfo } from "./token/IRoyaltyInfo.sol";
 
 contract ERC721DAODeployer is OwnableUpgradeable {
     using ClonesUpgradeable for address;
@@ -20,6 +21,8 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         string symbol;
         string baseURI;
         string contractInfoURI;
+        uint256 royaltiesBPs;
+        address royaltiesRecipientOverride;
     }
 
     struct GovernorParams {
@@ -89,7 +92,19 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721Governor governorClone = ERC721Governor(address(governor).clone());
         ERC721Minter minterClone = ERC721Minter(payable(address(minters[minterParams.implementationIndex]).clone()));
 
-        initToken(tokenClone, minterClone, creatorAddress, tokenParams);
+        // This block is necessary to avoid the "stack too deep" compilation error
+        {
+            IRoyaltyInfo.RoyaltyInfo memory royaltyInfo = IRoyaltyInfo.RoyaltyInfo(
+                address(timelockClone),
+                tokenParams.royaltiesBPs
+            );
+            if (tokenParams.royaltiesRecipientOverride != address(0)) {
+                royaltyInfo.recipient = tokenParams.royaltiesRecipientOverride;
+            }
+
+            initToken(tokenClone, minterClone, creatorAddress, tokenParams, royaltyInfo);
+        }
+
         initTimelock(timelockClone, governorClone, governorParams.timelockDelay);
         governorClone.initialize(
             governorParams.name,
@@ -117,21 +132,14 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721DAOToken tokenClone,
         ERC721Minter minterClone,
         address creatorAddress,
-        TokenParams calldata tokenParams
+        TokenParams calldata tokenParams,
+        IRoyaltyInfo.RoyaltyInfo memory royaltyInfo
     ) private {
-        bytes32[] memory roles = new bytes32[](6);
-        roles[0] = token.getAdminsAdminRole();
-        roles[1] = token.getMinterAdminRole();
-        roles[2] = token.getBaseURIAdminRole();
-        roles[3] = token.getBaseURIRole();
-        roles[4] = token.getMinterRole();
-
-        address[] memory rolesAssignees = new address[](6);
-        rolesAssignees[0] = creatorAddress;
-        rolesAssignees[1] = creatorAddress;
-        rolesAssignees[2] = creatorAddress;
-        rolesAssignees[3] = creatorAddress;
-        rolesAssignees[4] = address(minterClone);
+        (bytes32[] memory roles, address[] memory rolesAssignees) = generateTokenRolesAndAssignees(
+            tokenClone,
+            creatorAddress,
+            minterClone
+        );
 
         tokenClone.initialize(
             tokenParams.name,
@@ -139,7 +147,8 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             tokenParams.baseURI,
             tokenParams.contractInfoURI,
             roles,
-            rolesAssignees
+            rolesAssignees,
+            royaltyInfo
         );
     }
 
@@ -251,5 +260,31 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             addrs[i] = address(mintingFilters_[i]);
         }
         return addrs;
+    }
+
+    function generateTokenRolesAndAssignees(
+        ERC721DAOToken token_,
+        address creatorAddress,
+        ERC721Minter minterClone
+    ) private pure returns (bytes32[] memory, address[] memory) {
+        bytes32[] memory roles = new bytes32[](7);
+        roles[0] = token_.getAdminsAdminRole();
+        roles[1] = token_.getMinterAdminRole();
+        roles[2] = token_.getBaseURIAdminRole();
+        roles[3] = token_.getRoyaltiesAdminRole();
+        roles[4] = token_.getBaseURIRole();
+        roles[5] = token_.getMinterRole();
+        roles[6] = token_.getRoyaltiesRole();
+
+        address[] memory rolesAssignees = new address[](7);
+        rolesAssignees[0] = creatorAddress;
+        rolesAssignees[1] = creatorAddress;
+        rolesAssignees[2] = creatorAddress;
+        rolesAssignees[3] = creatorAddress;
+        rolesAssignees[4] = creatorAddress;
+        rolesAssignees[5] = address(minterClone);
+        rolesAssignees[6] = creatorAddress;
+
+        return (roles, rolesAssignees);
     }
 }

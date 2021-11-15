@@ -4,15 +4,23 @@
 
 pragma solidity ^0.8.6;
 
-import "./ERC721CheckpointableUpgradable.sol";
-import "../lib/SVGPlaceholder.sol";
-import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+import { ERC721CheckpointableUpgradable, ERC721EnumerableUpgradeable } from "./ERC721CheckpointableUpgradable.sol";
+import { SVGPlaceholder } from "../lib/SVGPlaceholder.sol";
+import { AccessControlEnumerableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+import { ERC2981ContractWideRoyalties } from "./ERC2981ContractWideRoyalties.sol";
+import { IRoyaltyInfo } from "./IRoyaltyInfo.sol";
 
-contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerableUpgradeable {
+contract ERC721DAOToken is
+    ERC721CheckpointableUpgradable,
+    ERC2981ContractWideRoyalties,
+    AccessControlEnumerableUpgradeable
+{
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant MINTER_ADMIN_ROLE = keccak256("MINTER_ADMIN_ROLE");
     bytes32 public constant BASE_URI_ROLE = keccak256("BASE_URI_ROLE");
     bytes32 public constant BASE_URI_ADMIN_ROLE = keccak256("BASE_URI_ADMIN_ROLE");
+    bytes32 public constant ROYALTIES_ROLE = keccak256("ROYALTIES_ROLE");
+    bytes32 public constant ROYALTIES_ADMIN_ROLE = keccak256("ROYALTIES_ADMIN_ROLE");
     bytes32 public constant ADMINS_ADMIN_ROLE = keccak256("ADMINS_ADMIN_ROLE");
 
     string public baseURI;
@@ -30,7 +38,7 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
         public
         view
         virtual
-        override(ERC721EnumerableUpgradeable, AccessControlEnumerableUpgradeable)
+        override(ERC721EnumerableUpgradeable, ERC2981ContractWideRoyalties, AccessControlEnumerableUpgradeable)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
@@ -42,7 +50,8 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
         string memory baseURI_,
         string memory contractInfoURI_,
         bytes32[] memory roles,
-        address[] memory rolesAssignees
+        address[] memory rolesAssignees,
+        IRoyaltyInfo.RoyaltyInfo memory royaltiesInfo
     ) public initializer {
         require(roles.length == rolesAssignees.length, "ERC721DAOToken::initializer: roles assignment arity mismatch");
 
@@ -53,11 +62,15 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
         }
         contractInfoURI = contractInfoURI_;
 
+        _setRoyalties(royaltiesInfo.recipient, royaltiesInfo.bps);
+
         _setRoleAdmin(ADMINS_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
         _setRoleAdmin(MINTER_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
         _setRoleAdmin(BASE_URI_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
+        _setRoleAdmin(ROYALTIES_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
         _setRoleAdmin(MINTER_ROLE, MINTER_ADMIN_ROLE);
         _setRoleAdmin(BASE_URI_ROLE, BASE_URI_ADMIN_ROLE);
+        _setRoleAdmin(ROYALTIES_ROLE, ROYALTIES_ADMIN_ROLE);
 
         // assign roles
         for (uint256 i = 0; i < roles.length; i++) {
@@ -67,6 +80,10 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
 
     function mint(address to, uint256 tokenId) public onlyRole(MINTER_ROLE) {
         _safeMint(to, tokenId);
+    }
+
+    function setRoyalties(address recipient, uint256 bps) public onlyRole(ROYALTIES_ROLE) {
+        _setRoyalties(recipient, bps);
     }
 
     /**
@@ -120,5 +137,13 @@ contract ERC721DAOToken is ERC721CheckpointableUpgradable, AccessControlEnumerab
 
     function getAdminsAdminRole() external pure returns (bytes32) {
         return ADMINS_ADMIN_ROLE;
+    }
+
+    function getRoyaltiesRole() external pure returns (bytes32) {
+        return ROYALTIES_ROLE;
+    }
+
+    function getRoyaltiesAdminRole() external pure returns (bytes32) {
+        return ROYALTIES_ADMIN_ROLE;
     }
 }

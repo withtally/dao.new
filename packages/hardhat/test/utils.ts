@@ -30,6 +30,8 @@ export const MINTER_ROLE = hashString("MINTER_ROLE");
 export const MINTER_ADMIN_ROLE = hashString("MINTER_ADMIN_ROLE");
 export const BASE_URI_ROLE = hashString("BASE_URI_ROLE");
 export const BASE_URI_ADMIN_ROLE = hashString("BASE_URI_ADMIN_ROLE");
+export const ROYALTIES_ROLE = hashString("ROYALTIES_ROLE");
+export const ROYALTIES_ADMIN_ROLE = hashString("ROYALTIES_ADMIN_ROLE");
 export const CREATOR_ROLE = hashString("CREATOR_ROLE");
 const zeroAddress = "0x0000000000000000000000000000000000000000";
 
@@ -226,7 +228,11 @@ export const initToken = async (
     baseURI,
     "some contract JSON URI",
     defaultRoles,
-    rolesAssignees
+    rolesAssignees,
+    {
+      recipient: ethers.constants.AddressZero,
+      bps: 0,
+    }
   );
   return token;
 };

@@ -6,7 +6,7 @@ import {
   ERC721DAOToken,
   ERC721DAOToken__factory,
 } from "../../frontend/types/typechain";
-import { MINTER_ROLE } from "./utils";
+import { initToken } from "./utils";
 import { RejectedNFTsMintingFilter__factory } from "../../frontend/types/typechain/factories/RejectedNFTsMintingFilter__factory";
 import { CompositeMintingFilter } from "../../frontend/types/typechain/CompositeMintingFilter";
 import { CompositeMintingFilter__factory } from "../../frontend/types/typechain/factories/CompositeMintingFilter__factory";
@@ -41,14 +41,8 @@ describe("CompositeMintingFilter", async () => {
     [signer, minter, creator, user1] = await ethers.getSigners();
 
     requiredToken = await new ERC721DAOToken__factory(signer).deploy();
-    await requiredToken.initialize(
-      "FirstToken",
-      "FT",
-      "",
-      "",
-      [MINTER_ROLE],
-      [minter.address]
-    );
+    initToken(requiredToken, signer.address, undefined, minter.address);
+
     requiredFilter = await new RequiredNFTsMintingFilter__factory(
       signer
     ).deploy();
@@ -59,14 +53,8 @@ describe("CompositeMintingFilter", async () => {
     );
 
     rejectedToken = await new ERC721DAOToken__factory(signer).deploy();
-    await rejectedToken.initialize(
-      "SecondToken",
-      "ST",
-      "",
-      "",
-      [MINTER_ROLE],
-      [minter.address]
-    );
+    initToken(rejectedToken, signer.address, undefined, minter.address);
+
     rejectedFilter = await new RejectedNFTsMintingFilter__factory(
       signer
     ).deploy();
