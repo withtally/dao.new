@@ -70,6 +70,8 @@ type TokenParams = {
   symbol: string
   baseURI: string
   contractInfoURI: string
+  royaltiesBPs: number
+  royaltiesRecipientOverride: string
 }
 
 type GovernorParams = {
@@ -146,6 +148,8 @@ const initialState: StateType = {
     symbol: '',
     baseURI: '',
     contractInfoURI: '',
+    royaltiesBPs: 0,
+    royaltiesRecipientOverride: ethers.constants.AddressZero,
   },
   minterConfig: {
     implementationIndex: 0,
