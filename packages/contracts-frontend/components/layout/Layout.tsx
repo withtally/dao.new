@@ -81,11 +81,6 @@ export const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
             <Flex py={[4, null, null, 0]}>
               <NextLink href="/" passHref>
                 <Link px="4" py="1">
-                  Home
-                </Link>
-              </NextLink>
-              <NextLink href="/admin" passHref>
-                <Link px="4" py="1">
                   Admin
                 </Link>
               </NextLink>
