@@ -58,6 +58,10 @@ describe("CloneFactory", () => {
       "",
       defaultRoles,
       assignees,
+      {
+        recipient: ethers.constants.AddressZero,
+        bps: 0,
+      },
     ]);
 
     const tx = await factory.clone(0, callData);

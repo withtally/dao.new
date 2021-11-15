@@ -19,6 +19,10 @@ import {
   DEFAULT_ADMIN_ROLE,
   ADMINS_ADMIN_ROLE,
   proposeAndExecute,
+  ROYALTIES_ADMIN_ROLE,
+  ROYALTIES_ROLE,
+  PROXY_REGISTRY_ADMIN_ROLE,
+  PROXY_REGISTRY_ROLE,
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
@@ -37,6 +41,9 @@ import {
 import { ERC721DAODeployer } from "../typechain/ERC721DAODeployer";
 import { Wallet } from "@ethersproject/wallet";
 import { RequiredNFTsMintingFilter__factory } from "../typechain/factories/RequiredNFTsMintingFilter__factory";
+import { parseEther } from "@ethersproject/units";
+import { ProxyRegistryMock__factory } from "../typechain/factories/ProxyRegistryMock__factory";
+import { ProxyRegistryMock } from "../typechain/ProxyRegistryMock";
 
 chai.use(solidity);
 const { expect } = chai;
@@ -84,6 +91,11 @@ let simpleMinter: FixedPriceSequentialMinter;
 let idMinter: FixedPriceSpecificIDMinter;
 let deployer: ERC721DAODeployer;
 let requiredToken: ERC721DAOToken;
+let mockProxyRegistry: ProxyRegistryMock;
+
+const deployMockProxyRegistry = async () => {
+  mockProxyRegistry = await new ProxyRegistryMock__factory(signer).deploy();
+};
 
 const deploy = async () => {
   [signer, user1, user2, user3, rando] = await ethers.getSigners();
@@ -92,7 +104,7 @@ const deploy = async () => {
 
   const giveCreatorEth = {
     to: creator.address,
-    value: ethers.utils.parseEther("50"),
+    value: parseEther("50"),
   };
   await user1.sendTransaction(giveCreatorEth);
 
@@ -116,7 +128,10 @@ const deploy = async () => {
   );
 };
 
-const cloneWithFixedPriceSequentialMinter = async () => {
+const cloneWithFixedPriceSequentialMinter = async (
+  royaltiesRecipientOverride?: string,
+  royaltiesBPs?: number
+) => {
   const tx = await deployer.clone(
     creator.address,
     {
@@ -124,6 +139,11 @@ const cloneWithFixedPriceSequentialMinter = async () => {
       symbol: "MT",
       baseURI: BASE_URI,
       contractInfoURI: "",
+      royaltiesBPs: royaltiesBPs !== undefined ? royaltiesBPs : 0,
+      royaltiesRecipientOverride:
+        royaltiesRecipientOverride !== undefined
+          ? royaltiesRecipientOverride
+          : ethers.constants.AddressZero,
     },
     {
       name: "GovName",
@@ -171,6 +191,8 @@ const cloneWithIDMinter = async () => {
       symbol: "MT",
       baseURI: BASE_URI,
       contractInfoURI: "",
+      royaltiesBPs: 0,
+      royaltiesRecipientOverride: ethers.constants.AddressZero,
     },
     {
       name: "GovName",
@@ -217,7 +239,11 @@ const cloneWithSequentialMinterAndRequiredNFTFilter = async () => {
     "baseURI",
     "",
     [MINTER_ROLE],
-    [signer.address]
+    [signer.address],
+    {
+      recipient: ethers.constants.AddressZero,
+      bps: 0,
+    }
   );
 
   const tx = await deployer.clone(
@@ -227,6 +253,8 @@ const cloneWithSequentialMinterAndRequiredNFTFilter = async () => {
       symbol: "MT",
       baseURI: BASE_URI,
       contractInfoURI: "",
+      royaltiesBPs: 0,
+      royaltiesRecipientOverride: ethers.constants.AddressZero,
     },
     {
       name: "GovName",
@@ -273,7 +301,7 @@ describe("End to end flows", () => {
   before(deploy);
 
   describe("Using FixedPriceSequentialMinter", async () => {
-    before(cloneWithFixedPriceSequentialMinter);
+    before(() => cloneWithFixedPriceSequentialMinter());
 
     it("lets users mint", async () => {
       let expectedMinterBalance = 0;
@@ -467,6 +495,168 @@ describe("End to end flows", () => {
         expect(await token.balanceOf(user3.address)).to.equal(expectedBalance);
       });
     });
+
+    describe("Royalties", async () => {
+      // TODO make sure royalties from init also work
+
+      it("sets royalty info in deployer with recipient override", async () => {
+        await cloneWithFixedPriceSequentialMinter(user2.address, 500);
+
+        const [recipient, royaltyAmount] = await token.royaltyInfo(0, 100);
+
+        expect(recipient).to.equal(user2.address);
+        expect(royaltyAmount).to.equal(5);
+      });
+
+      it("sets royalty info in deployer with timelock as the default recipient", async () => {
+        await cloneWithFixedPriceSequentialMinter(undefined, 500);
+
+        const [recipient, royaltyAmount] = await token.royaltyInfo(0, 100);
+
+        expect(recipient).to.equal(timelock.address);
+        expect(royaltyAmount).to.equal(5);
+      });
+
+      it("allows creator to set royalty info, and anyone to get that info", async () => {
+        await token.connect(creator).setRoyalties(user3.address, 100);
+
+        const [recipient, royaltyAmount] = await token.royaltyInfo(
+          0,
+          parseEther("1")
+        );
+
+        expect(recipient).to.equal(user3.address);
+        expect(royaltyAmount).to.equal(parseEther("0.01"));
+      });
+
+      it("returns true when supportsInterface is called with the 2981 interfaceId", async () => {
+        // The interface hex value is from the EIP doc: https://eips.ethereum.org/EIPS/eip-2981#examples
+        expect(await token.supportsInterface("0x2a55205a")).to.be.true;
+      });
+
+      it("rounds down given royalty amounts with remainder", async () => {
+        await token.connect(creator).setRoyalties(user3.address, 1000);
+
+        const [recipient, royaltyAmount] = await token.royaltyInfo(0, 999);
+
+        expect(royaltyAmount).to.equal(99);
+      });
+
+      it("reverts when non-creators try to set royalty info", async () => {
+        await expect(
+          token.connect(rando).setRoyalties(user3.address, 100)
+        ).to.be.revertedWith(
+          `AccessControl: account ${rando.address.toLowerCase()} is missing role 0xc1548a18d6737e6c2687f3c32faa16a7b067bcc7ff7bfb5eb1bf50f8977c0de3'`
+        );
+      });
+    });
+
+    describe("ProxyRegisttry", async () => {
+      beforeEach(async () => {
+        await deployMockProxyRegistry();
+      });
+
+      it("lets creator enable proxy registry and set its address", async () => {
+        expect(await token.proxyRegistryEnabled()).to.be.false;
+        await token.connect(creator).setProxyRegistryEnabled(true);
+        expect(await token.proxyRegistryEnabled()).to.be.true;
+
+        expect(await token.proxyRegistry()).to.equal(
+          ethers.constants.AddressZero
+        );
+        await token
+          .connect(creator)
+          .setProxyRegistry(mockProxyRegistry.address);
+        expect(await token.proxyRegistry()).to.equal(mockProxyRegistry.address);
+
+        await token
+          .connect(creator)
+          .setProxyRegistry(ethers.constants.AddressZero);
+        await token.connect(creator).setProxyRegistryEnabled(false);
+        expect(await token.proxyRegistry()).to.equal(
+          ethers.constants.AddressZero
+        );
+        expect(await token.proxyRegistryEnabled()).to.be.false;
+
+        await token
+          .connect(creator)
+          .setProxyRegistryAndEnable(mockProxyRegistry.address);
+        expect(await token.proxyRegistryEnabled()).to.be.true;
+        expect(await token.proxyRegistry()).to.equal(mockProxyRegistry.address);
+      });
+
+      it("blocks non-creators from setting the proxy and enabling it", async () => {
+        await expect(
+          token.connect(rando).setProxyRegistryEnabled(true)
+        ).to.be.revertedWith(
+          `AccessControl: account ${rando.address.toLowerCase()} is missing role 0xc18654fb5816bebd145b69a69dc6bb85a6359482b746c9678021eb26e247f691'`
+        );
+
+        await expect(
+          token.connect(rando).setProxyRegistry(mockProxyRegistry.address)
+        ).to.be.revertedWith(
+          `AccessControl: account ${rando.address.toLowerCase()} is missing role 0xc18654fb5816bebd145b69a69dc6bb85a6359482b746c9678021eb26e247f691'`
+        );
+
+        await expect(
+          token
+            .connect(rando)
+            .setProxyRegistryAndEnable(mockProxyRegistry.address)
+        ).to.be.revertedWith(
+          `AccessControl: account ${rando.address.toLowerCase()} is missing role 0xc18654fb5816bebd145b69a69dc6bb85a6359482b746c9678021eb26e247f691'`
+        );
+      });
+
+      it("isApprovedForAll returns true when the operator is registered", async () => {
+        await token
+          .connect(creator)
+          .setProxyRegistryAndEnable(mockProxyRegistry.address);
+
+        const owner = user1;
+        const operator = user2;
+        await mockProxyRegistry.setReturnValueForOwner(
+          owner.address,
+          operator.address
+        );
+
+        expect(await token.isApprovedForAll(owner.address, operator.address)).to
+          .be.true;
+      });
+
+      it("isApprovedForAll returns false when the operator is not registered", async () => {
+        await token
+          .connect(creator)
+          .setProxyRegistryAndEnable(mockProxyRegistry.address);
+
+        const owner = user1;
+        const operator = user2;
+        await mockProxyRegistry.setReturnValueForOwner(
+          owner.address,
+          ethers.constants.AddressZero
+        );
+
+        expect(await token.isApprovedForAll(owner.address, operator.address)).to
+          .be.false;
+      });
+
+      it("isApprovedForAll returns true when the operator is not registered, but is approved via ERC721 approval", async () => {
+        await token
+          .connect(creator)
+          .setProxyRegistryAndEnable(mockProxyRegistry.address);
+
+        const owner = user1;
+        const operator = user2;
+        await mockProxyRegistry.setReturnValueForOwner(
+          owner.address,
+          operator.address
+        );
+
+        await token.connect(owner).setApprovalForAll(operator.address, true);
+
+        expect(await token.isApprovedForAll(owner.address, operator.address)).to
+          .be.true;
+      });
+    });
   });
 
   describe("Using FixedPriceSpecificIDMinter", async () => {
@@ -537,7 +727,11 @@ describe("End to end flows", () => {
           "baseURI",
           "",
           [MINTER_ROLE],
-          [signer.address]
+          [signer.address],
+          {
+            recipient: ethers.constants.AddressZero,
+            bps: 0,
+          }
         );
 
         mintingFilter = await new RequiredNFTsMintingFilter__factory(
@@ -621,15 +815,23 @@ describe("End to end flows", () => {
         .true;
       expect(await token.hasRole(BASE_URI_ADMIN_ROLE, creator.address)).to.be
         .true;
+      expect(await token.hasRole(ROYALTIES_ADMIN_ROLE, creator.address)).to.be
+        .true;
+      expect(await token.hasRole(PROXY_REGISTRY_ADMIN_ROLE, creator.address)).to
+        .be.true;
 
       // DEFAULT_ADMIN_ROLE can be risky, best not to have it.
       expect(await token.hasRole(DEFAULT_ADMIN_ROLE, creator.address)).to.be
         .false;
     });
 
-    it("creator can assign minter and base URI roles", async () => {
+    it("creator can assign roles: minter, base URI and royalties", async () => {
       await token.connect(creator).grantRole(MINTER_ROLE, rando.address);
       await token.connect(creator).grantRole(BASE_URI_ROLE, user2.address);
+      await token.connect(creator).grantRole(ROYALTIES_ROLE, user3.address);
+      await token
+        .connect(creator)
+        .grantRole(PROXY_REGISTRY_ROLE, user1.address);
     });
 
     it("creator can assign the admin roles to the DAO", async () => {
@@ -641,12 +843,22 @@ describe("End to end flows", () => {
         .grantRole(BASE_URI_ADMIN_ROLE, timelock.address);
       await token
         .connect(creator)
+        .grantRole(ROYALTIES_ADMIN_ROLE, timelock.address);
+      await token
+        .connect(creator)
+        .grantRole(PROXY_REGISTRY_ADMIN_ROLE, timelock.address);
+      await token
+        .connect(creator)
         .grantRole(ADMINS_ADMIN_ROLE, timelock.address);
 
       expect(await token.hasRole(MINTER_ADMIN_ROLE, timelock.address)).to.be
         .true;
       expect(await token.hasRole(BASE_URI_ADMIN_ROLE, timelock.address)).to.be
         .true;
+      expect(await token.hasRole(ROYALTIES_ADMIN_ROLE, timelock.address)).to.be
+        .true;
+      expect(await token.hasRole(PROXY_REGISTRY_ADMIN_ROLE, timelock.address))
+        .to.be.true;
       expect(await token.hasRole(ADMINS_ADMIN_ROLE, timelock.address)).to.be
         .true;
     });
@@ -658,6 +870,12 @@ describe("End to end flows", () => {
       await token
         .connect(creator)
         .renounceRole(BASE_URI_ADMIN_ROLE, creator.address);
+      await token
+        .connect(creator)
+        .renounceRole(ROYALTIES_ADMIN_ROLE, creator.address);
+      await token
+        .connect(creator)
+        .renounceRole(PROXY_REGISTRY_ADMIN_ROLE, creator.address);
 
       await expect(
         token.connect(creator).grantRole(MINTER_ROLE, user1.address)
@@ -668,6 +886,16 @@ describe("End to end flows", () => {
         token.connect(creator).grantRole(BASE_URI_ROLE, user3.address)
       ).to.revertedWith(
         `AccessControl: account ${creator.address.toLowerCase()} is missing role 0xe0d0d9e49dfab9a7a7b34707b3c82b3f11c47969a80cdc398ea138bce37e99a9`
+      );
+      await expect(
+        token.connect(creator).grantRole(ROYALTIES_ROLE, rando.address)
+      ).to.revertedWith(
+        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x0381f8bcf86f2b12a863dd00cfdf78e684eab780875b06ce2779aaa7475c64db`
+      );
+      await expect(
+        token.connect(creator).grantRole(PROXY_REGISTRY_ROLE, rando.address)
+      ).to.revertedWith(
+        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0xf8d9113c652f85b5d786c220fee7c2f4d9a34612f89b0401c1492016305e6382`
       );
     });
 
@@ -692,6 +920,18 @@ describe("End to end flows", () => {
       );
       await expect(
         token.connect(creator).grantRole(BASE_URI_ADMIN_ROLE, timelock.address)
+      ).to.be.revertedWith(
+        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
+      );
+      await expect(
+        token.connect(creator).grantRole(ROYALTIES_ADMIN_ROLE, timelock.address)
+      ).to.be.revertedWith(
+        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
+      );
+      await expect(
+        token
+          .connect(creator)
+          .grantRole(PROXY_REGISTRY_ADMIN_ROLE, timelock.address)
       ).to.be.revertedWith(
         `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
       );

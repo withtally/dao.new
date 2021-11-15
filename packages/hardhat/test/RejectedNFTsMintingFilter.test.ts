@@ -3,9 +3,9 @@ import { ethers } from "hardhat";
 import { solidity } from "ethereum-waffle";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ERC721DAOToken, ERC721DAOToken__factory } from "../typechain";
-import { MINTER_ROLE } from "./utils";
 import { RejectedNFTsMintingFilter__factory } from "../typechain/factories/RejectedNFTsMintingFilter__factory";
 import { RejectedNFTsMintingFilter } from "../typechain/RejectedNFTsMintingFilter";
+import { initToken } from "./utils";
 
 chai.use(solidity);
 const { expect } = chai;
@@ -32,24 +32,10 @@ describe("RejectedNFTsMintingFilter", async () => {
     [signer, minter, creator, user1, user2] = await ethers.getSigners();
 
     tokens.push(await new ERC721DAOToken__factory(signer).deploy());
-    await tokens[0].initialize(
-      "FirstToken",
-      "FT",
-      "",
-      "",
-      [MINTER_ROLE],
-      [minter.address]
-    );
+    initToken(tokens[0], signer.address, undefined, minter.address);
 
     tokens.push(await new ERC721DAOToken__factory(signer).deploy());
-    await tokens[1].initialize(
-      "SecondToken",
-      "ST",
-      "",
-      "",
-      [MINTER_ROLE],
-      [minter.address]
-    );
+    initToken(tokens[1], signer.address, undefined, minter.address);
 
     filter = await new RejectedNFTsMintingFilter__factory(signer).deploy();
     await filter.initialize(

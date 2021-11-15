@@ -3,13 +3,13 @@ import { ethers } from "hardhat";
 import { solidity } from "ethereum-waffle";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ERC721DAOToken, ERC721DAOToken__factory } from "../typechain";
-import { MINTER_ROLE } from "./utils";
 import { RejectedNFTsMintingFilter__factory } from "../typechain/factories/RejectedNFTsMintingFilter__factory";
 import { CompositeMintingFilter } from "../typechain/CompositeMintingFilter";
 import { CompositeMintingFilter__factory } from "../typechain/factories/CompositeMintingFilter__factory";
 import { RequiredNFTsMintingFilter__factory } from "../typechain/factories/RequiredNFTsMintingFilter__factory";
 import { RequiredNFTsMintingFilter } from "../typechain/RequiredNFTsMintingFilter";
 import { RejectedNFTsMintingFilter } from "../typechain/RejectedNFTsMintingFilter";
+import { initToken } from "./utils";
 
 chai.use(solidity);
 const { expect } = chai;
@@ -38,14 +38,8 @@ describe("CompositeMintingFilter", async () => {
     [signer, minter, creator, user1] = await ethers.getSigners();
 
     requiredToken = await new ERC721DAOToken__factory(signer).deploy();
-    await requiredToken.initialize(
-      "FirstToken",
-      "FT",
-      "",
-      "",
-      [MINTER_ROLE],
-      [minter.address]
-    );
+    initToken(requiredToken, signer.address, undefined, minter.address);
+
     requiredFilter = await new RequiredNFTsMintingFilter__factory(
       signer
     ).deploy();
@@ -56,14 +50,8 @@ describe("CompositeMintingFilter", async () => {
     );
 
     rejectedToken = await new ERC721DAOToken__factory(signer).deploy();
-    await rejectedToken.initialize(
-      "SecondToken",
-      "ST",
-      "",
-      "",
-      [MINTER_ROLE],
-      [minter.address]
-    );
+    initToken(rejectedToken, signer.address, undefined, minter.address);
+
     rejectedFilter = await new RejectedNFTsMintingFilter__factory(
       signer
     ).deploy();
