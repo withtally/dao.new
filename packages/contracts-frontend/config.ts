@@ -19,10 +19,10 @@ export const CHAIN_ID: SupportedChains = ChainId.Localhost
 
 const config: Record<SupportedChains, Config> = {
   [ChainId.Localhost]: {
-    tokenAddress: '0x0996d1CAb49374E20aA115ca3DB4986b65313B48',
-    minterAddress: '0x19025910C948A47047D2188B67928fFce89Ea258',
-    governorAddress: '0x94f34C4d1ceF4a6987852d9160949607a6C350Ce',
-    timelockAddress: '0x6923982Eba5A3d3BEC6de1ac4bA2263842FE2BdA',
+    tokenAddress: '0x069ac113538C7d4FCA9A17A9BeFfD2e2c67017ba',
+    minterAddress: '0x549bdA90d62Cd7E21e45977cf6d09A714E0B56a8',
+    governorAddress: '0x2eEE99E70E28946E42BC8663897899E4DC754571',
+    timelockAddress: '0x5021943762EaF1e21640D6BdFFb3DcA140520491',
     minterType: MinterType.FixedPriceSequentialMinter,
   },
   [ChainId.Rinkeby]: {
