@@ -1,7 +1,7 @@
 import { useContractCall, useContractFunction } from '@usedapp/core'
 import { utils, Contract } from 'ethers'
 import { Interface } from 'ethers/lib/utils'
-import NFTsMintingFilterABI from '../../artifacts/contracts/minters/filters/NFTsMintingFilter.sol/NFTsMintingFilter.json'
+import { NFTsMintingFilterABI } from 'nextjs-ethereum-starter-hardhat'
 
 const NFTsMintingFilterAbi: Interface = new utils.Interface(
   NFTsMintingFilterABI.abi

@@ -5,10 +5,13 @@ import {
 } from '@usedapp/core'
 import { Contract, utils } from 'ethers'
 import { Interface } from 'ethers/lib/utils'
-import ERC721MinterABI from '../../artifacts/contracts/minters/ERC721Minter.sol/ERC721Minter.json'
-import FixedPriceSequentialMinterABI from '../../artifacts/contracts/minters/FixedPriceSequentialMinter.sol/FixedPriceSequentialMinter.json'
-import FixedPriceSpecificIDMinterABI from '../../artifacts/contracts/minters/FixedPriceSpecificIDMinter.sol/FixedPriceSpecificIDMinter.json'
-import FixedPriceFixedSupplyMinterABI from '../../artifacts/contracts/minters/FixedPriceFixedSupplyMinter.sol/FixedPriceFixedSupplyMinter.json'
+import {
+  ERC721MinterABI,
+  FixedPriceSequentialMinterABI,
+  FixedPriceSpecificIDMinterABI,
+  FixedPriceFixedSupplyMinterABI,
+} from 'nextjs-ethereum-starter-hardhat'
+
 import config from '../../config'
 
 const ERC721MinterAbi: Interface = new utils.Interface(ERC721MinterABI.abi)
