@@ -138,6 +138,23 @@ export const MinterAdmin = () => {
       <VStack spacing={16} alignItems="flex-start">
         <VStack spacing={4} alignItems="flex-start">
           <Heading as="h3" size="md">
+            Sale status
+          </Heading>
+          <HStack>
+            <Text>Sale status: {isSaleActive ? 'Open' : 'Paused'}</Text>
+            <Button
+              onClick={onSaleStatusClick}
+              isLoading={
+                pauseSaleState.status === 'Mining' ||
+                unpauseSaleState.status === 'Mining'
+              }
+            >
+              {isSaleActive ? 'Pause' : 'Open'}
+            </Button>
+          </HStack>
+        </VStack>
+        <VStack spacing={4} alignItems="flex-start">
+          <Heading as="h3" size="md">
             Token price
           </Heading>
           <HStack>
@@ -345,23 +362,6 @@ export const MinterAdmin = () => {
               isLoading={lockOwnerMintState.status === 'Mining'}
             >
               Lock
-            </Button>
-          </HStack>
-        </VStack>
-        <VStack spacing={4} alignItems="flex-start">
-          <Heading as="h3" size="md">
-            Sale status
-          </Heading>
-          <HStack>
-            <Text>Sale status: {isSaleActive ? 'Open' : 'Paused'}</Text>
-            <Button
-              onClick={onSaleStatusClick}
-              isLoading={
-                pauseSaleState.status === 'Mining' ||
-                unpauseSaleState.status === 'Mining'
-              }
-            >
-              {isSaleActive ? 'Pause' : 'Open'}
             </Button>
           </HStack>
         </VStack>
