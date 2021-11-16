@@ -139,18 +139,6 @@ describe("ERC721DAOToken", () => {
       );
     });
 
-    it("enables baseURI if providing non empty base uri in constructor", async () => {
-      [deployer, user, user2] = await ethers.getSigners();
-      const token = await deployAndInitDAOToken(
-        deployer,
-        undefined,
-        undefined,
-        undefined,
-        "the base uri"
-      );
-      expect(await token.baseURIEnabled()).to.be.true;
-    });
-
     it("disabled baseURI if providing empty base uri in constructor", async () => {
       [deployer, user, user2] = await ethers.getSigners();
       const token = await deployAndInitDAOToken(

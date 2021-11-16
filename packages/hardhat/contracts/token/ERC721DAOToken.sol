@@ -64,9 +64,7 @@ contract ERC721DAOToken is
 
         __ERC721_init(name_, symbol_);
         baseURI = baseURI_;
-        if (bytes(baseURI_).length > 0) {
-            baseURIEnabled = true;
-        }
+        
         contractInfoURI = contractInfoURI_;
         _setRoyalties(royaltiesInfo.recipient, royaltiesInfo.bps);
         proxyRegistryEnabled = false;
