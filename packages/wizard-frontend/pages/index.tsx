@@ -555,21 +555,21 @@ function HomeIndex(): JSX.Element {
                 your NFTs will have a placeholder image.
               </FormHelperText>
             </FormControl>
-            <FormControl id="token-contractinfouri" isRequired>
-              <FormLabel>Contract Info URI</FormLabel>
+            <FormControl id="token-contractinfouri">
+              <FormLabel>Contract Info URI (optional)</FormLabel>
               <Input
                 type="text"
                 value={state.tokenConfig.contractInfoURI}
                 onChange={onTokenContractInfoURIChange}
               />
               <FormHelperText>
-                A link to a JSON file describing the token. Example from the
-                Nouns token:{' '}
+                A URL to a JSON file describing storefront-level metadata for
+                your token. See more details on{' '}
                 <Link
-                  href="ipfs://QmZi1n79FqWt2tTLwCqiy6nLM6xLGRsEPQ5JmReJQKNNzX"
+                  href="https://docs.opensea.io/docs/contract-level-metadata"
                   isExternal
                 >
-                  ipfs://QmZi1n79FqWt2tTLwCqiy6nLM6xLGRsEPQ5JmReJQKNNzX
+                  https://docs.opensea.io/docs/contract-level-metadata
                 </Link>
               </FormHelperText>
             </FormControl>
