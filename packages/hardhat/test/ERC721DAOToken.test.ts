@@ -151,4 +151,36 @@ describe("ERC721DAOToken", () => {
       expect(await token.baseURIEnabled()).to.be.false;
     });
   });
+
+  describe("contract URI", async () => {
+    it("returns the value set during initialization", async () => {
+      [deployer, user, user2] = await ethers.getSigners();
+      const token = await deployAndInitDAOToken(
+        deployer,
+        undefined,
+        undefined,
+        undefined,
+        "baseURI",
+        "http://contract-uri"
+      );
+
+      expect(await token.contractURI()).to.be.equal("http://contract-uri");
+    });
+
+    it("changes contract uri when setting it", async () => {
+      [deployer, user, user2] = await ethers.getSigners();
+      const token = await deployAndInitDAOToken(
+        deployer,
+        undefined,
+        undefined,
+        undefined,
+        "baseURI",
+        "http://contract-uri"
+      );
+
+      await token.setContractInfoURI("ipfs://different-uri");
+
+      expect(await token.contractURI()).to.be.equal("ipfs://different-uri");
+    });
+  });
 });

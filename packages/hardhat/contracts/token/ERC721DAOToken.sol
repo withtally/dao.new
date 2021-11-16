@@ -149,6 +149,10 @@ contract ERC721DAOToken is
         emit ContractInfoURIChanged(contractInfoURI_);
     }
 
+    function contractURI() public view returns (string memory) {
+        return contractInfoURI;
+    }
+
     function _baseURI() internal view override returns (string memory) {
         return baseURI;
     }
