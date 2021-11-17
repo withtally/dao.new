@@ -14,6 +14,10 @@ import {
   useSetContractInfoURI,
   useRoyaltyInfo,
   useSetRoyalties,
+  useProxyRegistryEnabled,
+  useSetProxyRegistryEnabled,
+  useProxyRegistry,
+  useSetProxyRegistryAndEnable,
 } from '../../lib/contractWrappers/token'
 import { useState } from 'react'
 import { RoyaltiesForm, RoyaltiesParams } from '../RoyaltiesForm'
@@ -37,6 +41,16 @@ export const TokenAdmin = () => {
   const { royaltiesRecipient, royaltiesBPs } = useRoyaltyInfo()
   const [royaltiesFormValues, setRoyaltiesFormValues] = useState({})
   const { send: setRoyalties, state: setRoyaltiesState } = useSetRoyalties()
+
+  const [proxyRegistryFormValue, setProxyRegistryFormValue] = useState('')
+  const isProxyRegistryEnabled = useProxyRegistryEnabled()
+  const proxyRegistryAddress = useProxyRegistry()
+  const { send: setProxyRegistryEnabled, state: setProxyRegistryEnabledState } =
+    useSetProxyRegistryEnabled()
+  const {
+    send: setProxyRegistryAndEnable,
+    state: setProxyRegistryAndEnableState,
+  } = useSetProxyRegistryAndEnable()
 
   const onBaseURIToggleClick = () => {
     if (isBaseURIEnabled === undefined) {
@@ -64,6 +78,18 @@ export const TokenAdmin = () => {
     }
 
     setRoyalties(recipient, params.royaltiesBPs)
+  }
+
+  const onProxyRegistryEnabledToggleClick = () => {
+    if (isProxyRegistryEnabled === undefined) {
+      return
+    }
+    setProxyRegistryEnabled(!isProxyRegistryEnabled)
+  }
+
+  const onProxyRegistrySubmit = (e) => {
+    e.preventDefault()
+    setProxyRegistryAndEnable(proxyRegistryFormValue)
   }
 
   return (
@@ -188,6 +214,54 @@ export const TokenAdmin = () => {
             onValuesChange={setRoyaltiesFormValues}
           />
           <Button onClick={onUpdateRoyaltiesClick}>Update</Button>
+        </VStack>
+      </VStack>
+      <VStack spacing={6} alignItems="flex-start">
+        <Heading as="h3" size="lg">
+          OpenSea proxy registry
+        </Heading>
+        <Text fontSize="sm" color="gray.400">
+          This feature makes trading on OpenSea cheaper, since it removes the
+          gas cost of submitting a transaction that approves OpenSea to trade
+          your NFT on behalf of their users.
+        </Text>
+        <HStack spacing={4}>
+          <Text>
+            Current state: {isProxyRegistryEnabled ? 'Enabled' : 'Disabled'}
+          </Text>
+          <Button
+            onClick={onProxyRegistryEnabledToggleClick}
+            isLoading={setProxyRegistryEnabledState.status === 'Mining'}
+          >
+            {isProxyRegistryEnabled ? 'Disable' : 'Enable'}
+          </Button>
+        </HStack>
+        <Text>Current proxy address: {proxyRegistryAddress}</Text>
+        <VStack spacing={4} alignItems="flex-start">
+          <form onSubmit={onProxyRegistrySubmit}>
+            <HStack minW="lg">
+              <Input
+                type="text"
+                value={proxyRegistryFormValue}
+                onChange={(e) => {
+                  setProxyRegistryFormValue(e.target.value)
+                }}
+              />
+              <Button
+                minW="min"
+                type="submit"
+                isDisabled={!proxyRegistryFormValue}
+                isLoading={setProxyRegistryAndEnableState.status === 'Mining'}
+              >
+                Set address and enable
+              </Button>
+            </HStack>
+          </form>
+          <Text fontSize="sm" color="gray.400">
+            On the Ethereum mainnet the OpenSea proxy registry is at
+            0xa5409ec958c83c3f309868babaca7c86dcb077c1. On Rinkeby it's at
+            0xf57b2c51dEd3a29e6891aba85459d600256cf317.
+          </Text>
         </VStack>
       </VStack>
     </VStack>

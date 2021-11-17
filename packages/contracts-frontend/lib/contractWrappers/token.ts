@@ -91,3 +91,35 @@ export const useSetRoyalties = () => {
   const contract = new Contract(config.tokenAddress, tokenAbi)
   return useContractFunction(contract, 'setRoyalties')
 }
+
+export const useProxyRegistryEnabled = () => {
+  const [proxyRegistryEnabled] =
+    useContractCall({
+      abi: tokenAbi,
+      address: config.tokenAddress,
+      method: 'proxyRegistryEnabled',
+      args: [],
+    }) || []
+  return proxyRegistryEnabled
+}
+
+export const useSetProxyRegistryEnabled = () => {
+  const contract = new Contract(config.tokenAddress, tokenAbi)
+  return useContractFunction(contract, 'setProxyRegistryEnabled')
+}
+
+export const useProxyRegistry = () => {
+  const [proxyRegistry] =
+    useContractCall({
+      abi: tokenAbi,
+      address: config.tokenAddress,
+      method: 'proxyRegistry',
+      args: [],
+    }) || []
+  return proxyRegistry
+}
+
+export const useSetProxyRegistryAndEnable = () => {
+  const contract = new Contract(config.tokenAddress, tokenAbi)
+  return useContractFunction(contract, 'setProxyRegistryAndEnable')
+}
