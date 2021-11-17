@@ -47,6 +47,7 @@ import { Table, Thead, Tbody, Tr, Td, Th } from '@chakra-ui/react'
 import { MintingFilterForm } from '../components/MintingFilterForm'
 import { ConnectToTally } from '../components/ConnectToTally'
 import { CHAIN_ID } from '../config'
+import { RoyaltiesForm, RoyaltiesParams } from '../components/RoyaltiesForm'
 
 /**
  * Constants & Helpers
@@ -72,9 +73,6 @@ type TokenParams = {
   symbol: string
   baseURI: string
   contractInfoURI: string
-  royaltiesBPs: number
-  isRoyaltiesRecipientOverrideEnabled: boolean
-  royaltiesRecipientOverride: string
 }
 
 type GovernorParams = {
@@ -112,6 +110,7 @@ type StateType = {
   governorConfig: GovernorParams
   minterConfig: MinterParams
   mintingFilterConfig: MintingFilterParmas
+  royaltiesConfig: RoyaltiesParams
   clones: CloneAddresses
 }
 type ActionType =
@@ -136,6 +135,10 @@ type ActionType =
       mintingFilterConfig: StateType['mintingFilterConfig']
     }
   | {
+      type: 'SET_ROYALTIES_CONFIG'
+      royaltiesConfig: StateType['royaltiesConfig']
+    }
+  | {
       type: 'SET_CLONES'
       clones: StateType['clones']
     }
@@ -151,9 +154,6 @@ const initialState: StateType = {
     symbol: '',
     baseURI: '',
     contractInfoURI: '',
-    royaltiesBPs: 0,
-    royaltiesRecipientOverride: '',
-    isRoyaltiesRecipientOverrideEnabled: false,
   },
   minterConfig: {
     implementationIndex: 0,
@@ -175,6 +175,11 @@ const initialState: StateType = {
   mintingFilterConfig: {
     useMintingFilter: false,
     tokens: [],
+  },
+  royaltiesConfig: {
+    royaltiesBPs: 0,
+    isRoyaltiesRecipientOverrideEnabled: false,
+    royaltiesRecipientOverride: '',
   },
   clones: null,
 }
@@ -206,6 +211,11 @@ function reducer(state: StateType, action: ActionType): StateType {
       return {
         ...state,
         mintingFilterConfig: action.mintingFilterConfig,
+      }
+    case 'SET_ROYALTIES_CONFIG':
+      return {
+        ...state,
+        royaltiesConfig: action.royaltiesConfig,
       }
     case 'SET_CLONES':
       return {
@@ -298,17 +308,18 @@ function HomeIndex(): JSX.Element {
 
       let royaltiesRecipientOverride = ethers.constants.AddressZero
       if (
-        state.tokenConfig.isRoyaltiesRecipientOverrideEnabled &&
-        state.tokenConfig.royaltiesRecipientOverride
+        state.royaltiesConfig.isRoyaltiesRecipientOverrideEnabled &&
+        state.royaltiesConfig.royaltiesRecipientOverride
       ) {
         royaltiesRecipientOverride =
-          state.tokenConfig.royaltiesRecipientOverride
+          state.royaltiesConfig.royaltiesRecipientOverride
       }
 
       const tx = await deployer.clone(
         account,
         {
           ...state.tokenConfig,
+          ...state.royaltiesConfig,
           royaltiesRecipientOverride: royaltiesRecipientOverride,
         },
         state.governorConfig,
@@ -393,33 +404,10 @@ function HomeIndex(): JSX.Element {
     })
   }
 
-  function onTokenRoyaltiesBPsChange(e) {
+  function onRoyaltiesConfigChange(newValues: RoyaltiesParams) {
     dispatch({
-      type: 'SET_TOKEN_CONFIG',
-      tokenConfig: {
-        ...state.tokenConfig,
-        royaltiesBPs: parseFloat(e) * 100,
-      },
-    })
-  }
-
-  function onTokenRoyaltiesRecipientOverrideEnabledChange(e) {
-    dispatch({
-      type: 'SET_TOKEN_CONFIG',
-      tokenConfig: {
-        ...state.tokenConfig,
-        isRoyaltiesRecipientOverrideEnabled: parseInt(e) === 1,
-      },
-    })
-  }
-
-  function onTokenRoyaltiesRecipientOverrideChange(e) {
-    dispatch({
-      type: 'SET_TOKEN_CONFIG',
-      tokenConfig: {
-        ...state.tokenConfig,
-        royaltiesRecipientOverride: e.target.value,
-      },
+      type: 'SET_ROYALTIES_CONFIG',
+      royaltiesConfig: newValues,
     })
   }
 
@@ -621,68 +609,10 @@ function HomeIndex(): JSX.Element {
                 </Link>
               </FormHelperText>
             </FormControl>
-            <FormControl id="token-royaltypercent">
-              <FormLabel>Resell royalties %</FormLabel>
-              <NumberInput
-                defaultValue={0}
-                step={0.1}
-                min={0}
-                max={100}
-                value={
-                  state.tokenConfig.royaltiesBPs
-                    ? state.tokenConfig.royaltiesBPs / 100
-                    : 0
-                }
-                onChange={onTokenRoyaltiesBPsChange}
-              >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-              <FormHelperText>
-                The maximum number of tokens that can be minted, including
-                tokens minted by the creator and the project's users.
-              </FormHelperText>
-            </FormControl>
-            <FormControl id="token-royaltiesoverrideradio" isRequired>
-              <FormLabel>Royalties recipient</FormLabel>
-              <RadioGroup
-                defaultValue="0"
-                value={
-                  state.tokenConfig.isRoyaltiesRecipientOverrideEnabled
-                    ? '1'
-                    : '0'
-                }
-                onChange={onTokenRoyaltiesRecipientOverrideEnabledChange}
-              >
-                <HStack spacing={8}>
-                  <Radio value="0">Your DAO (default)</Radio>
-                  <Radio value="1">Override with a different address</Radio>
-                </HStack>
-              </RadioGroup>
-              <FormHelperText>
-                Minting revenue is configured in the section below. This is only
-                about where resell royalties should go. By default resell
-                royalties are directed to the DAO. If you'd like another address
-                to received royalties choose to override and add the recipient's
-                address.
-              </FormHelperText>
-            </FormControl>
-            {state.tokenConfig.isRoyaltiesRecipientOverrideEnabled ? (
-              <FormControl id="token-royaltiesRecipientOverride" isRequired>
-                <FormLabel>Royalties recipient override</FormLabel>
-                <Input
-                  type="text"
-                  value={state.tokenConfig.royaltiesRecipientOverride}
-                  onChange={onTokenRoyaltiesRecipientOverrideChange}
-                />
-                <FormHelperText>e.g. your MetaMask address.</FormHelperText>
-              </FormControl>
-            ) : (
-              <></>
-            )}
+            <RoyaltiesForm
+              values={state.royaltiesConfig}
+              onValuesChange={onRoyaltiesConfigChange}
+            />
           </VStack>
           <Heading as="h2" mb={6} mt={6}>
             2. Minter
