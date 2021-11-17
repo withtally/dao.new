@@ -12,8 +12,11 @@ import {
   useSetBaseURI,
   useContractInfoURI,
   useSetContractInfoURI,
+  useRoyaltyInfo,
+  useSetRoyalties,
 } from '../../lib/contractWrappers/token'
 import { useState } from 'react'
+import { RoyaltiesForm, RoyaltiesParams } from '../RoyaltiesForm'
 
 export const TokenAdmin = () => {
   const totalSupply = useTotalSupply()
@@ -31,6 +34,10 @@ export const TokenAdmin = () => {
   const { send: setContractInfoURI, state: setContractInfoURIState } =
     useSetContractInfoURI()
 
+  const { royaltiesRecipient, royaltiesBPs } = useRoyaltyInfo()
+  const [royaltiesFormValues, setRoyaltiesFormValues] = useState({})
+  const { send: setRoyalties, state: setRoyaltiesState } = useSetRoyalties()
+
   const onBaseURIToggleClick = () => {
     if (isBaseURIEnabled === undefined) {
       return
@@ -46,6 +53,17 @@ export const TokenAdmin = () => {
   const onContractInfoURISubmit = (e) => {
     e.preventDefault()
     setContractInfoURI(contractInfoURIFormValue)
+  }
+
+  const onUpdateRoyaltiesClick = (e) => {
+    let params = royaltiesFormValues as RoyaltiesParams
+
+    let recipient = config.timelockAddress
+    if (params.isRoyaltiesRecipientOverrideEnabled) {
+      recipient = params.royaltiesRecipientOverride
+    }
+
+    setRoyalties(recipient, params.royaltiesBPs)
   }
 
   return (
@@ -135,6 +153,41 @@ export const TokenAdmin = () => {
               </Button>
             </HStack>
           </form>
+        </VStack>
+      </VStack>
+      <VStack spacing={6} alignItems="flex-start">
+        <Heading as="h3" size="lg">
+          Royalties
+        </Heading>
+        <VStack spacing={4} alignItems="flex-start">
+          <Heading as="h4" size="md">
+            Current values
+          </Heading>
+          <Text>
+            Recipient:{' '}
+            {royaltiesRecipient
+              ? royaltiesRecipient.toLowerCase() ===
+                config.timelockAddress.toLowerCase()
+                ? 'The DAO'
+                : royaltiesRecipient
+              : ''}
+          </Text>
+          <Text>
+            Royalties:{' '}
+            {royaltiesBPs
+              ? (royaltiesBPs.toNumber() / 100).toString() + '%'
+              : ''}
+          </Text>
+        </VStack>
+        <VStack spacing={4} alignItems="flex-start">
+          <Heading as="h4" size="md">
+            Update values
+          </Heading>
+          <RoyaltiesForm
+            values={royaltiesFormValues}
+            onValuesChange={setRoyaltiesFormValues}
+          />
+          <Button onClick={onUpdateRoyaltiesClick}>Update</Button>
         </VStack>
       </VStack>
     </VStack>

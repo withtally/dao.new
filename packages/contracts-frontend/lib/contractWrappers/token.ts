@@ -75,3 +75,19 @@ export const useSetContractInfoURI = () => {
   const contract = new Contract(config.tokenAddress, tokenAbi)
   return useContractFunction(contract, 'setContractInfoURI')
 }
+
+export const useRoyaltyInfo = () => {
+  const [royaltiesRecipient, royaltiesBPs] =
+    useContractCall({
+      abi: tokenAbi,
+      address: config.tokenAddress,
+      method: 'royaltyInfo',
+      args: [0, 10000],
+    }) || []
+  return { royaltiesRecipient, royaltiesBPs }
+}
+
+export const useSetRoyalties = () => {
+  const contract = new Contract(config.tokenAddress, tokenAbi)
+  return useContractFunction(contract, 'setRoyalties')
+}
