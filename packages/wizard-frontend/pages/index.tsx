@@ -20,7 +20,7 @@ import {
 } from '@chakra-ui/react'
 import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
 import { ethers, providers, utils, BigNumberish, BytesLike } from 'ethers'
-import React, { ChangeEvent, useReducer } from 'react'
+import React, { ChangeEvent, useReducer, useState } from 'react'
 import { ERC721DAODeployerAddress as LOCAL_CONTRACT_ADDRESS } from '../../hardhat/artifacts/contracts/contractAddress'
 import { Layout } from '../components/layout/Layout'
 import {
@@ -45,6 +45,8 @@ import {
 
 import { Table, Thead, Tbody, Tr, Td, Th } from '@chakra-ui/react'
 import { MintingFilterForm } from '../components/MintingFilterForm'
+import { ConnectToTally } from '../components/ConnectToTally'
+import { CHAIN_ID } from '../config'
 
 /**
  * Constants & Helpers
@@ -218,6 +220,7 @@ function reducer(state: StateType, action: ActionType): StateType {
 function HomeIndex(): JSX.Element {
   const [state, dispatch] = useReducer(reducer, initialState)
   const { account, chainId, library } = useEthers()
+  const [clonesBlockNumber, setClonesBlockNumber] = useState(0)
 
   const isLocalChain =
     chainId === ChainId.Localhost || chainId === ChainId.Hardhat
@@ -318,6 +321,7 @@ function HomeIndex(): JSX.Element {
       )
       const receipt = await tx.wait()
       const event = receipt.events?.find((e) => e.event == 'NewClone')
+      setClonesBlockNumber(receipt.blockNumber)
 
       dispatch({
         type: 'SET_CLONES',
@@ -950,42 +954,54 @@ function HomeIndex(): JSX.Element {
         </form>
       </Box>
       {state.clones !== null ? (
-        <Box maxWidth="container.sm" p={4} ms={4} mt={8} bg="gray.100">
-          <Heading as="h2" size="lg" mb={4}>
-            Your NFT DAO contracts:
-          </Heading>
-          <Text color="gray.600" fontSize="sm">
-            Save these addresses so you can easily find contracts later. You can
-            always find them again on Etherscan, in the transaction you just
-            sent.
-          </Text>
-          <Table variant="unstyled" mt={8}>
-            <Thead>
-              <Tr>
-                <Th>Contract</Th>
-                <Th>Address</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              <Tr>
-                <Td>NFT</Td>
-                <Td>{state.clones.token}</Td>
-              </Tr>
-              <Tr>
-                <Td>Minter</Td>
-                <Td>{state.clones.minter}</Td>
-              </Tr>
-              <Tr>
-                <Td>Governor</Td>
-                <Td>{state.clones.governor}</Td>
-              </Tr>
-              <Tr>
-                <Td>Timelock</Td>
-                <Td>{state.clones.timelock}</Td>
-              </Tr>
-            </Tbody>
-          </Table>
-        </Box>
+        <>
+          <Box maxWidth="container.sm" p={4} ms={4} mt={8} bg="gray.100">
+            <Heading as="h2" size="lg" mb={4}>
+              Your NFT DAO contracts:
+            </Heading>
+            <Text color="gray.600" fontSize="sm">
+              Save these addresses so you can easily find contracts later. You
+              can always find them again on Etherscan, in the transaction you
+              just sent.
+            </Text>
+            <Table variant="unstyled" mt={8}>
+              <Thead>
+                <Tr>
+                  <Th>Contract</Th>
+                  <Th>Address</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                <Tr>
+                  <Td>NFT</Td>
+                  <Td>{state.clones.token}</Td>
+                </Tr>
+                <Tr>
+                  <Td>Minter</Td>
+                  <Td>{state.clones.minter}</Td>
+                </Tr>
+                <Tr>
+                  <Td>Governor</Td>
+                  <Td>{state.clones.governor}</Td>
+                </Tr>
+                <Tr>
+                  <Td>Timelock</Td>
+                  <Td>{state.clones.timelock}</Td>
+                </Tr>
+              </Tbody>
+            </Table>
+            <Heading as="h3" size="md" mb={4}>
+              Manage your DAO on Tally
+            </Heading>
+            <ConnectToTally
+              orgName={state.governorConfig.name}
+              tokenAddress={state.clones.token}
+              chainId={CHAIN_ID}
+              startBlock={clonesBlockNumber}
+              governanceAddress={state.clones.governor}
+            />
+          </Box>
+        </>
       ) : (
         <></>
       )}
