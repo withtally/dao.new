@@ -13,6 +13,7 @@
     "deploy": "npx hardhat --network localhost run scripts/deploy.ts",
     "deploy:rinkeby": "npx hardhat --network rinkeby run scripts/deploy.ts",
     "test": "npx hardhat test --network hardhat",
+    "test-gas": "REPORT_GAS=1 npx hardhat test --network hardhat",
     "console": "npx hardhat console --network localhost"
   },
   "devDependencies": {
@@ -28,6 +29,7 @@
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.5.0",
     "hardhat": "^2.6.7",
+    "hardhat-gas-reporter": "^1.0.4",
     "ts-node": "^10.4.0",
     "typechain": "^6.0.2",
     "typescript": "^4.4.4"
