@@ -44,6 +44,8 @@ import { RequiredNFTsMintingFilter__factory } from "../typechain/factories/Requi
 import { parseEther } from "@ethersproject/units";
 import { ProxyRegistryMock__factory } from "../typechain/factories/ProxyRegistryMock__factory";
 import { ProxyRegistryMock } from "../typechain/ProxyRegistryMock";
+import { GovernorUpgradeMock__factory } from "../typechain/factories/GovernorUpgradeMock__factory";
+import { GovernorUpgradeMock } from "../typechain/GovernorUpgradeMock";
 
 chai.use(solidity);
 const { expect } = chai;
@@ -935,6 +937,58 @@ describe("End to end flows", () => {
       ).to.be.revertedWith(
         `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
       );
+    });
+  });
+
+  describe("Upgradability of contracts", async () => {
+    before(() => cloneWithFixedPriceSequentialMinter());
+
+    describe("Governor contract upgrades", async () => {
+      let newGovContractLogic: GovernorUpgradeMock;
+
+      before(async () => {
+        newGovContractLogic = await new GovernorUpgradeMock__factory(
+          signer
+        ).deploy();
+      });
+
+      it("gov is not running new version", async () => {
+        let newGov = new GovernorUpgradeMock__factory(user1).attach(
+          governor.address
+        );
+        await expect(newGov.newGovFunction()).to.be.reverted;
+      });
+
+      it("allows gov to upgrade", async () => {
+        await simpleMinter.connect(user1).mint(4, {
+          value: TOKEN_PRICE * 4,
+        });
+
+        const calldata = governor.interface.encodeFunctionData("upgradeTo", [
+          newGovContractLogic.address,
+        ]);
+
+        await proposeAndExecute(user1, governor, {
+          targets: [governor.address],
+          values: [0],
+          callDatas: [calldata],
+          description: "description",
+          descriptionHash: hashString("description"),
+        });
+
+        let newGov = new GovernorUpgradeMock__factory(user1).attach(
+          governor.address
+        );
+        expect(await newGov.newGovFunction()).to.be.equal(
+          "hello from the new gov"
+        );
+      });
+
+      it("doesn't allow non gov to upgrade", async () => {
+        await expect(
+          governor.connect(user1).upgradeTo(newGovContractLogic.address)
+        ).to.be.revertedWith("Governor: onlyGovernanc");
+      });
     });
   });
 });
