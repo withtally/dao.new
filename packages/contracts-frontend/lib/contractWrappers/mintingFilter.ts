@@ -25,3 +25,15 @@ export const useMintingFilterFunction = (
   const contract = new Contract(address, NFTsMintingFilterAbi)
   return useContractFunction(contract, functionName)
 }
+
+export const createMintingFilterInitCallData = (
+  creatorAddress,
+  tokenAddresses,
+  minBalances
+) => {
+  return NFTsMintingFilterAbi.encodeFunctionData('initialize', [
+    creatorAddress,
+    tokenAddresses,
+    minBalances,
+  ])
+}
