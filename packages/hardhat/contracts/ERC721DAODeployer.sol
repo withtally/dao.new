@@ -62,6 +62,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         address[] mintingFilters
     );
     event NewClone(address token, address timelock, address governor, address minter, address mintingFilter);
+    event NewMintingFilterClone(address mintingFilter);
 
     function initialize(
         ERC721DAOToken token_,
@@ -116,7 +117,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             governorParams.quorumNumerator
         );
 
-        MintingFilter mintingFilter = cloneAndInitMintingFilter(mintingFilterParams);
+        MintingFilter mintingFilter = _cloneAndInitMintingFilter(mintingFilterParams);
         initMinter(minterClone, timelockClone, tokenClone, minterParams, creatorAddress, mintingFilter);
 
         emit NewClone(
@@ -193,6 +194,15 @@ contract ERC721DAODeployer is OwnableUpgradeable {
     }
 
     function cloneAndInitMintingFilter(MintingFilterParams calldata mintingFilterParams)
+        public
+        returns (MintingFilter)
+    {
+        MintingFilter mintingFilter = _cloneAndInitMintingFilter(mintingFilterParams);
+        emit NewMintingFilterClone(address(mintingFilter));
+        return mintingFilter;
+    }
+
+    function _cloneAndInitMintingFilter(MintingFilterParams calldata mintingFilterParams)
         private
         returns (MintingFilter)
     {

@@ -11,3 +11,4 @@ export { default as FixedPriceSpecificIDMinterABI } from "../artifacts/contracts
 export { default as FixedPriceFixedSupplyMinterABI } from "../artifacts/contracts/minters/FixedPriceFixedSupplyMinter.sol/FixedPriceFixedSupplyMinter.json";
 export { default as NFTsMintingFilterABI } from "../artifacts/contracts/minters/filters/NFTsMintingFilter.sol/NFTsMintingFilter.json";
 export { default as ERC721DAOTokenABI } from "../artifacts/contracts/token/ERC721DAOToken.sol/ERC721DAOToken.json";
+export { default as ERC721DAODeployerABI } from "../artifacts/contracts/ERC721DAODeployer.sol/ERC721DAODeployer.json";

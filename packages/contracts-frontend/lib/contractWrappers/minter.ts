@@ -244,3 +244,8 @@ export const useTotalShares = () => {
     }) || []
   return totalShares && totalShares.toNumber()
 }
+
+export const useSetMintingFilter = () => {
+  const contract = new Contract(config.minterAddress, ERC721MinterAbi)
+  return useContractFunction(contract, 'setMintingFilter')
+}

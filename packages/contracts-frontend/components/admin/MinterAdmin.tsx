@@ -11,7 +11,7 @@ import {
   FormHelperText,
 } from '@chakra-ui/react'
 import { parseEther } from 'ethers/lib/utils'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import config, { MinterType } from '../../config'
 import {
   useFixedPriceSupplyMinterFunction,
@@ -30,12 +30,21 @@ import {
   useFixedPriceSpecificIDMinterFunction,
   usePayeeGetter,
   useMaxMintPerTx,
+  useSetMintingFilter,
 } from '../../lib/contractWrappers/minter'
+import {
+  useCloneAndInitMintingFilter,
+  NEW_MINTING_FILTER_CLONE_EVENT,
+} from '../../lib/contractWrappers/deployer'
+import { createMintingFilterInitCallData } from '../../lib/contractWrappers/mintingFilter'
 import { MintingFilterEditForm } from '../MintingFilterEditForm'
 import { PaymentSplitterAdminForm } from './PaymentSplitterAdminForm'
 import { showEther } from '../../lib/utils'
+import { useEthers } from '@usedapp/core'
 
 export const MinterAdmin = () => {
+  const { account } = useEthers()
+
   const [formTokenPrice, setFormTokenPrice] = useState('')
   const tokenPrice = useIncrementalMinterMintPrice()
   const isTokenPriceLocked = useIncrementalMinterIsTokenPriceLocked()
@@ -132,12 +141,53 @@ export const MinterAdmin = () => {
     }
   }
 
+  // MintingFilter Clone + Set on Minter
+
+  const {
+    send: cloneAndInitMintingFilter,
+    state: cloneAndInitMintingFilterState,
+    events: cloneAndInitMintingFilterEvents,
+  } = useCloneAndInitMintingFilter()
+  const { send: setMintingFilter, state: setMintingFilterState } =
+    useSetMintingFilter()
+  const isDeployMintingFilterLoading =
+    cloneAndInitMintingFilterState.status === 'Mining' ||
+    setMintingFilterState.status === 'Mining'
+
+  const onDeployMintingFilter = (tokenAddresses, minBalances) => {
+    const initCallData = createMintingFilterInitCallData(
+      account,
+      tokenAddresses,
+      minBalances
+    )
+    cloneAndInitMintingFilter({
+      useMintingFilter: true,
+      implementationIndex: 0,
+      initCallData: initCallData,
+    })
+  }
+
+  useEffect(() => {
+    if (
+      cloneAndInitMintingFilterEvents === undefined ||
+      cloneAndInitMintingFilterEvents.length === 0
+    ) {
+      return
+    }
+
+    const cloneEvent = cloneAndInitMintingFilterEvents.find(
+      (e) => e.name === NEW_MINTING_FILTER_CLONE_EVENT
+    )
+
+    setMintingFilter(cloneEvent.args.mintingFilter)
+  }, [cloneAndInitMintingFilterEvents])
+
   return (
     <>
       <Box>Contract address: {config.minterAddress}</Box>
       <VStack spacing={16} alignItems="flex-start">
         <VStack spacing={4} alignItems="flex-start">
-          <Heading as="h3" size="md">
+          <Heading as="h3" size="lg">
             Sale status
           </Heading>
           <HStack>
@@ -154,7 +204,7 @@ export const MinterAdmin = () => {
           </HStack>
         </VStack>
         <VStack spacing={4} alignItems="flex-start">
-          <Heading as="h3" size="md">
+          <Heading as="h3" size="lg">
             Token price
           </Heading>
           <HStack>
@@ -195,7 +245,7 @@ export const MinterAdmin = () => {
           </HStack>
         </VStack>
         <VStack spacing={4} alignItems="flex-start">
-          <Heading as="h3" size="md">
+          <Heading as="h3" size="lg">
             Max token supply
           </Heading>
           <HStack>
@@ -238,7 +288,7 @@ export const MinterAdmin = () => {
         </VStack>
         {config.minterType === MinterType.FixedPriceSequentialMinter ? (
           <VStack spacing={4} alignItems="flex-start">
-            <Heading as="h3" size="md">
+            <Heading as="h3" size="lg">
               Max mints per transaction
             </Heading>
             <Text>Value: {maxMintsPerTx}</Text>
@@ -247,7 +297,7 @@ export const MinterAdmin = () => {
           <></>
         )}
         <VStack spacing={4} alignItems="flex-start">
-          <Heading as="h3" size="md">
+          <Heading as="h3" size="lg">
             Sale start block
           </Heading>
           <HStack>
@@ -290,7 +340,7 @@ export const MinterAdmin = () => {
           </HStack>
         </VStack>
         <VStack spacing={4} alignItems="flex-start">
-          <Heading as="h3" size="md">
+          <Heading as="h3" size="lg">
             Owner mint
           </Heading>
           <form onSubmit={onOwnerMintSubmit}>
@@ -367,18 +417,20 @@ export const MinterAdmin = () => {
         </VStack>
         {mintingFilterAddress !== undefined ? (
           <VStack spacing={4} alignItems="flex-start">
-            <Heading as="h3" size="md">
+            <Heading as="h3" size="lg">
               Buyer filtering
             </Heading>
             <MintingFilterEditForm
               mintingFilterAddress={mintingFilterAddress}
+              onDeployMintingFilter={onDeployMintingFilter}
+              isDeployMintingFilterLoading={isDeployMintingFilterLoading}
             />
           </VStack>
         ) : (
           <></>
         )}
         <VStack spacing={4} alignItems="flex-start">
-          <Heading as="h3" size="md">
+          <Heading as="h3" size="lg">
             Balance and funds release
           </Heading>
           {creatorPayeeAddress !== undefined &&
