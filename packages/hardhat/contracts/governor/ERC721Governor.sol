@@ -12,12 +12,14 @@ import { GovernorUpgradeable } from "@openzeppelin/contracts-upgradeable/governa
 import { TimelockControllerUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/TimelockControllerUpgradeable.sol";
 import { GovernorProposalThresholdUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorProposalThresholdUpgradeable.sol";
 import { IGovernorUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/IGovernorUpgradeable.sol";
+import { UUPSUpgradeable } from "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
+
 
 contract ERC721Governor is
     GovernorVotesERC721QuorumFractionUpgradeable,
     GovernorCountingSimpleUpgradeable,
     GovernorTimelockControlUpgradeable,
-    GovernorProposalThresholdUpgradeable
+    GovernorProposalThresholdUpgradeable, UUPSUpgradeable
 {
     uint256 private _proposalThreshold;
     uint256 private _votingDelay;
@@ -140,4 +142,6 @@ contract ERC721Governor is
     {
         return super.supportsInterface(interfaceId);
     }
+
+    function _authorizeUpgrade(address) internal override onlyGovernance {}
 }
