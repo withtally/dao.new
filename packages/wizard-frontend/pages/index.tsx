@@ -240,7 +240,7 @@ function HomeIndex(): JSX.Element {
       ? ROPSTEN_CONTRACT_ADDRESS
       : LOCAL_CONTRACT_ADDRESS
   if (chainId === ChainId.Rinkeby) {
-    CONTRACT_ADDRESS = '0xdC8CFFf9576C646f2b3dD8519B9256B461f0889D'
+    CONTRACT_ADDRESS = '0x842D5060c91a2d7edfDA1c7735D59DEd65b798D9'
   }
 
   // Use the localProvider as the signer to send ETH to our wallet

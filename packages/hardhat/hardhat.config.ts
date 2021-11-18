@@ -2,6 +2,7 @@ import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
 import "@nomiclabs/hardhat-etherscan";
 import "@typechain/hardhat";
+import "hardhat-gas-reporter";
 import { task } from "hardhat/config";
 import { HardhatUserConfig } from "hardhat/types";
 
@@ -51,6 +52,9 @@ const config: HardhatUserConfig = {
   },
   typechain: {
     outDir: "./typechain",
+  },
+  gasReporter: {
+    enabled: process.env.REPORT_GAS ? true : false,
   },
 };
 
