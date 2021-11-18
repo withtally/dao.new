@@ -46,6 +46,8 @@ import { ProxyRegistryMock__factory } from "../typechain/factories/ProxyRegistry
 import { ProxyRegistryMock } from "../typechain/ProxyRegistryMock";
 import { GovernorUpgradeMock__factory } from "../typechain/factories/GovernorUpgradeMock__factory";
 import { GovernorUpgradeMock } from "../typechain/GovernorUpgradeMock";
+import { TimelockUpgradeMock } from "../typechain/TimelockUpgradeMock";
+import { TimelockUpgradeMock__factory } from "../typechain/factories/TimelockUpgradeMock__factory";
 
 chai.use(solidity);
 const { expect } = chai;
@@ -988,6 +990,54 @@ describe("End to end flows", () => {
         await expect(
           governor.connect(user1).upgradeTo(newGovContractLogic.address)
         ).to.be.revertedWith("Governor: onlyGovernanc");
+      });
+    });
+
+    describe("Timelock contract upgrade", async () => {
+      let newTimelockContractLogic: TimelockUpgradeMock;
+
+      before(async () => {
+        newTimelockContractLogic = await new TimelockUpgradeMock__factory(
+          signer
+        ).deploy();
+      });
+
+      it("timelock is not running new version", async () => {
+        await expect(
+          newTimelockContractLogic
+            .attach(timelock.address)
+            .newTimelockFunction()
+        ).to.be.reverted;
+      });
+
+      it("allows gov to upgrade", async () => {
+        await simpleMinter.connect(user1).mint(4, {
+          value: TOKEN_PRICE * 4,
+        });
+
+        const calldata = timelock.interface.encodeFunctionData("upgradeTo", [
+          newTimelockContractLogic.address,
+        ]);
+
+        await proposeAndExecute(user1, governor, {
+          targets: [timelock.address],
+          values: [0],
+          callDatas: [calldata],
+          description: "description",
+          descriptionHash: hashString("description"),
+        });
+
+        expect(
+          await newTimelockContractLogic
+            .attach(timelock.address)
+            .newTimelockFunction()
+        ).to.be.equal("hello from the new timelock");
+      });
+
+      it("doesn't allow non gov to upgrade", async () => {
+        await expect(
+          timelock.connect(user1).upgradeTo(newTimelockContractLogic.address)
+        ).to.be.reverted;
       });
     });
   });
