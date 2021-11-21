@@ -1,5 +1,5 @@
 import { useGetTokenFilters } from '../lib/contractWrappers/mintingFilter'
-import { MintingFilterNFTsInputs } from './MintingFilterNFTsInputs'
+import { MintingFilterNFTsInputs } from 'create-nft-dao-shared-frontend'
 import { useState, useEffect } from 'react'
 
 export const MintingFilterEditNFTs = ({

@@ -10,46 +10,46 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   HStack,
-} from '@chakra-ui/react'
-import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
-import { IconButton } from '@chakra-ui/button'
+} from "@chakra-ui/react";
+import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
+import { IconButton } from "@chakra-ui/button";
 
 export const MintingFilterNFTsInputs = ({ values, onValuesChange }) => {
   const onAddClick = (e) => {
-    const newValues = values.slice()
+    const newValues = values.slice();
 
     newValues.push({
-      address: '',
+      address: "",
       minBalance: 1,
-    })
+    });
 
-    onValuesChange(newValues)
-  }
+    onValuesChange(newValues);
+  };
 
   const onContractAddressChange = (e) => {
-    const newValues = values.slice()
+    const newValues = values.slice();
 
-    const index = parseInt(e.target.id.split('-')[1])
-    newValues[index].address = e.target.value
+    const index = parseInt(e.target.id.split("-")[1]);
+    newValues[index].address = e.target.value;
 
-    onValuesChange(newValues)
-  }
+    onValuesChange(newValues);
+  };
 
   const onMinBalanceChange = (index: number, v: string) => {
-    const newValues = values.slice()
+    const newValues = values.slice();
 
-    newValues[index].minBalance = parseInt(v)
+    newValues[index].minBalance = parseInt(v);
 
-    onValuesChange(newValues)
-  }
+    onValuesChange(newValues);
+  };
 
   const onDeleteToken = (index: number) => {
-    const newValues = values.slice()
+    const newValues = values.slice();
 
-    newValues.splice(index, 1)
+    newValues.splice(index, 1);
 
-    onValuesChange(newValues)
-  }
+    onValuesChange(newValues);
+  };
 
   const tokenInputs = values.map((t, index) => (
     <HStack key={index} alignItems="flex-end">
@@ -86,7 +86,7 @@ export const MintingFilterNFTsInputs = ({ values, onValuesChange }) => {
         onClick={() => onDeleteToken(index)}
       />
     </HStack>
-  ))
+  ));
 
   return (
     <VStack spacing={4} alignItems="flex-start">
@@ -97,5 +97,5 @@ export const MintingFilterNFTsInputs = ({ values, onValuesChange }) => {
         {tokenInputs}
       </VStack>
     </VStack>
-  )
-}
+  );
+};

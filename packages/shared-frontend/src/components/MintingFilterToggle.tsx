@@ -1,9 +1,9 @@
-import { FormControl, FormLabel, Switch, Text, VStack } from '@chakra-ui/react'
+import { FormControl, FormLabel, Switch, Text, VStack } from "@chakra-ui/react";
 
 export const MintingFilterToggle = ({ value, onValueChange }) => {
   const onSwitchChange = (e) => {
-    onValueChange(e.target.checked)
-  }
+    onValueChange(e.target.checked);
+  };
 
   return (
     <VStack spacing={2} alignItems="flex-start">
@@ -24,5 +24,5 @@ export const MintingFilterToggle = ({ value, onValueChange }) => {
         address just below the collection name.
       </Text>
     </VStack>
-  )
-}
+  );
+};
