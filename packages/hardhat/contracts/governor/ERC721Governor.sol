@@ -19,7 +19,8 @@ contract ERC721Governor is
     GovernorVotesERC721QuorumFractionUpgradeable,
     GovernorCountingSimpleUpgradeable,
     GovernorTimelockControlUpgradeable,
-    GovernorProposalThresholdUpgradeable, UUPSUpgradeable
+    GovernorProposalThresholdUpgradeable,
+    UUPSUpgradeable
 {
     uint256 private _proposalThreshold;
     uint256 private _votingDelay;
