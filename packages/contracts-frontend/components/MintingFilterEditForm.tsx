@@ -4,9 +4,9 @@ import { ethers } from '@usedapp/core/node_modules/ethers'
 import { useState } from 'react'
 import { useMintingFilterFunction } from '../lib/contractWrappers/mintingFilter'
 import { MintingFilterNFTsTable } from './MintingFilterNFTsTable'
-import { MintingFilterToggle } from './MintingFilterToggle'
 import { MintingFilterEditNFTs } from './MintingFilterEditNFTs'
-import { MintingFilterNFTsInputs } from './MintingFilterNFTsInputs'
+import { MintingFilterToggle } from 'create-nft-dao-shared-frontend'
+import { MintingFilterNFTsInputs } from 'create-nft-dao-shared-frontend'
 
 export const MintingFilterEditForm = ({
   mintingFilterAddress,
