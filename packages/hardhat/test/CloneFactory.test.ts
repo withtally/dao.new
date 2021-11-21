@@ -9,12 +9,7 @@ import {
   attachToken,
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import {
-  ERC721DAOToken,
-  CloneFactory,
-  ERC721DAOToken__factory,
-} from "../typechain";
-import { isBytesLike } from "@ethersproject/bignumber/node_modules/@ethersproject/bytes";
+import { ERC721DAOToken, CloneFactory } from "../typechain";
 
 chai.use(solidity);
 const { expect } = chai;
