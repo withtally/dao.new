@@ -20,7 +20,7 @@ import {
   useSetProxyRegistryAndEnable,
 } from '../../lib/contractWrappers/token'
 import { useState } from 'react'
-import { RoyaltiesForm, RoyaltiesParams } from '../RoyaltiesForm'
+import { RoyaltiesForm, RoyaltiesParams } from 'create-nft-dao-shared-frontend'
 
 export const TokenAdmin = () => {
   const totalSupply = useTotalSupply()

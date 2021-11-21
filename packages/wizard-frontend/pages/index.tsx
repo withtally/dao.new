@@ -47,7 +47,7 @@ import { Table, Thead, Tbody, Tr, Td, Th } from '@chakra-ui/react'
 import { MintingFilterForm } from '../components/MintingFilterForm'
 import { ConnectToTally } from '../components/ConnectToTally'
 import { CHAIN_ID } from '../config'
-import { RoyaltiesForm, RoyaltiesParams } from '../components/RoyaltiesForm'
+import { RoyaltiesForm, RoyaltiesParams } from 'create-nft-dao-shared-frontend'
 
 /**
  * Constants & Helpers
