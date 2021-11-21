@@ -17,7 +17,9 @@
   },
   "devDependencies": {
     "prettier": "^2.4.1",
-    "prettier-plugin-solidity": "^1.0.0-beta.18"
+    "prettier-plugin-solidity": "^1.0.0-beta.18",
+    "//": "added ts-node here to overcome the bug with HH and yarn where hardhat throws HH13 when ts-node is only installed in the hardhat package.",
+    "ts-node": "^10.4.0"
   },
   "workspaces": {
     "packages": [
