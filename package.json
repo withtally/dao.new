@@ -13,7 +13,8 @@
     "deploy:rinkeby": "yarn workspace nextjs-ethereum-starter-hardhat deploy:rinkeby",
     "compile": "yarn workspace nextjs-ethereum-starter-hardhat compile",
     "clean": "yarn workspace nextjs-ethereum-starter-hardhat clean",
-    "test": "yarn workspace nextjs-ethereum-starter-hardhat test"
+    "test": "yarn workspace nextjs-ethereum-starter-hardhat test",
+    "build:hhts": "yarn workspace nextjs-ethereum-starter-hardhat build:ts"
   },
   "devDependencies": {
     "prettier": "^2.4.1",
