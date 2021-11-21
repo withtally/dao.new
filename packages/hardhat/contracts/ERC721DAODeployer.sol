@@ -11,6 +11,8 @@ import { ERC721Governor } from "./governor/ERC721Governor.sol";
 import { ERC721Minter } from "./minters/ERC721Minter.sol";
 import { MintingFilter } from "./minters/filters/MintingFilter.sol";
 import { IRoyaltyInfo } from "./token/IRoyaltyInfo.sol";
+import { ERC1967Proxy } from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
+
 
 contract ERC721DAODeployer is OwnableUpgradeable {
     using ClonesUpgradeable for address;
@@ -89,8 +91,8 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         );
 
         ERC721DAOToken tokenClone = ERC721DAOToken(address(token).clone());
-        ERC721Timelock timelockClone = ERC721Timelock(payable(address(timelock).clone()));
-        ERC721Governor governorClone = ERC721Governor(address(governor).clone());
+        ERC721Timelock timelockClone = ERC721Timelock(payable(new ERC1967Proxy(address(timelock), "")));
+        ERC721Governor governorClone = ERC721Governor(address(new ERC1967Proxy(address(governor), "")));
         ERC721Minter minterClone = ERC721Minter(payable(address(minters[minterParams.implementationIndex]).clone()));
 
         // This block is necessary to avoid the "stack too deep" compilation error

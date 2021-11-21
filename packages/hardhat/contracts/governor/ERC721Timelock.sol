@@ -5,8 +5,9 @@
 pragma solidity ^0.8.6;
 
 import { TimelockControllerUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/TimelockControllerUpgradeable.sol";
+import { UUPSUpgradeable } from "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 
-contract ERC721Timelock is TimelockControllerUpgradeable {
+contract ERC721Timelock is TimelockControllerUpgradeable, UUPSUpgradeable {
     function initialize(
         uint256 minDelay,
         address[] memory proposers,
@@ -19,4 +20,6 @@ contract ERC721Timelock is TimelockControllerUpgradeable {
         // creates.
         revokeRole(TIMELOCK_ADMIN_ROLE, _msgSender());
     }
+
+    function _authorizeUpgrade(address) internal override onlyRole(TIMELOCK_ADMIN_ROLE) {}
 }
