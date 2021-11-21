@@ -538,8 +538,12 @@ function HomeIndex(): JSX.Element {
     })
   }
 
+  const layoutProps = {
+    title: 'Create NFT DAO: Wizard',
+  }
+
   return (
-    <Layout>
+    <Layout customMeta={layoutProps}>
       <Heading as="h1" mb="8" px={4}>
         Create NFT DAO 🧙‍♀️
       </Heading>

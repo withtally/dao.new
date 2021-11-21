@@ -10,11 +10,15 @@ import {
 } from '../lib/contractWrappers/minter'
 
 const Mint = () => {
+  const layoutProps = {
+    title: 'Create NFT DAO: Admin',
+  }
+
   const tokenPrice = useIncrementalMinterMintPrice()
   const isSaleActive = useIsSaleActive()
 
   return (
-    <Layout>
+    <Layout customMeta={layoutProps}>
       <VStack maxW="container.lg" spacing={16} alignItems="flex-start" px={4}>
         <Heading as="h1" size="2xl">
           Admin
