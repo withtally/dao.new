@@ -1037,7 +1037,11 @@ describe("End to end flows", () => {
       it("doesn't allow non gov to upgrade", async () => {
         await expect(
           timelock.connect(user1).upgradeTo(newTimelockContractLogic.address)
-        ).to.be.reverted;
+        )
+          .to.be.revertedWith("AccessControl: ")
+          .and.to.be.revertedWith(
+            "is missing role 0x5f58e3a2316349923ce3780f8d587db2d72378aed66a8261c916544fa6846ca5"
+          );
       });
     });
   });
