@@ -1,12 +1,12 @@
 import { VStack } from '@chakra-ui/layout'
 import { Button, Text, Heading } from '@chakra-ui/react'
-import { ethers } from '@usedapp/core/node_modules/ethers'
 import { useState } from 'react'
 import { useMintingFilterFunction } from '../lib/contractWrappers/mintingFilter'
 import { MintingFilterNFTsTable } from './MintingFilterNFTsTable'
 import { MintingFilterEditNFTs } from './MintingFilterEditNFTs'
 import { MintingFilterToggle } from 'create-nft-dao-shared-frontend'
 import { MintingFilterNFTsInputs } from 'create-nft-dao-shared-frontend'
+import { ethers } from 'ethers'
 
 export const MintingFilterEditForm = ({
   mintingFilterAddress,
