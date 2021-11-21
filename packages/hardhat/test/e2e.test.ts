@@ -989,7 +989,7 @@ describe("End to end flows", () => {
       it("doesn't allow non gov to upgrade", async () => {
         await expect(
           governor.connect(user1).upgradeTo(newGovContractLogic.address)
-        ).to.be.revertedWith("Governor: onlyGovernanc");
+        ).to.be.revertedWith("Governor: onlyGovernance");
       });
     });
 
