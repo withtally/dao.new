@@ -6,6 +6,7 @@
     "wizard": "yarn workspace nextjs-ethereum-starter-frontend dev -p 3000",
     "admin": "yarn workspace create-nft-dao-contracts-frontend dev -p 3001",
     "build": "yarn workspace nextjs-ethereum-starter-frontend build",
+    "build:shared": "yarn workspace create-nft-dao-shared-frontend build",
     "start": "yarn workspace nextjs-ethereum-starter-frontend start",
     "chain": "yarn workspace nextjs-ethereum-starter-hardhat chain",
     "deploy": "yarn workspace nextjs-ethereum-starter-hardhat deploy",
