@@ -14,10 +14,7 @@ import {
   DEFAULT_QUORUM_NUMERATOR,
   DEFAULT_CREATOR_PERCENTAGE,
 } from '../lib/contractUtils'
-import { Table, Thead, Tbody, Tr, Td, Th } from '@chakra-ui/react'
 import { MintingFilterForm } from '../components/MintingFilterForm'
-import { ConnectToTally } from '../components/ConnectToTally'
-import { CHAIN_ID } from '../config'
 import { RoyaltiesParams } from 'create-nft-dao-shared-frontend'
 import { MintingFilterParmas, StateType } from '../lib/wizardTypes'
 import { wizardReducer } from '../lib/wizardReducerEventHandlers'
@@ -25,6 +22,7 @@ import { clone } from '../lib/deployer'
 import { TokenInputs } from '../components/TokenInputs'
 import { MinterInputs } from '../components/MinterInputs'
 import { GovernorInputs } from '../components/GovernorInputs'
+import { ClonesView } from '../components/ClonesView'
 
 /**
  * Constants & Helpers
@@ -211,54 +209,11 @@ function HomeIndex(): JSX.Element {
         </form>
       </Box>
       {state.clones !== null ? (
-        <>
-          <Box maxWidth="container.sm" p={4} ms={4} mt={8} bg="gray.100">
-            <Heading as="h2" size="lg" mb={4}>
-              Your NFT DAO contracts:
-            </Heading>
-            <Text color="gray.600" fontSize="sm">
-              Save these addresses so you can easily find contracts later. You
-              can always find them again on Etherscan, in the transaction you
-              just sent.
-            </Text>
-            <Table variant="unstyled" mt={8}>
-              <Thead>
-                <Tr>
-                  <Th>Contract</Th>
-                  <Th>Address</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                <Tr>
-                  <Td>NFT</Td>
-                  <Td>{state.clones.token}</Td>
-                </Tr>
-                <Tr>
-                  <Td>Minter</Td>
-                  <Td>{state.clones.minter}</Td>
-                </Tr>
-                <Tr>
-                  <Td>Governor</Td>
-                  <Td>{state.clones.governor}</Td>
-                </Tr>
-                <Tr>
-                  <Td>Timelock</Td>
-                  <Td>{state.clones.timelock}</Td>
-                </Tr>
-              </Tbody>
-            </Table>
-            <Heading as="h3" size="md" mb={4}>
-              Manage your DAO on Tally
-            </Heading>
-            <ConnectToTally
-              orgName={state.governorConfig.name}
-              tokenAddress={state.clones.token}
-              chainId={CHAIN_ID}
-              startBlock={clonesBlockNumber}
-              governanceAddress={state.clones.governor}
-            />
-          </Box>
-        </>
+        <ClonesView
+          clones={state.clones}
+          clonesBlockNumber={clonesBlockNumber}
+          governorName={state.governorConfig.name}
+        />
       ) : (
         <></>
       )}
