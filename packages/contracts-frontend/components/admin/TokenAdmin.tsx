@@ -1,6 +1,6 @@
 import { HStack, VStack } from '@chakra-ui/layout'
 import { Heading, Text, Button, Input } from '@chakra-ui/react'
-import config from '../../config'
+import { config } from '@create-nft-dao/shared'
 import { OpenSeaLink } from '../OpenSeaLink'
 import { RaribleLink } from '../RaribleLink'
 import {
@@ -20,7 +20,7 @@ import {
   useSetProxyRegistryAndEnable,
 } from '../../lib/contractWrappers/token'
 import { useState } from 'react'
-import { RoyaltiesForm, RoyaltiesParams } from '../RoyaltiesForm'
+import { RoyaltiesForm, RoyaltiesParams } from '@create-nft-dao/shared'
 
 export const TokenAdmin = () => {
   const totalSupply = useTotalSupply()
@@ -40,7 +40,7 @@ export const TokenAdmin = () => {
 
   const { royaltiesRecipient, royaltiesBPs } = useRoyaltyInfo()
   const [royaltiesFormValues, setRoyaltiesFormValues] = useState({})
-  const { send: setRoyalties, state: setRoyaltiesState } = useSetRoyalties()
+  const { send: setRoyalties } = useSetRoyalties()
 
   const [proxyRegistryFormValue, setProxyRegistryFormValue] = useState('')
   const isProxyRegistryEnabled = useProxyRegistryEnabled()
@@ -69,8 +69,8 @@ export const TokenAdmin = () => {
     setContractInfoURI(contractInfoURIFormValue)
   }
 
-  const onUpdateRoyaltiesClick = (e) => {
-    let params = royaltiesFormValues as RoyaltiesParams
+  const onUpdateRoyaltiesClick = (_) => {
+    const params = royaltiesFormValues as RoyaltiesParams
 
     let recipient = config.timelockAddress
     if (params.isRoyaltiesRecipientOverrideEnabled) {

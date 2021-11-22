@@ -1,6 +1,6 @@
 import { ChainId, useEthers } from '@usedapp/core'
 import { Link } from '@chakra-ui/react'
-import config from '../config'
+import { config } from '@create-nft-dao/shared'
 
 export const RaribleLink = ({ linkText }) => {
   const { chainId } = useEthers()

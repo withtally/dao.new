@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { parseEther } from 'ethers/lib/utils'
 import React, { useEffect, useState } from 'react'
-import config, { MinterType } from '../../config'
+import { config, MinterType } from '@create-nft-dao/shared'
 import {
   useFixedPriceSupplyMinterFunction,
   useIncrementalMinterMintPrice,
@@ -29,7 +29,6 @@ import {
   useMintingFilter,
   useFixedPriceSpecificIDMinterFunction,
   usePayeeGetter,
-  useMaxMintPerTx,
   useSetMintingFilter,
 } from '../../lib/contractWrappers/minter'
 import {
@@ -39,8 +38,9 @@ import {
 import { createMintingFilterInitCallData } from '../../lib/contractWrappers/mintingFilter'
 import { MintingFilterEditForm } from '../MintingFilterEditForm'
 import { PaymentSplitterAdminForm } from './PaymentSplitterAdminForm'
-import { showEther } from '../../lib/utils'
+import { showEther } from '@create-nft-dao/shared'
 import { useEthers } from '@usedapp/core'
+import { MinterAdminMaxMintsView } from './MinterAdminMaxMintsView'
 
 export const MinterAdmin = () => {
   const { account } = useEthers()
@@ -87,11 +87,6 @@ export const MinterAdmin = () => {
   const mintingFilterAddress = useMintingFilter()
   const creatorPayeeAddress = usePayeeGetter(0)
   const daoPayeeAddress = usePayeeGetter(1)
-
-  let maxMintsPerTx
-  if (config.minterType === MinterType.FixedPriceSequentialMinter) {
-    maxMintsPerTx = useMaxMintPerTx()
-  }
 
   const onTokenPriceSubmit = (e) => {
     e.preventDefault()
@@ -180,7 +175,7 @@ export const MinterAdmin = () => {
     )
 
     setMintingFilter(cloneEvent.args.mintingFilter)
-  }, [cloneAndInitMintingFilterEvents])
+  }, [cloneAndInitMintingFilterEvents, setMintingFilter])
 
   return (
     <>
@@ -287,12 +282,7 @@ export const MinterAdmin = () => {
           </HStack>
         </VStack>
         {config.minterType === MinterType.FixedPriceSequentialMinter ? (
-          <VStack spacing={4} alignItems="flex-start">
-            <Heading as="h3" size="lg">
-              Max mints per transaction
-            </Heading>
-            <Text>Value: {maxMintsPerTx}</Text>
-          </VStack>
+          <MinterAdminMaxMintsView />
         ) : (
           <></>
         )}

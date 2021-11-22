@@ -49,10 +49,8 @@ export const ConnectToTally = ({
           }
         }`,
     })
-    console.log(createOrgResponse)
     const orgId = createOrgResponse['data']['createOrganization']['id']
-    console.log(orgId)
-    const createTokenResponse = await client.mutate({
+    await client.mutate({
       mutation: gql`
         mutation {
           createToken (
@@ -66,8 +64,7 @@ export const ConnectToTally = ({
             }
         }`,
     })
-    console.log(createTokenResponse)
-    const createGovResponse = await client.mutate({
+    await client.mutate({
       mutation: gql`
         mutation {
           createGovernance (
@@ -81,7 +78,6 @@ export const ConnectToTally = ({
         }
       `,
     })
-    console.log(createGovResponse)
   }
 
   const getTallyUrl = (chainIdCAIP: string, governanceAddress: string) => {

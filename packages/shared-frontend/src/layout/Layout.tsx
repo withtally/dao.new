@@ -20,9 +20,9 @@ import { useEthers, useNotifications } from '@usedapp/core'
 import blockies from 'blockies-ts'
 import NextLink from 'next/link'
 import React from 'react'
-import { getErrorMessage } from '../../lib/utils'
-import { Balance } from '../Balance'
-import { ConnectWallet } from '../ConnectWallet'
+import { getErrorMessage } from '../lib/utils'
+import { Balance } from '../components/Balance'
+import { ConnectWallet } from '../components/ConnectWallet'
 import { Head, MetaProps } from './Head'
 
 // Extends `window` to add `ethereum`.
@@ -50,15 +50,25 @@ function truncateHash(hash: string, length = 38): string {
 /**
  * Prop Types
  */
+interface NavbarLink {
+  href: string
+  label: string
+}
+
 interface LayoutProps {
   children: React.ReactNode
   customMeta?: MetaProps
+  navbarLinks?: NavbarLink[]
 }
 
 /**
  * Component
  */
-export const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
+export const Layout = ({
+  children,
+  customMeta,
+  navbarLinks,
+}: LayoutProps): JSX.Element => {
   const { account, deactivate, error } = useEthers()
   const { notifications } = useNotifications()
 
@@ -66,6 +76,14 @@ export const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
   if (typeof window !== 'undefined') {
     blockieImageSrc = blockies.create({ seed: account }).toDataURL()
   }
+
+  const navLinks = navbarLinks.map((nl, index) => (
+    <NextLink key={index} href={nl.href} passHref>
+      <Link px="4" py="1">
+        {nl.label}
+      </Link>
+    </NextLink>
+  ))
 
   return (
     <>
@@ -78,13 +96,7 @@ export const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
             justifyContent="space-between"
             py="8"
           >
-            <Flex py={[4, null, null, 0]}>
-              <NextLink href="/" passHref>
-                <Link px="4" py="1">
-                  Home
-                </Link>
-              </NextLink>
-            </Flex>
+            <Flex py={[4, null, null, 0]}>{navLinks}</Flex>
             {account ? (
               <Flex
                 order={[-1, null, null, 2]}

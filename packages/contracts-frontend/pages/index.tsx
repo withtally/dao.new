@@ -1,24 +1,18 @@
-import { Layout } from '../components/layout/Layout'
+import { Layout } from '@create-nft-dao/shared'
 import { Heading, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { MinterAdmin } from '../components/admin/MinterAdmin'
 import { TokenAdmin } from '../components/admin/TokenAdmin'
 import { GovernanceAdmin } from '../components/admin/GovernanceAdmin'
-import {
-  useIncrementalMinterMintPrice,
-  useIsSaleActive,
-} from '../lib/contractWrappers/minter'
+import { NavbarLinks } from '../components/NavbarLinks'
 
 const Mint = () => {
   const layoutProps = {
     title: 'Create NFT DAO: Admin',
   }
 
-  const tokenPrice = useIncrementalMinterMintPrice()
-  const isSaleActive = useIsSaleActive()
-
   return (
-    <Layout customMeta={layoutProps}>
+    <Layout customMeta={layoutProps} navbarLinks={NavbarLinks}>
       <VStack maxW="container.lg" spacing={16} alignItems="flex-start" px={4}>
         <Heading as="h1" size="2xl">
           Admin
