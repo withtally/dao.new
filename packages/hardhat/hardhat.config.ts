@@ -5,8 +5,7 @@ import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import { task } from "hardhat/config";
 import { HardhatUserConfig } from "hardhat/types";
-
-const { alchemyApiKey, mnemonic, etherscanApiKey } = require("./secrets.json");
+require("dotenv").config();
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -43,12 +42,12 @@ const config: HardhatUserConfig = {
       loggingEnabled: false,
     },
     rinkeby: {
-      url: `https://eth-rinkeby.alchemyapi.io/v2/${alchemyApiKey}`,
-      accounts: { mnemonic: mnemonic },
+      url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
+      accounts: { mnemonic: process.env.MNEMONIC },
     },
   },
   etherscan: {
-    apiKey: `${etherscanApiKey}`,
+    apiKey: `${process.env.ETHERSCAN_API_KEY}`,
   },
   typechain: {
     outDir: "./typechain",
