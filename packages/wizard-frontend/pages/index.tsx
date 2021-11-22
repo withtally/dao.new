@@ -42,6 +42,7 @@ import { RoyaltiesForm, RoyaltiesParams } from 'create-nft-dao-shared-frontend'
 import { MintingFilterParmas, StateType } from '../lib/wizardTypes'
 import { wizardReducer } from '../lib/wizardReducerEventHandlers'
 import { clone } from '../lib/deployer'
+import { TokenInputs } from '../components/TokenInputs'
 
 /**
  * Constants & Helpers
@@ -145,43 +146,10 @@ function HomeIndex(): JSX.Element {
     ? library.getSigner().provider.blockNumber
     : 0
 
-  function onTokenNameChange(e) {
+  function onTokenConfigChange(newValues) {
     dispatch({
       type: 'SET_TOKEN_CONFIG',
-      tokenConfig: {
-        ...state.tokenConfig,
-        name: e.target.value,
-      },
-    })
-  }
-
-  function onTokenSymbolChange(e) {
-    dispatch({
-      type: 'SET_TOKEN_CONFIG',
-      tokenConfig: {
-        ...state.tokenConfig,
-        symbol: e.target.value,
-      },
-    })
-  }
-
-  function onTokenBaseURIChange(e) {
-    dispatch({
-      type: 'SET_TOKEN_CONFIG',
-      tokenConfig: {
-        ...state.tokenConfig,
-        baseURI: e.target.value,
-      },
-    })
-  }
-
-  function onTokenContractInfoURIChange(e) {
-    dispatch({
-      type: 'SET_TOKEN_CONFIG',
-      tokenConfig: {
-        ...state.tokenConfig,
-        contractInfoURI: e.target.value,
-      },
+      tokenConfig: newValues,
     })
   }
 
@@ -336,75 +304,12 @@ function HomeIndex(): JSX.Element {
       </Heading>
       <Box maxWidth="container.sm" px={4}>
         <form onSubmit={deployClones}>
-          <Heading as="h2" mb={6} mt={6}>
-            1. Token
-          </Heading>
-          <VStack spacing={6}>
-            <FormControl id="token-name" isRequired>
-              <FormLabel>Name</FormLabel>
-              <Input
-                type="text"
-                value={state.tokenConfig.name}
-                onChange={onTokenNameChange}
-              />
-              <FormHelperText>
-                The same as collection name in OpenSea, e.g. Nouns.
-              </FormHelperText>
-            </FormControl>
-            <FormControl id="token-symbol" isRequired>
-              <FormLabel>Symbol</FormLabel>
-              <Input
-                type="text"
-                value={state.tokenConfig.symbol}
-                onChange={onTokenSymbolChange}
-              />
-              <FormHelperText>e.g. LOOT.</FormHelperText>
-            </FormControl>
-            <FormControl id="token-baseuri">
-              <FormLabel>Base URI</FormLabel>
-              <Input
-                type="text"
-                value={state.tokenConfig.baseURI}
-                onChange={onTokenBaseURIChange}
-              />
-              <FormHelperText>
-                A link to an IPFS folder with all the token descriptors and
-                project descriptor. E.g.{' '}
-                <Link
-                  href="ipfs://bafybeif4s7oom2ch6iv42yn7la4b3dnkud2dgujmnhuxuswekx4l6yz4me/"
-                  isExternal
-                >
-                  ipfs://bafybeif4s7oom2ch6iv42yn7la4b3dnkud2dgujmnhuxuswekx4l6yz4me/
-                </Link>
-                <br />
-                <br />
-                If you don't yet have art on IPFS, you can leave this empty and
-                your NFTs will have a placeholder image.
-              </FormHelperText>
-            </FormControl>
-            <FormControl id="token-contractinfouri">
-              <FormLabel>Contract Info URI (optional)</FormLabel>
-              <Input
-                type="text"
-                value={state.tokenConfig.contractInfoURI}
-                onChange={onTokenContractInfoURIChange}
-              />
-              <FormHelperText>
-                A URL to a JSON file describing storefront-level metadata for
-                your token. See more details on{' '}
-                <Link
-                  href="https://docs.opensea.io/docs/contract-level-metadata"
-                  isExternal
-                >
-                  https://docs.opensea.io/docs/contract-level-metadata
-                </Link>
-              </FormHelperText>
-            </FormControl>
-            <RoyaltiesForm
-              values={state.royaltiesConfig}
-              onValuesChange={onRoyaltiesConfigChange}
-            />
-          </VStack>
+          <TokenInputs
+            tokenConfig={state.tokenConfig}
+            onTokenConfigChange={onTokenConfigChange}
+            royaltiesConfig={state.royaltiesConfig}
+            onRoyaltiesConfigChange={onRoyaltiesConfigChange}
+          />
           <Heading as="h2" mb={6} mt={6}>
             2. Minter
           </Heading>
