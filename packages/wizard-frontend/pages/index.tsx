@@ -14,7 +14,7 @@ import {
   DEFAULT_QUORUM_NUMERATOR,
   DEFAULT_CREATOR_PERCENTAGE,
 } from '../lib/contractUtils'
-import { MintingFilterForm } from '../components/MintingFilterForm'
+import { MintingFilterInputs } from '../components/MintingFilterInputs'
 import { RoyaltiesParams } from 'create-nft-dao-shared-frontend'
 import { MintingFilterParmas, StateType } from '../lib/wizardTypes'
 import { wizardReducer } from '../lib/wizardReducerEventHandlers'
@@ -185,7 +185,7 @@ function HomeIndex(): JSX.Element {
             onMinterConfigChange={onMinterConfigChange}
           />
 
-          <MintingFilterForm
+          <MintingFilterInputs
             values={state.mintingFilterConfig}
             onValuesChange={onMintingFilterConfigChange}
           />
