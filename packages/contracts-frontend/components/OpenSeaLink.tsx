@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ChainId, useEthers } from '@usedapp/core'
 import { Link } from '@chakra-ui/react'
-import { config } from '@create-nft-dao/shared'
+import { config } from '../config'
 
 export const OpenSeaLink = ({ linkText }) => {
   const { chainId } = useEthers()

@@ -1,6 +1,6 @@
 import { VStack } from '@chakra-ui/layout'
 import { Heading, Text } from '@chakra-ui/react'
-import { config } from '@create-nft-dao/shared'
+import { config } from '../../config'
 import { useTimelockETHBalance } from '../../lib/contractWrappers/timelock'
 import { showEther } from '@create-nft-dao/shared'
 import { EtherscanLink } from '../EtherscanLink'

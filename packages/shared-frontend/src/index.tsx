@@ -5,4 +5,3 @@ export * from './components/RoyaltiesForm'
 
 export * from './lib/apolloClient'
 export * from './lib/utils'
-export { config, secrets, CHAIN_ID, MinterType } from './config'
