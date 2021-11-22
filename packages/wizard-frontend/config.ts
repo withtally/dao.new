@@ -1,5 +1,4 @@
 import { ChainId } from '@usedapp/core'
-require('dotenv').config()
 
 type SupportedChains = ChainId.Rinkeby | ChainId.Localhost
 
