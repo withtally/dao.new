@@ -19,10 +19,9 @@ import {
   HStack,
 } from '@chakra-ui/react'
 import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
-import { ethers, providers, utils, BigNumberish, BytesLike } from 'ethers'
-import React, { ChangeEvent, useReducer, useState } from 'react'
-import { ERC721DAODeployerAddress as LOCAL_CONTRACT_ADDRESS } from '../../hardhat/artifacts/contracts/contractAddress'
-import { Layout } from 'create-nft-dao-shared-frontend'
+import { providers, utils } from 'ethers'
+import React, { useReducer, useState } from 'react'
+import { config, Layout } from 'create-nft-dao-shared-frontend'
 import {
   DEFAULT_TOKEN_SUPPLY,
   DEFAULT_TOKEN_PRICE,
@@ -34,20 +33,15 @@ import {
   DEFAULT_VOTING_PERIOD,
   DEFAULT_QUORUM_NUMERATOR,
   DEFAULT_CREATOR_PERCENTAGE,
-  getSharesByCreatorPercentage,
 } from '../lib/contractUtils'
-import {
-  ERC721DAODeployer__factory,
-  FixedPriceSequentialMinter__factory,
-  FixedPriceSpecificIDMinter__factory,
-  RequiredNFTsMintingFilter__factory,
-} from 'nextjs-ethereum-starter-hardhat'
-
 import { Table, Thead, Tbody, Tr, Td, Th } from '@chakra-ui/react'
 import { MintingFilterForm } from '../components/MintingFilterForm'
 import { ConnectToTally } from '../components/ConnectToTally'
 import { CHAIN_ID } from '../config'
 import { RoyaltiesForm, RoyaltiesParams } from 'create-nft-dao-shared-frontend'
+import { MintingFilterParmas, StateType } from '../lib/wizardTypes'
+import { wizardReducer } from '../lib/wizardReducerEventHandlers'
+import { clone } from '../lib/deployer'
 
 /**
  * Constants & Helpers
@@ -55,93 +49,6 @@ import { RoyaltiesForm, RoyaltiesParams } from 'create-nft-dao-shared-frontend'
 const localProvider = new providers.StaticJsonRpcProvider(
   'http://localhost:8545'
 )
-
-const ROPSTEN_CONTRACT_ADDRESS = '0x6b61a52b1EA15f4b8dB186126e980208E1E18864'
-
-/**
- * Prop Types
- */
-type CloneAddresses = {
-  token: string
-  timelock: string
-  governor: string
-  minter: string
-}
-
-type TokenParams = {
-  name: string
-  symbol: string
-  baseURI: string
-  contractInfoURI: string
-}
-
-type GovernorParams = {
-  name: string
-  proposalThreshold: number
-  votingDelay: number
-  votingPeriod: number
-  quorumNumerator: number
-  timelockDelay: number
-}
-
-type MinterParams = {
-  implementationIndex: number
-  maxTokens: number
-  tokenPrice: BigNumberish
-  maxMintsPerTx: number
-  creatorPercentage: number
-  startingBlock: BigNumberish
-  extraInitCallData: BytesLike
-}
-
-export type MintingFilterToken = {
-  address: string
-  minBalance: number
-}
-
-export type MintingFilterParmas = {
-  useMintingFilter: boolean
-  tokens: MintingFilterToken[]
-}
-
-type StateType = {
-  isLoading: boolean
-  tokenConfig: TokenParams
-  governorConfig: GovernorParams
-  minterConfig: MinterParams
-  mintingFilterConfig: MintingFilterParmas
-  royaltiesConfig: RoyaltiesParams
-  clones: CloneAddresses
-}
-type ActionType =
-  | {
-      type: 'SET_LOADING'
-      isLoading: StateType['isLoading']
-    }
-  | {
-      type: 'SET_TOKEN_CONFIG'
-      tokenConfig: StateType['tokenConfig']
-    }
-  | {
-      type: 'SET_MINTER_CONFIG'
-      minterConfig: StateType['minterConfig']
-    }
-  | {
-      type: 'SET_GOVERNOR_CONFIG'
-      governorConfig: StateType['governorConfig']
-    }
-  | {
-      type: 'SET_MINTING_FILTER_CONFIG'
-      mintingFilterConfig: StateType['mintingFilterConfig']
-    }
-  | {
-      type: 'SET_ROYALTIES_CONFIG'
-      royaltiesConfig: StateType['royaltiesConfig']
-    }
-  | {
-      type: 'SET_CLONES'
-      clones: StateType['clones']
-    }
 
 /**
  * Component
@@ -184,64 +91,13 @@ const initialState: StateType = {
   clones: null,
 }
 
-function reducer(state: StateType, action: ActionType): StateType {
-  switch (action.type) {
-    // Track the greeting from the blockchain
-    case 'SET_LOADING':
-      return {
-        ...state,
-        isLoading: action.isLoading,
-      }
-    case 'SET_TOKEN_CONFIG':
-      return {
-        ...state,
-        tokenConfig: action.tokenConfig,
-      }
-    case 'SET_MINTER_CONFIG':
-      return {
-        ...state,
-        minterConfig: action.minterConfig,
-      }
-    case 'SET_GOVERNOR_CONFIG':
-      return {
-        ...state,
-        governorConfig: action.governorConfig,
-      }
-    case 'SET_MINTING_FILTER_CONFIG':
-      return {
-        ...state,
-        mintingFilterConfig: action.mintingFilterConfig,
-      }
-    case 'SET_ROYALTIES_CONFIG':
-      return {
-        ...state,
-        royaltiesConfig: action.royaltiesConfig,
-      }
-    case 'SET_CLONES':
-      return {
-        ...state,
-        clones: action.clones,
-      }
-    default:
-      throw new Error()
-  }
-}
-
 function HomeIndex(): JSX.Element {
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [state, dispatch] = useReducer(wizardReducer, initialState)
   const { account, chainId, library } = useEthers()
   const [clonesBlockNumber, setClonesBlockNumber] = useState(0)
 
   const isLocalChain =
     chainId === ChainId.Localhost || chainId === ChainId.Hardhat
-
-  let CONTRACT_ADDRESS =
-    chainId === ChainId.Ropsten
-      ? ROPSTEN_CONTRACT_ADDRESS
-      : LOCAL_CONTRACT_ADDRESS
-  if (chainId === ChainId.Rinkeby) {
-    CONTRACT_ADDRESS = '0x842D5060c91a2d7edfDA1c7735D59DEd65b798D9'
-  }
 
   // Use the localProvider as the signer to send ETH to our wallet
   const { sendTransaction } = useSendTransaction({
@@ -260,88 +116,12 @@ function HomeIndex(): JSX.Element {
     })
 
     try {
-      const signer = library.getSigner()
-      const deployer = new ERC721DAODeployer__factory(signer).attach(
-        CONTRACT_ADDRESS
-      )
+      const cloneResult = await clone(account, library, state)
 
-      let extraInitCallData
-      if (state.minterConfig.implementationIndex == 0) {
-        extraInitCallData =
-          FixedPriceSequentialMinter__factory.createInterface().encodeFunctionData(
-            'init',
-            [
-              state.minterConfig.maxTokens,
-              ethers.utils.parseEther(state.minterConfig.tokenPrice.toString()),
-              state.minterConfig.maxMintsPerTx,
-            ]
-          )
-      } else {
-        extraInitCallData =
-          FixedPriceSpecificIDMinter__factory.createInterface().encodeFunctionData(
-            'init',
-            [
-              state.minterConfig.maxTokens,
-              ethers.utils.parseEther(state.minterConfig.tokenPrice.toString()),
-            ]
-          )
-      }
-
-      // Until we add form validations, filtering out anything shorter than an ETH address
-      const cleanTokens = state.mintingFilterConfig.tokens.filter(
-        (t) => t.address.length === 42
-      )
-
-      const mintingFilterParams = {
-        useMintingFilter: state.mintingFilterConfig.useMintingFilter,
-        implementationIndex: 0,
-        initCallData:
-          RequiredNFTsMintingFilter__factory.createInterface().encodeFunctionData(
-            'initialize',
-            [
-              account,
-              cleanTokens.map((t) => t.address),
-              cleanTokens.map((t) => t.minBalance),
-            ]
-          ),
-      }
-
-      let royaltiesRecipientOverride = ethers.constants.AddressZero
-      if (
-        state.royaltiesConfig.isRoyaltiesRecipientOverrideEnabled &&
-        state.royaltiesConfig.royaltiesRecipientOverride
-      ) {
-        royaltiesRecipientOverride =
-          state.royaltiesConfig.royaltiesRecipientOverride
-      }
-
-      const tx = await deployer.clone(
-        account,
-        {
-          ...state.tokenConfig,
-          ...state.royaltiesConfig,
-          royaltiesRecipientOverride: royaltiesRecipientOverride,
-        },
-        state.governorConfig,
-        {
-          ...state.minterConfig,
-          extraInitCallData: extraInitCallData,
-          ...getSharesByCreatorPercentage(state.minterConfig.creatorPercentage),
-        },
-        mintingFilterParams
-      )
-      const receipt = await tx.wait()
-      const event = receipt.events?.find((e) => e.event == 'NewClone')
-      setClonesBlockNumber(receipt.blockNumber)
-
+      setClonesBlockNumber(cloneResult.clonesBlockNumber)
       dispatch({
         type: 'SET_CLONES',
-        clones: {
-          token: event?.args?.token,
-          timelock: event?.args?.timelock,
-          governor: event?.args?.governor,
-          minter: event?.args?.minter,
-        },
+        clones: cloneResult.clones,
       })
     } catch (e) {
       console.log(e)
@@ -360,6 +140,7 @@ function HomeIndex(): JSX.Element {
       value: utils.parseEther('1'),
     })
   }
+
   const startBlockMinValue = library
     ? library.getSigner().provider.blockNumber
     : 0
