@@ -2,7 +2,7 @@ import { Box, Button, Heading, Text } from '@chakra-ui/react'
 import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
 import { providers, utils } from 'ethers'
 import React, { useReducer, useState } from 'react'
-import { Layout } from 'create-nft-dao-shared-frontend'
+import { Layout } from '@create-nft-dao/shared'
 import {
   DEFAULT_TOKEN_SUPPLY,
   DEFAULT_TOKEN_PRICE,
@@ -15,7 +15,7 @@ import {
   DEFAULT_CREATOR_PERCENTAGE,
 } from '../lib/contractUtils'
 import { MintingFilterInputs } from '../components/MintingFilterInputs'
-import { RoyaltiesParams } from 'create-nft-dao-shared-frontend'
+import { RoyaltiesParams } from '@create-nft-dao/shared'
 import { MintingFilterParmas, StateType } from '../lib/wizardTypes'
 import { wizardReducer } from '../lib/wizardReducerEventHandlers'
 import { clone } from '../lib/deployer'

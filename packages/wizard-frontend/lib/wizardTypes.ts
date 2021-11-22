@@ -1,6 +1,6 @@
 import { BytesLike } from '@ethersproject/bytes'
 import { BigNumberish } from '@ethersproject/bignumber'
-import { RoyaltiesParams } from 'create-nft-dao-shared-frontend'
+import { RoyaltiesParams } from '@create-nft-dao/shared'
 
 export type CloneAddresses = {
   token: string

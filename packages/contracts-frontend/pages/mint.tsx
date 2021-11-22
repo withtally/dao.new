@@ -1,4 +1,4 @@
-import { Layout } from 'create-nft-dao-shared-frontend'
+import { Layout } from '@create-nft-dao/shared'
 import { Minter } from '../components/Minter'
 import { Center, Container } from '@chakra-ui/react'
 import { NavbarLinks } from '../components/NavbarLinks'

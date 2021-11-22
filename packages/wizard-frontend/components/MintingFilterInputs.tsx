@@ -1,6 +1,6 @@
 import { Heading, VStack } from '@chakra-ui/react'
-import { MintingFilterToggle } from 'create-nft-dao-shared-frontend'
-import { MintingFilterNFTsInputs } from 'create-nft-dao-shared-frontend'
+import { MintingFilterToggle } from '@create-nft-dao/shared'
+import { MintingFilterNFTsInputs } from '@create-nft-dao/shared'
 
 export const MintingFilterInputs = ({ values, onValuesChange }) => {
   const onSwitchChange = (newValue) => {

@@ -7,7 +7,7 @@ import {
   FormHelperText,
   Link,
 } from '@chakra-ui/react'
-import { RoyaltiesForm } from 'create-nft-dao-shared-frontend'
+import { RoyaltiesForm } from '@create-nft-dao/shared'
 
 export const TokenInputs = ({
   tokenConfig,

@@ -1,10 +1,10 @@
-import { config } from 'create-nft-dao-shared-frontend'
+import { config } from '@create-nft-dao/shared'
 import {
   ERC721DAODeployer__factory,
   FixedPriceSequentialMinter__factory,
   FixedPriceSpecificIDMinter__factory,
   RequiredNFTsMintingFilter__factory,
-} from 'nextjs-ethereum-starter-hardhat'
+} from '@create-nft-dao/hardhat'
 import { ethers } from 'ethers'
 import { getSharesByCreatorPercentage } from '../lib/contractUtils'
 import { StateType } from './wizardTypes'

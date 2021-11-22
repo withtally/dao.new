@@ -1,4 +1,4 @@
-import { Layout } from 'create-nft-dao-shared-frontend'
+import { Layout } from '@create-nft-dao/shared'
 import { Heading, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { MinterAdmin } from '../components/admin/MinterAdmin'

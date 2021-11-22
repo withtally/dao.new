@@ -1,8 +1,8 @@
 import { useContractCall, useContractFunction } from '@usedapp/core'
 import { utils, Contract } from 'ethers'
 import { Interface } from 'ethers/lib/utils'
-import { ERC721DAOTokenABI } from 'nextjs-ethereum-starter-hardhat'
-import { config } from 'create-nft-dao-shared-frontend'
+import { ERC721DAOTokenABI } from '@create-nft-dao/hardhat'
+import { config } from '@create-nft-dao/shared'
 
 const tokenAbi: Interface = new utils.Interface(ERC721DAOTokenABI.abi)
 

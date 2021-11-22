@@ -9,8 +9,8 @@ import {
 import type { AppProps } from 'next/app'
 import React from 'react'
 import { MulticallAddress } from '../../hardhat/artifacts/contracts/contractAddress'
-import { CHAIN_ID, secrets } from 'create-nft-dao-shared-frontend'
-import { useApollo } from 'create-nft-dao-shared-frontend'
+import { CHAIN_ID, secrets } from '@create-nft-dao/shared'
+import { useApollo } from '@create-nft-dao/shared'
 
 // scaffold-eth's INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
 export const INFURA_ID = '460f40a260564ac4a4f4b3fffb032dad'

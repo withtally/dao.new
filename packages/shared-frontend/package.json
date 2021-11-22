@@ -1,5 +1,5 @@
 {
-  "name": "create-nft-dao-shared-frontend",
+  "name": "@create-nft-dao/shared",
   "version": "1.0.0",
   "license": "MIT",
   "main": "dist/index.js",  

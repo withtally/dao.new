@@ -1,5 +1,5 @@
 {
-  "name": "create-nft-dao-contracts-frontend",
+  "name": "@create-nft-dao/admin",
   "license": "MIT",
   "version": "1.0.0",
   "scripts": {
@@ -18,8 +18,8 @@
     ]
   },
   "dependencies": {
-    "nextjs-ethereum-starter-hardhat": "1.0.0",
-    "create-nft-dao-shared-frontend": "1.0.0",
+    "@create-nft-dao/hardhat": "1.0.0",
+    "@create-nft-dao/shared": "1.0.0",
     "@apollo/client": "3.1.1",
     "@chakra-ui/react": "^1.6.3",
     "@chakra-ui/icons": "^1.0.17",
