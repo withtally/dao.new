@@ -4,19 +4,12 @@ import React from 'react'
 import { MinterAdmin } from '../components/admin/MinterAdmin'
 import { TokenAdmin } from '../components/admin/TokenAdmin'
 import { GovernanceAdmin } from '../components/admin/GovernanceAdmin'
-import {
-  useIncrementalMinterMintPrice,
-  useIsSaleActive,
-} from '../lib/contractWrappers/minter'
 import { NavbarLinks } from '../components/NavbarLinks'
 
 const Mint = () => {
   const layoutProps = {
     title: 'Create NFT DAO: Admin',
   }
-
-  const tokenPrice = useIncrementalMinterMintPrice()
-  const isSaleActive = useIsSaleActive()
 
   return (
     <Layout customMeta={layoutProps} navbarLinks={NavbarLinks}>

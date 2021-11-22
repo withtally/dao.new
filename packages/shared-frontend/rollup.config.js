@@ -1,5 +1,6 @@
 import typescript from 'rollup-plugin-typescript2'
 import cleaner from 'rollup-plugin-cleaner'
+import json from '@rollup/plugin-json'
 
 import pkg from './package.json'
 
@@ -14,7 +15,7 @@ export default {
       strict: false,
     },
   ],
-  plugins: [typescript(), cleaner({ targets: ['./dist'] })],
+  plugins: [json(), typescript(), cleaner({ targets: ['./dist'] })],
   external: [
     'react',
     'react-dom',

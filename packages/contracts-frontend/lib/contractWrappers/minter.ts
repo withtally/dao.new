@@ -12,7 +12,7 @@ import {
   FixedPriceFixedSupplyMinterABI,
 } from 'nextjs-ethereum-starter-hardhat'
 
-import config from '../../config'
+import { config } from 'create-nft-dao-shared-frontend'
 
 const ERC721MinterAbi: Interface = new utils.Interface(ERC721MinterABI.abi)
 const FixedPriceSequentialMinterAbi: Interface = new utils.Interface(

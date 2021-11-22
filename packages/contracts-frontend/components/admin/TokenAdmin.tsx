@@ -1,6 +1,6 @@
 import { HStack, VStack } from '@chakra-ui/layout'
 import { Heading, Text, Button, Input } from '@chakra-ui/react'
-import config from '../../config'
+import { config } from 'create-nft-dao-shared-frontend'
 import { OpenSeaLink } from '../OpenSeaLink'
 import { RaribleLink } from '../RaribleLink'
 import {
