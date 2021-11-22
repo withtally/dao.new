@@ -105,7 +105,6 @@ function HomeIndex(): JSX.Element {
         clones: cloneResult.clones,
       })
     } catch (e) {
-      console.log(e)
       // TODO
     }
 
