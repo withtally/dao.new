@@ -1,19 +1,4 @@
-import {
-  Box,
-  Button,
-  Heading,
-  Input,
-  Text,
-  FormControl,
-  FormLabel,
-  FormHelperText,
-  VStack,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-} from '@chakra-ui/react'
+import { Box, Button, Heading, Text } from '@chakra-ui/react'
 import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
 import { providers, utils } from 'ethers'
 import React, { useReducer, useState } from 'react'
@@ -39,6 +24,7 @@ import { wizardReducer } from '../lib/wizardReducerEventHandlers'
 import { clone } from '../lib/deployer'
 import { TokenInputs } from '../components/TokenInputs'
 import { MinterInputs } from '../components/MinterInputs'
+import { GovernorInputs } from '../components/GovernorInputs'
 
 /**
  * Constants & Helpers
@@ -138,10 +124,6 @@ function HomeIndex(): JSX.Element {
     })
   }
 
-  const startBlockMinValue = library
-    ? library.getSigner().provider.blockNumber
-    : 0
-
   function onTokenConfigChange(newValues) {
     dispatch({
       type: 'SET_TOKEN_CONFIG',
@@ -163,63 +145,10 @@ function HomeIndex(): JSX.Element {
     })
   }
 
-  function onGovernorNameChange(e) {
+  function onGovernorConfigChange(newValues) {
     dispatch({
       type: 'SET_GOVERNOR_CONFIG',
-      governorConfig: {
-        ...state.governorConfig,
-        name: e.target.value,
-      },
-    })
-  }
-
-  function onGovernorProposalThresholdChange(v) {
-    dispatch({
-      type: 'SET_GOVERNOR_CONFIG',
-      governorConfig: {
-        ...state.governorConfig,
-        proposalThreshold: v,
-      },
-    })
-  }
-
-  function onGovernorVotingDelayChange(v) {
-    dispatch({
-      type: 'SET_GOVERNOR_CONFIG',
-      governorConfig: {
-        ...state.governorConfig,
-        votingDelay: v,
-      },
-    })
-  }
-
-  function onGovernorVotingPeriodChange(v) {
-    dispatch({
-      type: 'SET_GOVERNOR_CONFIG',
-      governorConfig: {
-        ...state.governorConfig,
-        votingPeriod: v,
-      },
-    })
-  }
-
-  function onGovernorQuorumNumeratorChange(v) {
-    dispatch({
-      type: 'SET_GOVERNOR_CONFIG',
-      governorConfig: {
-        ...state.governorConfig,
-        quorumNumerator: v,
-      },
-    })
-  }
-
-  function onGovernorTimelockDelayChange(v) {
-    dispatch({
-      type: 'SET_GOVERNOR_CONFIG',
-      governorConfig: {
-        ...state.governorConfig,
-        timelockDelay: v,
-      },
+      governorConfig: newValues,
     })
   }
 
@@ -257,130 +186,15 @@ function HomeIndex(): JSX.Element {
             minterConfig={state.minterConfig}
             onMinterConfigChange={onMinterConfigChange}
           />
-          <Heading as="h3" size="lg" mb={6} mt={6}>
-            2.1 Buyer Filtering
-          </Heading>
+
           <MintingFilterForm
             values={state.mintingFilterConfig}
             onValuesChange={onMintingFilterConfigChange}
           />
-          <Heading as="h2" mb={6} mt={6}>
-            3. Governor
-          </Heading>
-          <VStack spacing={6}>
-            <FormControl id="governor-name" isRequired>
-              <FormLabel>Name</FormLabel>
-              <Input
-                type="text"
-                value={state.governorConfig.name}
-                onChange={onGovernorNameChange}
-              />
-              <FormHelperText>e.g. Awesome DAO</FormHelperText>
-            </FormControl>
-            <FormControl id="governor-propthreshold" isRequired>
-              <FormLabel>Proposal threshold</FormLabel>
-              <NumberInput
-                defaultValue={1}
-                step={1}
-                min={0}
-                value={state.governorConfig.proposalThreshold}
-                onChange={onGovernorProposalThresholdChange}
-              >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-              <FormHelperText>
-                How many tokens much someone own before they can submit a
-                proposal to the DAO?
-              </FormHelperText>
-            </FormControl>
-            <FormControl id="governor-votingdelay" isRequired>
-              <FormLabel>Voting delay (blocks)</FormLabel>
-              <NumberInput
-                defaultValue={13300}
-                step={300}
-                min={0}
-                value={state.governorConfig.votingDelay}
-                onChange={onGovernorVotingDelayChange}
-              >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-              <FormHelperText>
-                The time between proposal submission and when voting starts.
-                This is important time for DAO members to make sense of
-                proposals and form an opinion.
-              </FormHelperText>
-            </FormControl>
-            <FormControl id="governor-votingperiod" isRequired>
-              <FormLabel>Voting period (blocks)</FormLabel>
-              <NumberInput
-                defaultValue={46500}
-                step={6650}
-                min={0}
-                value={state.governorConfig.votingPeriod}
-                onChange={onGovernorVotingPeriodChange}
-              >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-              <FormHelperText>
-                The time between proposal when voting starts and ends. This is
-                important time for DAO members to make sense of proposals and
-                form an opinion.
-              </FormHelperText>
-            </FormControl>
-            <FormControl id="governor-quorumnumerator" isRequired>
-              <FormLabel>Quorum numerator (%)</FormLabel>
-              <NumberInput
-                defaultValue={1}
-                step={1}
-                min={0}
-                max={100}
-                value={state.governorConfig.quorumNumerator}
-                onChange={onGovernorQuorumNumeratorChange}
-              >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-              <FormHelperText>
-                The minimal percentage of DAO votes that is required for a
-                proposal to succeed.
-              </FormHelperText>
-            </FormControl>
-            <FormControl id="governor-timelockdelay" isRequired>
-              <FormLabel>Timelock delay (seconds)</FormLabel>
-              <NumberInput
-                defaultValue={172800}
-                step={3600}
-                min={0}
-                value={state.governorConfig.timelockDelay}
-                onChange={onGovernorTimelockDelayChange}
-              >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-              <FormHelperText>
-                The delay between a proposal's success and when its transactions
-                can be executed.
-              </FormHelperText>
-            </FormControl>
-          </VStack>
+          <GovernorInputs
+            governorConfig={state.governorConfig}
+            onGovernorConfigChange={onGovernorConfigChange}
+          />
           <Box>
             <Button
               name="submit"
