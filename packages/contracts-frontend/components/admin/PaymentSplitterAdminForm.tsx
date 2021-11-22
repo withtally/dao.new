@@ -1,6 +1,6 @@
 import { VStack, HStack } from '@chakra-ui/layout'
 import { Button, Text } from '@chakra-ui/react'
-import { showEther } from '../../lib/utils'
+import { showEther } from 'create-nft-dao-shared-frontend'
 import {
   useMinterETHBalance,
   usePayeeGetter,

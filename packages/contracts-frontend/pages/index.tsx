@@ -1,4 +1,4 @@
-import { Layout } from '../components/layout/Layout'
+import { Layout } from 'create-nft-dao-shared-frontend'
 import { Heading, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { MinterAdmin } from '../components/admin/MinterAdmin'
@@ -8,6 +8,7 @@ import {
   useIncrementalMinterMintPrice,
   useIsSaleActive,
 } from '../lib/contractWrappers/minter'
+import { NavbarLinks } from '../components/NavbarLinks'
 
 const Mint = () => {
   const layoutProps = {
@@ -18,7 +19,7 @@ const Mint = () => {
   const isSaleActive = useIsSaleActive()
 
   return (
-    <Layout customMeta={layoutProps}>
+    <Layout customMeta={layoutProps} navbarLinks={NavbarLinks}>
       <VStack maxW="container.lg" spacing={16} alignItems="flex-start" px={4}>
         <Heading as="h1" size="2xl">
           Admin

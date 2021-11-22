@@ -12198,6 +12198,13 @@ rlp@^2.0.0, rlp@^2.2.1, rlp@^2.2.2, rlp@^2.2.3, rlp@^2.2.4:
   dependencies:
     bn.js "^4.11.1"
 
+rollup-plugin-cleaner@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-cleaner/-/rollup-plugin-cleaner-1.0.0.tgz#9f2d7226327fca9109b68c18fea77b427e33c193"
+  integrity sha512-q+Zf9estkFwGede9QzmbkhKeuXzlliOvcICVNzBHAs5xYPPs1XLtfin5TMU2tC2EYjmfaF97saY9MnQM6Og4eA==
+  dependencies:
+    rimraf "^2.6.3"
+
 rollup-plugin-typescript2@^0.31.0:
   version "0.31.0"
   resolved "https://registry.yarnpkg.com/rollup-plugin-typescript2/-/rollup-plugin-typescript2-0.31.0.tgz#7d08ad0cac52d1f4b1ebc6f655e4f1e6f838a7de"

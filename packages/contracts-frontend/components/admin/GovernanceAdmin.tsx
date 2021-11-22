@@ -2,7 +2,7 @@ import { HStack, VStack } from '@chakra-ui/layout'
 import { Heading, Text, Button, Input } from '@chakra-ui/react'
 import config from '../../config'
 import { useTimelockETHBalance } from '../../lib/contractWrappers/timelock'
-import { showEther } from '../../lib/utils'
+import { showEther } from 'create-nft-dao-shared-frontend'
 import { EtherscanLink } from '../EtherscanLink'
 import { TallyLink } from '../TallyLink'
 

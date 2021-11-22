@@ -39,7 +39,7 @@ import {
 import { createMintingFilterInitCallData } from '../../lib/contractWrappers/mintingFilter'
 import { MintingFilterEditForm } from '../MintingFilterEditForm'
 import { PaymentSplitterAdminForm } from './PaymentSplitterAdminForm'
-import { showEther } from '../../lib/utils'
+import { showEther } from 'create-nft-dao-shared-frontend'
 import { useEthers } from '@usedapp/core'
 
 export const MinterAdmin = () => {

@@ -22,7 +22,7 @@ import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
 import { ethers, providers, utils, BigNumberish, BytesLike } from 'ethers'
 import React, { ChangeEvent, useReducer, useState } from 'react'
 import { ERC721DAODeployerAddress as LOCAL_CONTRACT_ADDRESS } from '../../hardhat/artifacts/contracts/contractAddress'
-import { Layout } from '../components/layout/Layout'
+import { Layout } from 'create-nft-dao-shared-frontend'
 import {
   DEFAULT_TOKEN_SUPPLY,
   DEFAULT_TOKEN_PRICE,
@@ -541,9 +541,15 @@ function HomeIndex(): JSX.Element {
   const layoutProps = {
     title: 'Create NFT DAO: Wizard',
   }
+  const navbarLinks = [
+    {
+      href: '/',
+      label: 'Home',
+    },
+  ]
 
   return (
-    <Layout customMeta={layoutProps}>
+    <Layout customMeta={layoutProps} navbarLinks={navbarLinks}>
       <Heading as="h1" mb="8" px={4}>
         Create NFT DAO 🧙‍♀️
       </Heading>
