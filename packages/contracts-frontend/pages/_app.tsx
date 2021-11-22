@@ -18,7 +18,7 @@ const config: Config = {
   readOnlyChainId: CHAIN_ID,
   readOnlyUrls: {
     [ChainId.Ropsten]: `https://ropsten.infura.io/v3/${INFURA_ID}`,
-    [ChainId.Rinkeby]: `https://eth-rinkeby.alchemyapi.io/v2/${secrets.alchemyApiKey}`,
+    [ChainId.Rinkeby]: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
     [ChainId.Hardhat]: 'http://localhost:8545',
     [ChainId.Localhost]: 'http://localhost:8545',
   },
