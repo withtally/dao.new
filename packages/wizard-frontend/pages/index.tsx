@@ -21,7 +21,6 @@ import {
 import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
 import { ethers, providers, utils, BigNumberish, BytesLike } from 'ethers'
 import React, { ChangeEvent, useReducer, useState } from 'react'
-import { ERC721DAODeployerAddress as LOCAL_CONTRACT_ADDRESS } from '../../hardhat/artifacts/contracts/contractAddress'
 import { Layout } from '../components/layout/Layout'
 import {
   DEFAULT_TOKEN_SUPPLY,
@@ -236,9 +235,7 @@ function HomeIndex(): JSX.Element {
     chainId === ChainId.Localhost || chainId === ChainId.Hardhat
 
   let CONTRACT_ADDRESS =
-    chainId === ChainId.Ropsten
-      ? ROPSTEN_CONTRACT_ADDRESS
-      : LOCAL_CONTRACT_ADDRESS
+    chainId === ChainId.Ropsten ? ROPSTEN_CONTRACT_ADDRESS : ''
   if (chainId === ChainId.Rinkeby) {
     CONTRACT_ADDRESS = '0x842D5060c91a2d7edfDA1c7735D59DEd65b798D9'
   }
