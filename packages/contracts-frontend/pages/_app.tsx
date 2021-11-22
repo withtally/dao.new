@@ -8,7 +8,7 @@ import {
 } from '@usedapp/core'
 import type { AppProps } from 'next/app'
 import React from 'react'
-import { CHAIN_ID, secrets } from '@create-nft-dao/shared'
+import { CHAIN_ID } from '@create-nft-dao/shared'
 import { useApollo } from '@create-nft-dao/shared'
 
 // scaffold-eth's INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum

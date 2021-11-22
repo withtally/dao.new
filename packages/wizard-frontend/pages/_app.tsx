@@ -8,7 +8,7 @@ import {
 } from '@usedapp/core'
 import type { AppProps } from 'next/app'
 import React from 'react'
-import { CHAIN_ID, secrets } from '../config'
+import { CHAIN_ID } from '../config'
 import { useApollo } from '@create-nft-dao/shared'
 
 // scaffold-eth's INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
@@ -36,8 +36,6 @@ const config: Config = {
     ...MULTICALL_ADDRESSES,
   },
 }
-
-console.log('>>>', secrets)
 
 const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
   const apolloClient = useApollo(pageProps)
