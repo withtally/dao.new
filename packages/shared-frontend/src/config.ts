@@ -1,11 +1,11 @@
 import { ChainId } from '@usedapp/core'
-import allSecrets from '../hardhat/secrets.json'
+import allSecrets from '../../hardhat/secrets.json'
 
 export enum MinterType {
   FixedPriceSequentialMinter,
   FixedPriceSpecificIDMinter,
 }
-interface Config {
+interface ContractsConfig {
   deployerAddress: string
   minterAddress: string
   tokenAddress: string
@@ -18,13 +18,13 @@ type SupportedChains = ChainId.Rinkeby | ChainId.Localhost
 
 export const CHAIN_ID: SupportedChains = ChainId.Localhost
 
-const config: Record<SupportedChains, Config> = {
+const allConfigs: Record<SupportedChains, ContractsConfig> = {
   [ChainId.Localhost]: {
-    deployerAddress: '0x8A93d247134d91e0de6f96547cB0204e5BE8e5D8',
-    tokenAddress: '0x3c84c23ba9f9C67474Bf2D93d775528908dE9c72',
-    minterAddress: '0xa6B77d7f309C76b2d2D7E3D67283597DffC82568',
-    governorAddress: '0x974c9595c0E0c17c73b057BB81A339d0B4B8872E',
-    timelockAddress: '0xC5987d5deB9b12e60C93aa3c5B57B15F68504cCb',
+    deployerAddress: '0x8A791620dd6260079BF849Dc5567aDC3F2FdC318',
+    tokenAddress: '0x88577731Cc84560fE297792ab784b600A54728E2',
+    minterAddress: '0x1910F44C232F040b63251E5B27970c254A74A1c7',
+    governorAddress: '0x5B8B621aB7f02Ef3DD5d06718dADcAeD59818257',
+    timelockAddress: '0xD605c48ae0C94D0A510Ae053F62042b7D467918E',
     minterType: MinterType.FixedPriceSequentialMinter,
   },
   [ChainId.Rinkeby]: {
@@ -38,5 +38,4 @@ const config: Record<SupportedChains, Config> = {
 }
 
 export const secrets = { alchemyApiKey: allSecrets.alchemyApiKey }
-
-export default config[CHAIN_ID]
+export const config = allConfigs[CHAIN_ID]

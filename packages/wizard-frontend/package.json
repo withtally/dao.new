@@ -1,5 +1,5 @@
 {
-  "name": "nextjs-ethereum-starter-frontend",
+  "name": "@create-nft-dao/wizard",
   "author": "@huntarosan",
   "license": "MIT",
   "version": "1.0.0",
@@ -25,6 +25,8 @@
     ]
   },
   "dependencies": {
+    "@create-nft-dao/hardhat": "1.0.0",
+    "@create-nft-dao/shared": "1.0.0",
     "@apollo/client": "3.1.1",
     "@chakra-ui/icons": "^1.0.17",
     "@chakra-ui/react": "^1.6.3",

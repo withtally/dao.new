@@ -10,9 +10,9 @@ import {
   FixedPriceSequentialMinterABI,
   FixedPriceSpecificIDMinterABI,
   FixedPriceFixedSupplyMinterABI,
-} from 'nextjs-ethereum-starter-hardhat'
+} from '@create-nft-dao/hardhat'
 
-import config from '../../config'
+import { config } from '@create-nft-dao/shared'
 
 const ERC721MinterAbi: Interface = new utils.Interface(ERC721MinterABI.abi)
 const FixedPriceSequentialMinterAbi: Interface = new utils.Interface(
@@ -117,7 +117,7 @@ export const useIncrementalMinterMint = () => {
     config.minterAddress,
     FixedPriceSequentialMinterAbi
   )
-  const { state, send } = useContractFunction(contract, 'mint')
+  const { send } = useContractFunction(contract, 'mint')
   return send
 }
 
@@ -126,7 +126,7 @@ export const useSpecificIdMinterMint = () => {
     config.minterAddress,
     FixedPriceSpecificIDMinterAbi
   )
-  const { state, send } = useContractFunction(contract, 'mint')
+  const { send } = useContractFunction(contract, 'mint')
   return send
 }
 

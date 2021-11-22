@@ -1,8 +1,8 @@
 import { useContractFunction } from '@usedapp/core'
 import { Contract, utils } from 'ethers'
 import { Interface } from 'ethers/lib/utils'
-import { ERC721DAODeployerABI } from 'nextjs-ethereum-starter-hardhat'
-import config from '../../config'
+import { ERC721DAODeployerABI } from '@create-nft-dao/hardhat'
+import { config } from '@create-nft-dao/shared'
 
 export const NEW_MINTING_FILTER_CLONE_EVENT = 'NewMintingFilterClone'
 
