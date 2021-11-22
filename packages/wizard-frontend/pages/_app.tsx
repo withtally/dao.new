@@ -8,7 +8,6 @@ import {
 } from '@usedapp/core'
 import type { AppProps } from 'next/app'
 import React from 'react'
-import { MulticallAddress } from '../../hardhat/artifacts/contracts/contractAddress'
 import { CHAIN_ID, secrets } from '../config'
 import { useApollo } from '@create-nft-dao/shared'
 
@@ -35,8 +34,6 @@ const config: Config = {
   ],
   multicallAddresses: {
     ...MULTICALL_ADDRESSES,
-    [ChainId.Hardhat]: MulticallAddress,
-    [ChainId.Localhost]: MulticallAddress,
   },
 }
 

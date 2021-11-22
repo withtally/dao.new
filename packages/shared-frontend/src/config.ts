@@ -1,5 +1,4 @@
 import { ChainId } from '@usedapp/core'
-import allSecrets from '../../hardhat/secrets.json'
 
 export enum MinterType {
   FixedPriceSequentialMinter,
@@ -16,7 +15,7 @@ interface ContractsConfig {
 
 type SupportedChains = ChainId.Rinkeby | ChainId.Localhost
 
-export const CHAIN_ID: SupportedChains = ChainId.Localhost
+export const CHAIN_ID: SupportedChains = ChainId.Rinkeby
 
 const allConfigs: Record<SupportedChains, ContractsConfig> = {
   [ChainId.Localhost]: {
@@ -37,5 +36,5 @@ const allConfigs: Record<SupportedChains, ContractsConfig> = {
   },
 }
 
-export const secrets = { alchemyApiKey: allSecrets.alchemyApiKey }
+export const secrets = { alchemyApiKey: process.env.ALCHEMY_API_KEY }
 export const config = allConfigs[CHAIN_ID]
