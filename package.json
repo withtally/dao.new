@@ -10,6 +10,7 @@
     "admin:build": "yarn workspace @create-nft-dao/admin build",
     "admin:start": "yarn workspace @create-nft-dao/admin start",
     "shared:build": "yarn workspace @create-nft-dao/shared build",
+    "shared:start": "yarn workspace @create-nft-dao/shared start",
     "compile": "yarn workspace @create-nft-dao/hardhat compile",
     "hardhat:build:ts": "yarn workspace @create-nft-dao/hardhat build:ts",
     "hardhat:build": "yarn workspace @create-nft-dao/hardhat build",

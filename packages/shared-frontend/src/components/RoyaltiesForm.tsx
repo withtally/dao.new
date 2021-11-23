@@ -12,6 +12,7 @@ import {
   Radio,
   RadioGroup,
   HStack,
+  Link,
 } from '@chakra-ui/react'
 
 export type RoyaltiesParams = {
@@ -64,8 +65,12 @@ export const RoyaltiesForm = ({ values, onValuesChange }) => {
           </NumberInputStepper>
         </NumberInput>
         <FormHelperText>
-          The maximum number of tokens that can be minted, including tokens
-          minted by the creator and the project's users.
+          For every resell transaction, what percentage of the transaction value
+          should be paid as royalties, in adherence to{' '}
+          <Link isExternal href="https://eips.ethereum.org/EIPS/eip-2981">
+            EIP-2981
+          </Link>
+          .
         </FormHelperText>
       </FormControl>
       <FormControl id="token-royaltiesoverrideradio" isRequired>
