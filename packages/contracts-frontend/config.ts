@@ -40,3 +40,6 @@ export const secrets = {
   alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
 }
 export const config = allConfigs[CHAIN_ID]
+
+// Multicall needs to be configured only for Localhost
+export const multicallOnLocalhost = '0x5FbDB2315678afecb367f032d93F642f64180aa3'

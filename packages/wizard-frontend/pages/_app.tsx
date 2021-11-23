@@ -7,7 +7,7 @@ import {
 } from '@usedapp/core'
 import type { AppProps } from 'next/app'
 import React from 'react'
-import { CHAIN_ID } from '../config'
+import { CHAIN_ID, multicallOnLocalhost } from '../config'
 
 // scaffold-eth's INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
 export const INFURA_ID = '460f40a260564ac4a4f4b3fffb032dad'
@@ -31,7 +31,7 @@ const config: Config = {
     ChainId.Hardhat,
   ],
   multicallAddresses: {
-    [ChainId.Localhost]: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+    [ChainId.Localhost]: multicallOnLocalhost,
     ...MULTICALL_ADDRESSES,
   },
 }

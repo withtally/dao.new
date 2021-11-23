@@ -21,3 +21,6 @@ const deployerAddresses: Record<SupportedChains, string> = {
   [ChainId.Rinkeby]: '0x842D5060c91a2d7edfDA1c7735D59DEd65b798D9',
 }
 export const deployerAddress = deployerAddresses[CHAIN_ID]
+
+// Multicall needs to be configured only for Localhost
+export const multicallOnLocalhost = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
