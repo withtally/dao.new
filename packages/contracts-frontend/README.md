@@ -2,11 +2,11 @@
 
 This package contains implementation of 2 pages useful for interacting with your NFT DAO clone.
 
-1. `/` - admin page
+1. `/admin` - admin page
 
    Used to manage your contracts, e.g enable minting, change mint price, release funds, etc. Only the creator of the NFT DAO can perform these operations.
 
-2. `/mint` - minting page
+2. `/` - minting page
 
    A page where users can mint tokens
 
@@ -48,4 +48,17 @@ These pages are meant as an example. Feel free to fork & extend.
 
 ## Deploying to Vercel
 
-TODO
+After successfully running it locally, you may want to deploy it. These are instructions on how to deploy to Vercel.
+This is assuming you followed the steps to run locally and successfully ran in development mode.
+
+1. Create an account on [Vercel](https://vercel.com/) and import the repo
+
+2. Under "Framework Preset" choose "Next.js"
+
+3. Edit the root directory to be `packages/contracts-frontend`
+
+4. Change the build command to: `./build.sh`
+
+5. Set environment variables: `NEXT_PUBLIC_ALCHEMY_API_KEY` with your alchemy api key
+
+6. Deploy 🚀
