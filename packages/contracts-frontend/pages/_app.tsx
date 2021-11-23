@@ -7,8 +7,7 @@ import {
 } from '@usedapp/core'
 import type { AppProps } from 'next/app'
 import React from 'react'
-import { MulticallAddress } from '../../hardhat/artifacts/contracts/contractAddress'
-import { CHAIN_ID, secrets } from '../config'
+import { CHAIN_ID } from '../config'
 
 // scaffold-eth's INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
 export const INFURA_ID = '460f40a260564ac4a4f4b3fffb032dad'
@@ -17,7 +16,7 @@ const config: Config = {
   readOnlyChainId: CHAIN_ID,
   readOnlyUrls: {
     [ChainId.Ropsten]: `https://ropsten.infura.io/v3/${INFURA_ID}`,
-    [ChainId.Rinkeby]: `https://eth-rinkeby.alchemyapi.io/v2/${secrets.alchemyApiKey}`,
+    [ChainId.Rinkeby]: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
     [ChainId.Hardhat]: 'http://localhost:8545',
     [ChainId.Localhost]: 'http://localhost:8545',
   },
@@ -33,8 +32,6 @@ const config: Config = {
   ],
   multicallAddresses: {
     ...MULTICALL_ADDRESSES,
-    [ChainId.Hardhat]: MulticallAddress,
-    [ChainId.Localhost]: MulticallAddress,
   },
 }
 
