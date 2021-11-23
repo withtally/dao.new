@@ -110,7 +110,7 @@ export const GovernorInputs = ({ governorConfig, onGovernorConfigChange }) => {
           <NumberInput
             defaultValue={46500}
             step={6650}
-            min={0}
+            min={45}
             value={governorConfig.votingPeriod}
             onChange={onGovernorVotingPeriodChange}
           >
@@ -123,7 +123,9 @@ export const GovernorInputs = ({ governorConfig, onGovernorConfigChange }) => {
           <FormHelperText>
             The time between proposal when voting starts and ends. This is
             important time for DAO members to make sense of proposals and form
-            an opinion.
+            an opinion. We've set the lower bound to 45 blocks (~10 minutes) to
+            give DAO members some minimal time to submit votes before the vote
+            is defeated due to insufficient voting.
           </FormHelperText>
         </FormControl>
         <FormControl id="governor-quorumnumerator" isRequired>
