@@ -51,14 +51,16 @@ These pages are meant as an example. Feel free to fork & extend.
 After successfully running it locally, you may want to deploy it. These are instructions on how to deploy to Vercel.
 This is assuming you followed the steps to run locally and successfully ran in development mode.
 
-1. Create an account on [Vercel](https://vercel.com/) and import the repo
+1. Have a fork of this repository with the config changes listed above in step 3
 
-2. Under "Framework Preset" choose "Next.js"
+2. Create an account on [Vercel](https://vercel.com/) and import the forked repo
 
-3. Edit the root directory to be `packages/contracts-frontend`
+3. Under "Framework Preset" choose "Next.js"
 
-4. Change the build command to: `./build.sh`
+4. Edit the root directory to be `packages/contracts-frontend`
 
-5. Set environment variables: `NEXT_PUBLIC_ALCHEMY_API_KEY` with your alchemy api key
+5. Change the build command to: `./build.sh`
 
-6. Deploy 🚀
+6. Set environment variables: `NEXT_PUBLIC_ALCHEMY_API_KEY` with your alchemy api key
+
+7. Deploy 🚀
