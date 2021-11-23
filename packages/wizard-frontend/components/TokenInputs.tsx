@@ -78,6 +78,7 @@ export const TokenInputs = ({
             <Link
               href="ipfs://bafybeif4s7oom2ch6iv42yn7la4b3dnkud2dgujmnhuxuswekx4l6yz4me/"
               isExternal
+              tabIndex={-1}
             >
               ipfs://bafybeif4s7oom2ch6iv42yn7la4b3dnkud2dgujmnhuxuswekx4l6yz4me/
             </Link>
@@ -100,6 +101,7 @@ export const TokenInputs = ({
             <Link
               href="https://docs.opensea.io/docs/contract-level-metadata"
               isExternal
+              tabIndex={-1}
             >
               https://docs.opensea.io/docs/contract-level-metadata
             </Link>

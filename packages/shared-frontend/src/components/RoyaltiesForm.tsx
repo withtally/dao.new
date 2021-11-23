@@ -14,6 +14,7 @@ import {
   HStack,
   Link,
 } from '@chakra-ui/react'
+import { useState } from 'react'
 
 export type RoyaltiesParams = {
   royaltiesBPs: number
@@ -22,10 +23,17 @@ export type RoyaltiesParams = {
 }
 
 export const RoyaltiesForm = ({ values, onValuesChange }) => {
+  const [sharesFormValue, setSharesFormValue] = useState(
+    (values.royaltiesBPs ? values.royaltiesBPs / 100 : 0).toString()
+  )
+
   function onTokenRoyaltiesBPsChange(e) {
+    setSharesFormValue(e)
+
     const newValues = Object.assign({}, values)
 
-    newValues.royaltiesBPs = parseFloat(e) * 100
+    const currentValue = e ? parseFloat(e) : 0
+    newValues.royaltiesBPs = currentValue * 100
 
     onValuesChange(newValues)
   }
@@ -55,7 +63,7 @@ export const RoyaltiesForm = ({ values, onValuesChange }) => {
           step={0.1}
           min={0}
           max={100}
-          value={values.royaltiesBPs ? values.royaltiesBPs / 100 : 0}
+          value={sharesFormValue}
           onChange={onTokenRoyaltiesBPsChange}
         >
           <NumberInputField />
@@ -67,7 +75,11 @@ export const RoyaltiesForm = ({ values, onValuesChange }) => {
         <FormHelperText>
           For every resell transaction, what percentage of the transaction value
           should be paid as royalties, in adherence to{' '}
-          <Link isExternal href="https://eips.ethereum.org/EIPS/eip-2981">
+          <Link
+            isExternal
+            href="https://eips.ethereum.org/EIPS/eip-2981"
+            tabIndex={-1}
+          >
             EIP-2981
           </Link>
           .
