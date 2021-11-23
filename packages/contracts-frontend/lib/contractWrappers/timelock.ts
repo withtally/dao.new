@@ -1,4 +1,4 @@
-import { config } from '@create-nft-dao/shared'
+import { config } from '../../config'
 import { useEtherBalance } from '@usedapp/core'
 
 export const useTimelockETHBalance = () => {

@@ -1,4 +1,3 @@
-import { config } from '@create-nft-dao/shared'
 import {
   ERC721DAODeployer__factory,
   FixedPriceSequentialMinter__factory,
@@ -8,6 +7,7 @@ import {
 import { ethers } from 'ethers'
 import { getSharesByCreatorPercentage } from '../lib/contractUtils'
 import { StateType } from './wizardTypes'
+import { deployerAddress } from '../config'
 
 export async function clone(
   account: string,
@@ -16,7 +16,7 @@ export async function clone(
 ) {
   const signer = library.getSigner()
   const deployer = new ERC721DAODeployer__factory(signer).attach(
-    config.deployerAddress
+    deployerAddress
   )
 
   let extraInitCallData

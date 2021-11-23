@@ -12,7 +12,7 @@ import {
   FixedPriceFixedSupplyMinterABI,
 } from '@create-nft-dao/hardhat'
 
-import { config } from '@create-nft-dao/shared'
+import { config } from '../../config'
 
 const ERC721MinterAbi: Interface = new utils.Interface(ERC721MinterABI.abi)
 const FixedPriceSequentialMinterAbi: Interface = new utils.Interface(

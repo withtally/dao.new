@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { parseEther } from 'ethers/lib/utils'
 import React, { useEffect, useState } from 'react'
-import { config, MinterType } from '@create-nft-dao/shared'
+import { config, MinterType } from '../../config'
 import {
   useFixedPriceSupplyMinterFunction,
   useIncrementalMinterMintPrice,
