@@ -36,5 +36,7 @@ const allConfigs: Record<SupportedChains, ContractsConfig> = {
   },
 }
 
-export const secrets = { alchemyApiKey: process.env.ALCHEMY_API_KEY }
+export const secrets = {
+  alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+}
 export const config = allConfigs[CHAIN_ID]
