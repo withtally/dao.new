@@ -15,6 +15,7 @@
     "test": "npx hardhat test --network hardhat",
     "test-gas": "REPORT_GAS=1 npx hardhat test --network hardhat",
     "console": "npx hardhat console --network localhost",
+    "console:rinkeby": "npx hardhat console --network rinkeby",
     "verify:rinkeby": "npx hardhat verify --network rinkeby"
   },
   "devDependencies": {

@@ -19,6 +19,7 @@
     "deploy:rinkeby": "yarn workspace @create-nft-dao/hardhat deploy:rinkeby",
     "test": "yarn workspace @create-nft-dao/hardhat test",
     "console": "yarn workspace @create-nft-dao/hardhat console",
+    "console:rinkeby": "yarn workspace @create-nft-dao/hardhat console:rinkeby",
     "clean": "yarn workspace @create-nft-dao/hardhat clean",
     "prebuild": "yarn shared:build && yarn hardhat:build"
   },
