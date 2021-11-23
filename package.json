@@ -12,12 +12,14 @@
     "shared:build": "yarn workspace @create-nft-dao/shared build",
     "compile": "yarn workspace @create-nft-dao/hardhat compile",
     "hardhat:build:ts": "yarn workspace @create-nft-dao/hardhat build:ts",
+    "hardhat:build": "yarn workspace @create-nft-dao/hardhat build",
     "chain": "yarn workspace @create-nft-dao/hardhat chain",
     "deploy": "yarn workspace @create-nft-dao/hardhat deploy",
     "deploy:rinkeby": "yarn workspace @create-nft-dao/hardhat deploy:rinkeby",
     "test": "yarn workspace @create-nft-dao/hardhat test",
     "console": "yarn workspace @create-nft-dao/hardhat console",
-    "clean": "yarn workspace @create-nft-dao/hardhat clean"
+    "clean": "yarn workspace @create-nft-dao/hardhat clean",
+    "prebuild": "yarn shared:build && yarn hardhat:build"
   },
   "devDependencies": {
     "prettier": "^2.4.1",
