@@ -1,10 +1,10 @@
 export const NavbarLinks = [
   {
     href: '/',
-    label: 'Admin',
+    label: 'Mint',
   },
   {
-    href: '/mint',
-    label: 'Mint',
+    href: '/admin',
+    label: 'Admin',
   },
 ]
