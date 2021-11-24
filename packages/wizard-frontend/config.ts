@@ -18,7 +18,7 @@ export const tallyWebBaseURI = 'https://hackathon.withtally.com/governance/'
 
 const deployerAddresses: Record<SupportedChains, string> = {
   [ChainId.Localhost]: '0x8A791620dd6260079BF849Dc5567aDC3F2FdC318',
-  [ChainId.Rinkeby]: '0x842D5060c91a2d7edfDA1c7735D59DEd65b798D9',
+  [ChainId.Rinkeby]: '0x3d40Df8d069df12c841e19A40BC5487251315068',
 }
 export const deployerAddress = deployerAddresses[CHAIN_ID]
 
