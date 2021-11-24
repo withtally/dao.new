@@ -388,6 +388,14 @@ describe("End to end flows", () => {
       ).to.changeEtherBalance(rando, TOKEN_PRICE);
     });
 
+    it("lets the creator use ownerMint on themselves", async () => {
+      await simpleMinter.connect(creator).ownerMint(creator.address, 1);
+    });
+
+    it("lets the creator use ownerMint on Timelock", async () => {
+      await simpleMinter.connect(creator).ownerMint(timelock.address, 1);
+    });
+
     describe("Governance Parameter Changes", async () => {
       it("allows changing proposal threshold via proposals", async () => {
         const newValue = (await governor.proposalThreshold()).add(1);

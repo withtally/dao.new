@@ -6,8 +6,9 @@ pragma solidity ^0.8.6;
 
 import { TimelockControllerUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/TimelockControllerUpgradeable.sol";
 import { UUPSUpgradeable } from "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
+import { ERC721HolderUpgradeable } from "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgradeable.sol";
 
-contract ERC721Timelock is TimelockControllerUpgradeable, UUPSUpgradeable {
+contract ERC721Timelock is TimelockControllerUpgradeable, UUPSUpgradeable, ERC721HolderUpgradeable {
     function initialize(
         uint256 minDelay,
         address[] memory proposers,
