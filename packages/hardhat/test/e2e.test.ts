@@ -80,6 +80,7 @@ let signer: SignerWithAddress;
 let user1: SignerWithAddress;
 let user2: SignerWithAddress;
 let user3: SignerWithAddress;
+let user4: SignerWithAddress;
 let rando: SignerWithAddress;
 let creator: Wallet;
 
@@ -104,7 +105,7 @@ const deployMockProxyRegistry = async () => {
 };
 
 const deploy = async () => {
-  [signer, user1, user2, user3, rando] = await ethers.getSigners();
+  [signer, user1, user2, user3, user4, rando] = await ethers.getSigners();
 
   creator = new Wallet(Wallet.createRandom().privateKey, signer.provider);
 
@@ -418,7 +419,7 @@ describe("End to end flows", () => {
       });
 
       it("allows changing voting delay via proposals", async () => {
-        const newValue = (await governor.votingDelay()).add(1);
+        const newValue = (await governor.votingDelay()).add(10);
         const calldata = governor.interface.encodeFunctionData(
           "setVotingDelay",
           [newValue]
@@ -454,7 +455,7 @@ describe("End to end flows", () => {
       });
 
       it("allows changing quorum numerator via proposals", async () => {
-        const newValue = (await governor.quorumNumerator()).add(1);
+        const newValue = 40;
         const calldata = governor.interface.encodeFunctionData(
           "updateQuorumNumerator",
           [newValue]
@@ -469,6 +470,84 @@ describe("End to end flows", () => {
         });
 
         expect(await governor.quorumNumerator()).to.equal(newValue);
+      });
+    });
+
+    describe("Governance Params Enforcement", async () => {
+      it("propose reverts when called from an account with insufficient tokens", async () => {
+        expect(await token.balanceOf(user4.address)).to.equal(0);
+        expect(await token.getCurrentVotes(user4.address)).to.equal(0);
+
+        const propInfo = createTransferProp(rando.address, 1);
+
+        await expect(propose(user4, governor, propInfo)).to.be.revertedWith(
+          "GovernorCompatibilityBravo: proposer votes below proposal threshold"
+        );
+      });
+
+      it("blocks voting during voting delay", async () => {
+        const propInfo = createTransferProp(rando.address, 1);
+        const propId = await propose(user1, governor, propInfo);
+        await advanceBlocks((await governor.votingDelay()).toNumber() - 2);
+
+        await expect(
+          governor.connect(user1).castVote(propId, 1)
+        ).to.be.revertedWith("Governor: vote not currently active");
+      });
+
+      it("blocks voting after voting period", async () => {
+        const propInfo = createTransferProp(rando.address, 2);
+        const propId = await propose(user1, governor, propInfo);
+        await advanceBlocks((await governor.votingDelay()).toNumber());
+        await advanceBlocks((await governor.votingPeriod()).toNumber());
+
+        await expect(
+          governor.connect(user1).castVote(propId, 1)
+        ).to.be.revertedWith("Governor: vote not currently active");
+      });
+
+      it("fails proposals that did not reach quorum", async () => {
+        const quorum = await governor.quorum(
+          (await governor.provider.getBlockNumber()) - 1
+        );
+        const voterVotes = await token.getCurrentVotes(user2.address);
+        expect(quorum.toNumber()).to.be.greaterThan(voterVotes.toNumber());
+
+        const propInfo = createTransferProp(rando.address, 3);
+        const propId = await propose(user1, governor, propInfo);
+        await advanceBlocks((await governor.votingDelay()).toNumber());
+        await governor.connect(user2).castVote(propId, 1);
+        await advanceBlocks((await governor.votingPeriod()).toNumber());
+
+        expect(await governor.state(propId)).to.equal(3); // 3 is Defeated
+      });
+
+      it("blocks props from being executed during the timelock delay", async () => {
+        const propInfo = createTransferProp(rando.address, 4);
+        const propId = await propose(user1, governor, propInfo);
+
+        await advanceBlocks((await governor.votingDelay()).toNumber());
+        await governor.connect(user1).castVote(propId, 1);
+        await advanceBlocks((await governor.votingPeriod()).toNumber());
+
+        await governor.queue(
+          propInfo.targets,
+          propInfo.values,
+          propInfo.callDatas,
+          propInfo.descriptionHash
+        );
+
+        const eta = await governor.proposalEta(propId);
+        await setNextBlockTimestamp(eta.toNumber() - 2, false);
+
+        await expect(
+          governor.execute(
+            propInfo.targets,
+            propInfo.values,
+            propInfo.callDatas,
+            propInfo.descriptionHash
+          )
+        ).to.be.revertedWith("TimelockController: operation is not ready");
       });
     });
 
