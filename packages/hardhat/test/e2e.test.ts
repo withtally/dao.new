@@ -37,6 +37,8 @@ import {
   FixedPriceSpecificIDMinter__factory,
   FixedPriceSpecificIDMinter,
   RequiredNFTsMintingFilter,
+  ERC20Stub__factory,
+  ERC20Stub,
 } from "../typechain";
 import { ERC721DAODeployer } from "../typechain/ERC721DAODeployer";
 import { Wallet } from "@ethersproject/wallet";
@@ -394,7 +396,7 @@ describe("End to end flows", () => {
 
     it("lets the creator use ownerMint on Timelock", async () => {
       await simpleMinter.connect(creator).ownerMint(timelock.address, 1);
-    });    
+    });
 
     describe("Governance Parameter Changes", async () => {
       it("allows changing proposal threshold via proposals", async () => {
@@ -674,60 +676,106 @@ describe("End to end flows", () => {
       before(async () => {
         await simpleMinter.connect(user1).mint(4, {
           value: TOKEN_PRICE * 4,
-        });        
-      })
+        });
+      });
 
       it("allows token holder to delegate votes to another account", async () => {
-        const user1Votes = await token.getCurrentVotes(user1.address)
-        expect(await token.delegates(user1.address)).to.equal(user1.address)
-        expect(await token.getCurrentVotes(rando.address)).to.equal(0)
-        
-        await token.connect(user1).delegate(rando.address)
+        const user1Votes = await token.getCurrentVotes(user1.address);
+        expect(await token.delegates(user1.address)).to.equal(user1.address);
+        expect(await token.getCurrentVotes(rando.address)).to.equal(0);
 
-        expect(await token.delegates(user1.address)).to.equal(rando.address)
-        expect(await token.getCurrentVotes(rando.address)).to.equal(user1Votes)
-      })
+        await token.connect(user1).delegate(rando.address);
+
+        expect(await token.delegates(user1.address)).to.equal(rando.address);
+        expect(await token.getCurrentVotes(rando.address)).to.equal(user1Votes);
+      });
 
       it("allows delegator to take back their delegated votes", async () => {
-        const user1Balance = await token.balanceOf(user1.address)
-        expect(await token.delegates(user1.address)).to.equal(rando.address)
+        const user1Balance = await token.balanceOf(user1.address);
+        expect(await token.delegates(user1.address)).to.equal(rando.address);
 
-        await token.connect(user1).delegate(ethers.constants.AddressZero)
+        await token.connect(user1).delegate(ethers.constants.AddressZero);
 
-        expect(await token.delegates(user1.address)).to.equal(user1.address)
-        expect(await token.getCurrentVotes(rando.address)).to.equal(0)
-        expect(await token.getCurrentVotes(user1.address)).to.equal(user1Balance)
-      })
+        expect(await token.delegates(user1.address)).to.equal(user1.address);
+        expect(await token.getCurrentVotes(rando.address)).to.equal(0);
+        expect(await token.getCurrentVotes(user1.address)).to.equal(
+          user1Balance
+        );
+      });
 
       it("allows delegator to transfer a token, leaving the remaining delegated votes still delegated", async () => {
-        const user1OriginalBalance = await token.balanceOf(user1.address)
-        const user3OriginalVotes = await token.getCurrentVotes(user3.address)
-        await token.connect(user1).delegate(rando.address)
-        
-        await token.connect(user1).transferFrom(user1.address, user3.address, 1)
+        const user1OriginalBalance = await token.balanceOf(user1.address);
+        const user3OriginalVotes = await token.getCurrentVotes(user3.address);
+        await token.connect(user1).delegate(rando.address);
 
-        expect(await token.getCurrentVotes(rando.address)).to.equal(user1OriginalBalance.sub(1))
-        expect(await token.getCurrentVotes(user3.address)).to.equal(user3OriginalVotes.add(1))
-      })
+        await token
+          .connect(user1)
+          .transferFrom(user1.address, user3.address, 1);
+
+        expect(await token.getCurrentVotes(rando.address)).to.equal(
+          user1OriginalBalance.sub(1)
+        );
+        expect(await token.getCurrentVotes(user3.address)).to.equal(
+          user3OriginalVotes.add(1)
+        );
+      });
 
       it("allows delegate to cast votes", async () => {
         const propInfo = createTransferProp(user2.address, TOKEN_PRICE);
         const proposalId = await propose(rando, governor, propInfo);
         await advanceBlocks(VOTING_DELAY);
-        const expectedWeight = await token.getCurrentVotes(rando.address)
-  
-        const tx = await governor.connect(rando).castVote(proposalId, 1);
-        const receipt = await tx.wait()
-        const event = receipt.events?.find(e => e.event === 'VoteCast')
-        
-        expect(event?.args?.proposalId).to.equal(proposalId)
-        expect(event?.args?.voter).to.equal(rando.address)
-        expect(event?.args?.weight).to.equal(expectedWeight)
-        expect(event?.args?.support).to.equal(1)
+        const expectedWeight = await token.getCurrentVotes(rando.address);
 
-        const propVotes = await governor.proposalVotes(proposalId)
-        expect(propVotes[1]).to.equal(expectedWeight)
-      })
+        const tx = await governor.connect(rando).castVote(proposalId, 1);
+        const receipt = await tx.wait();
+        const event = receipt.events?.find((e) => e.event === "VoteCast");
+
+        expect(event?.args?.proposalId).to.equal(proposalId);
+        expect(event?.args?.voter).to.equal(rando.address);
+        expect(event?.args?.weight).to.equal(expectedWeight);
+        expect(event?.args?.support).to.equal(1);
+
+        const propVotes = await governor.proposalVotes(proposalId);
+        expect(propVotes[1]).to.equal(expectedWeight);
+      });
+    });
+
+    describe("ERC20 ownership", async () => {
+      let erc20: ERC20Stub;
+
+      before(async () => {
+        erc20 = await new ERC20Stub__factory(signer).deploy(
+          "TokenName",
+          "Symbol"
+        );
+
+        // making sure user1 can propose and vote
+        await simpleMinter.connect(user2).mint(4, {
+          value: TOKEN_PRICE * 4,
+        });
+      });
+
+      it("timelock can hold ERC20", async () => {
+        await erc20.mint(timelock.address, 100);
+      });
+
+      it("DAO can transfer ERC20 tokens to someone else", async () => {
+        const calldata = erc20.interface.encodeFunctionData("transfer", [
+          rando.address,
+          100,
+        ]);
+        expect(await erc20.balanceOf(rando.address)).to.equal(0);
+
+        await proposeAndExecute(user2, governor, {
+          targets: [erc20.address],
+          values: [0],
+          callDatas: [calldata],
+          description: "description",
+          descriptionHash: hashString("description"),
+        });
+
+        expect(await erc20.balanceOf(rando.address)).to.equal(100);
+      });
     });
   });
 
