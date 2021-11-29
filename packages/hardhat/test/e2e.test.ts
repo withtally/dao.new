@@ -394,7 +394,7 @@ describe("End to end flows", () => {
 
     it("lets the creator use ownerMint on Timelock", async () => {
       await simpleMinter.connect(creator).ownerMint(timelock.address, 1);
-    });
+    });    
 
     describe("Governance Parameter Changes", async () => {
       it("allows changing proposal threshold via proposals", async () => {
@@ -668,6 +668,66 @@ describe("End to end flows", () => {
         expect(await token.isApprovedForAll(owner.address, operator.address)).to
           .be.true;
       });
+    });
+
+    describe("Delegates", async () => {
+      before(async () => {
+        await simpleMinter.connect(user1).mint(4, {
+          value: TOKEN_PRICE * 4,
+        });        
+      })
+
+      it("allows token holder to delegate votes to another account", async () => {
+        const user1Votes = await token.getCurrentVotes(user1.address)
+        expect(await token.delegates(user1.address)).to.equal(user1.address)
+        expect(await token.getCurrentVotes(rando.address)).to.equal(0)
+        
+        await token.connect(user1).delegate(rando.address)
+
+        expect(await token.delegates(user1.address)).to.equal(rando.address)
+        expect(await token.getCurrentVotes(rando.address)).to.equal(user1Votes)
+      })
+
+      it("allows delegator to take back their delegated votes", async () => {
+        const user1Balance = await token.balanceOf(user1.address)
+        expect(await token.delegates(user1.address)).to.equal(rando.address)
+
+        await token.connect(user1).delegate(ethers.constants.AddressZero)
+
+        expect(await token.delegates(user1.address)).to.equal(user1.address)
+        expect(await token.getCurrentVotes(rando.address)).to.equal(0)
+        expect(await token.getCurrentVotes(user1.address)).to.equal(user1Balance)
+      })
+
+      it("allows delegator to transfer a token, leaving the remaining delegated votes still delegated", async () => {
+        const user1OriginalBalance = await token.balanceOf(user1.address)
+        const user3OriginalVotes = await token.getCurrentVotes(user3.address)
+        await token.connect(user1).delegate(rando.address)
+        
+        await token.connect(user1).transferFrom(user1.address, user3.address, 1)
+
+        expect(await token.getCurrentVotes(rando.address)).to.equal(user1OriginalBalance.sub(1))
+        expect(await token.getCurrentVotes(user3.address)).to.equal(user3OriginalVotes.add(1))
+      })
+
+      it("allows delegate to cast votes", async () => {
+        const propInfo = createTransferProp(user2.address, TOKEN_PRICE);
+        const proposalId = await propose(rando, governor, propInfo);
+        await advanceBlocks(VOTING_DELAY);
+        const expectedWeight = await token.getCurrentVotes(rando.address)
+  
+        const tx = await governor.connect(rando).castVote(proposalId, 1);
+        const receipt = await tx.wait()
+        const event = receipt.events?.find(e => e.event === 'VoteCast')
+        
+        expect(event?.args?.proposalId).to.equal(proposalId)
+        expect(event?.args?.voter).to.equal(rando.address)
+        expect(event?.args?.weight).to.equal(expectedWeight)
+        expect(event?.args?.support).to.equal(1)
+
+        const propVotes = await governor.proposalVotes(proposalId)
+        expect(propVotes[1]).to.equal(expectedWeight)
+      })
     });
   });
 
