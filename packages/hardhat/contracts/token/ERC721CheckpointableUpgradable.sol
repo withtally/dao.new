@@ -203,7 +203,7 @@ abstract contract ERC721CheckpointableUpgradable is ERC721EnumerableUpgradeable 
     }
 
     function getPastTotalSupply(uint256 blockNumber) public view returns (uint256) {
-        require(blockNumber < block.number, "ERC721Checkpointable::getPriorTotalSupply: block not yet mined");
+        require(blockNumber < block.number, "ERC721Checkpointable::getPastTotalSupply: block not yet mined");
 
         uint256 nCheckpoints = _totalSupplyCheckpoints.length;
         if (nCheckpoints == 0) {
