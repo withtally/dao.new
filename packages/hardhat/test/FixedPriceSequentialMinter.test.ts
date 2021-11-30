@@ -14,7 +14,6 @@ import { BigNumberish } from "@ethersproject/bignumber";
 chai.use(solidity);
 const { expect } = chai;
 
-const zeroAddress = "0x0000000000000000000000000000000000000000";
 const MAX_TOKENS = 10;
 const TOKEN_PRICE_ETH = 0.1;
 const TOKEN_PRICE = ethers.utils.parseEther(TOKEN_PRICE_ETH.toString());
