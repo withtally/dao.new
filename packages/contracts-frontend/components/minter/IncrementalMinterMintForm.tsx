@@ -21,7 +21,7 @@ export const IncrementalMinterMintForm = ({ tokenPrice }) => {
   const maxMintPerTx = useMaxMintPerTx()
   const [tokensToMint, setTokensToMint] = useState(1)
   const valueToSend = tokenPrice && tokenPrice.mul(tokensToMint)
-  const mint = useIncrementalMinterMint()
+  const { send: mint, state: mintState } = useIncrementalMinterMint()
 
   const mintClicked = () => {
     mint(tokensToMint, { value: valueToSend })
@@ -47,9 +47,20 @@ export const IncrementalMinterMintForm = ({ tokenPrice }) => {
       </FormControl>
 
       <Box>ETH: {valueToSend && formatEther(valueToSend)}</Box>
-      <Button w="100%" onClick={mintClicked}>
+      <Button
+        w="100%"
+        onClick={mintClicked}
+        isLoading={mintState.status === 'Mining'}
+      >
         MINT
       </Button>
+
+      <Box>
+        {mintState.status !== 'None' ? `tx status: ${mintState.status}` : ''}
+      </Box>
+      <Box>
+        {mintState.status === 'Exception' ? mintState.errorMessage : ''}
+      </Box>
     </VStack>
   )
 }

@@ -117,8 +117,7 @@ export const useIncrementalMinterMint = () => {
     config.minterAddress,
     FixedPriceSequentialMinterAbi
   )
-  const { send } = useContractFunction(contract, 'mint')
-  return send
+  return useContractFunction(contract, 'mint')
 }
 
 export const useSpecificIdMinterMint = () => {
