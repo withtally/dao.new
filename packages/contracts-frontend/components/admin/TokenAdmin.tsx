@@ -103,7 +103,9 @@ export const TokenAdmin = () => {
           <OpenSeaLink linkText="View on OpenSea" />
           <RaribleLink linkText="View on Rarible" />
         </HStack>
-        <Text>Total supply: {totalSupply && totalSupply.toString()}</Text>
+        <Text>
+          Total supply (minted so far): {totalSupply && totalSupply.toString()}
+        </Text>
       </VStack>
       <VStack spacing={4} alignItems="flex-start">
         <Heading as="h3" size="lg">
