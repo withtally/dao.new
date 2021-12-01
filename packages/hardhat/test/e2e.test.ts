@@ -137,7 +137,8 @@ const deploy = async () => {
 
 const cloneWithFixedPriceSequentialMinter = async (
   royaltiesRecipientOverride?: string,
-  royaltiesBPs?: number
+  royaltiesBPs?: number,
+  govUpgradable?: boolean
 ) => {
   const tx = await deployer.clone(
     creator.address,
@@ -159,6 +160,7 @@ const cloneWithFixedPriceSequentialMinter = async (
       votingPeriod: VOTING_PERIOD,
       quorumNumerator: QUORUM_NUMERATOR,
       timelockDelay: TIMELOCK_DELAY,
+      upgradable: govUpgradable !== undefined ? govUpgradable : true,
     },
     {
       implementationIndex: 0,
@@ -208,6 +210,7 @@ const cloneWithIDMinter = async () => {
       votingPeriod: VOTING_PERIOD,
       quorumNumerator: QUORUM_NUMERATOR,
       timelockDelay: TIMELOCK_DELAY,
+      upgradable: true,
     },
     {
       implementationIndex: 1,
@@ -270,6 +273,7 @@ const cloneWithSequentialMinterAndRequiredNFTFilter = async () => {
       votingPeriod: VOTING_PERIOD,
       quorumNumerator: QUORUM_NUMERATOR,
       timelockDelay: TIMELOCK_DELAY,
+      upgradable: true,
     },
     {
       implementationIndex: 0,
@@ -1138,11 +1142,12 @@ describe("End to end flows", () => {
   });
 
   describe("Upgradability of contracts", async () => {
+    let newGovContractLogic: GovernorUpgradeMock;
+    let newTimelockContractLogic: TimelockUpgradeMock;
+
     before(() => cloneWithFixedPriceSequentialMinter());
 
     describe("Governor contract upgrades", async () => {
-      let newGovContractLogic: GovernorUpgradeMock;
-
       before(async () => {
         newGovContractLogic = await new GovernorUpgradeMock__factory(
           signer
@@ -1189,8 +1194,6 @@ describe("End to end flows", () => {
     });
 
     describe("Timelock contract upgrade", async () => {
-      let newTimelockContractLogic: TimelockUpgradeMock;
-
       before(async () => {
         newTimelockContractLogic = await new TimelockUpgradeMock__factory(
           signer
@@ -1237,6 +1240,56 @@ describe("End to end flows", () => {
           .and.to.be.revertedWith(
             "is missing role 0x5f58e3a2316349923ce3780f8d587db2d72378aed66a8261c916544fa6846ca5"
           );
+      });
+    });
+
+    describe("Non-upgradable Governance Clones", async () => {
+      before(async () => {
+        await cloneWithFixedPriceSequentialMinter(undefined, undefined, false);
+        newGovContractLogic = await new GovernorUpgradeMock__factory(
+          signer
+        ).deploy();
+        newTimelockContractLogic = await new TimelockUpgradeMock__factory(
+          signer
+        ).deploy();
+
+        await simpleMinter.connect(creator).ownerMint(user1.address, 4);
+      });
+
+      it("reverts when attempting to upgrade the governor clone", async () => {
+        const calldata = governor.interface.encodeFunctionData("upgradeTo", [
+          newGovContractLogic.address,
+        ]);
+
+        await expect(
+          proposeAndExecute(user1, governor, {
+            targets: [governor.address],
+            values: [0],
+            callDatas: [calldata],
+            description: "description",
+            descriptionHash: hashString("description"),
+          })
+        ).to.be.revertedWith(
+          "TimelockController: underlying transaction reverted"
+        );
+      });
+
+      it("reverts when attempting to upgrade the timelock clone", async () => {
+        const calldata = timelock.interface.encodeFunctionData("upgradeTo", [
+          newTimelockContractLogic.address,
+        ]);
+
+        await expect(
+          proposeAndExecute(user1, governor, {
+            targets: [timelock.address],
+            values: [0],
+            callDatas: [calldata],
+            description: "description",
+            descriptionHash: hashString("description"),
+          })
+        ).to.be.revertedWith(
+          "TimelockController: underlying transaction reverted"
+        );
       });
     });
   });

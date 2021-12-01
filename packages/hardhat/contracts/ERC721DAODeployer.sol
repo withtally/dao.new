@@ -13,7 +13,6 @@ import { MintingFilter } from "./minters/filters/MintingFilter.sol";
 import { IRoyaltyInfo } from "./token/IRoyaltyInfo.sol";
 import { ERC1967Proxy } from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
-
 contract ERC721DAODeployer is OwnableUpgradeable {
     using ClonesUpgradeable for address;
     using AddressUpgradeable for address;
@@ -34,6 +33,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         uint256 votingPeriod;
         uint256 quorumNumerator;
         uint256 timelockDelay;
+        bool upgradable;
     }
 
     struct MinterParams {
@@ -91,8 +91,8 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         );
 
         ERC721DAOToken tokenClone = ERC721DAOToken(address(token).clone());
-        ERC721Timelock timelockClone = ERC721Timelock(payable(new ERC1967Proxy(address(timelock), "")));
-        ERC721Governor governorClone = ERC721Governor(address(new ERC1967Proxy(address(governor), "")));
+        ERC721Timelock timelockClone = createTimelockInstance(governorParams);
+        ERC721Governor governorClone = createGovernorInstance(governorParams);
         ERC721Minter minterClone = ERC721Minter(payable(address(minters[minterParams.implementationIndex]).clone()));
 
         // This block is necessary to avoid the "stack too deep" compilation error
@@ -252,6 +252,20 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             mintersToAddresses(minters_),
             mintingFiltersToAddresses(mintingFilters_)
         );
+    }
+
+    function createTimelockInstance(GovernorParams calldata governorParams) private returns (ERC721Timelock) {
+        if (governorParams.upgradable) {
+            return ERC721Timelock(payable(new ERC1967Proxy(address(timelock), "")));
+        }
+        return ERC721Timelock(payable(address(timelock).clone()));
+    }
+
+    function createGovernorInstance(GovernorParams calldata governorParams) private returns (ERC721Governor) {
+        if (governorParams.upgradable) {
+            return ERC721Governor(address(new ERC1967Proxy(address(governor), "")));
+        }
+        return ERC721Governor(payable(address(governor).clone()));
     }
 
     function mintersToAddresses(ERC721Minter[] calldata minters_) private pure returns (address[] memory) {

@@ -23,6 +23,7 @@ export type GovernorParams = {
   votingPeriod: number
   quorumNumerator: number
   timelockDelay: number
+  upgradable: boolean
 }
 
 export type MinterParams = {
