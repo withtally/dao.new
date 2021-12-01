@@ -10,11 +10,11 @@ export const secrets = {
 
 const tallyApiURIConfig: Record<SupportedChains, string> = {
   [ChainId.Localhost]: 'http://localhost:5000/query',
-  [ChainId.Rinkeby]: 'https://api2.withtally.com/query',
+  [ChainId.Rinkeby]: 'https://api.staging.withtally.com/query',
 }
 
 export const tallyApiURI = tallyApiURIConfig[CHAIN_ID]
-export const tallyWebBaseURI = 'https://hackathon.withtally.com/governance/'
+export const tallyWebBaseURI = 'https://alpha.withtally.com/governance/'
 
 const deployerAddresses: Record<SupportedChains, string> = {
   [ChainId.Localhost]: '0x8A791620dd6260079BF849Dc5567aDC3F2FdC318',
