@@ -12,6 +12,7 @@ import { ERC721Minter } from "./minters/ERC721Minter.sol";
 import { MintingFilter } from "./minters/filters/MintingFilter.sol";
 import { IRoyaltyInfo } from "./token/IRoyaltyInfo.sol";
 import { ERC1967Proxy } from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
+import { ITokenURIDescriptor } from "./token/ITokenURIDescriptor.sol";
 
 contract ERC721DAODeployer is OwnableUpgradeable {
     using ClonesUpgradeable for address;
@@ -24,6 +25,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         string contractInfoURI;
         uint256 royaltiesBPs;
         address royaltiesRecipientOverride;
+        ITokenURIDescriptor tokenURIDescriptor;
     }
 
     struct GovernorParams {
@@ -135,7 +137,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721DAOToken tokenClone,
         ERC721Minter minterClone,
         address creatorAddress,
-        TokenParams calldata tokenParams,
+        TokenParams memory tokenParams,
         IRoyaltyInfo.RoyaltyInfo memory royaltyInfo
     ) private {
         (bytes32[] memory roles, address[] memory rolesAssignees) = generateTokenRolesAndAssignees(
@@ -151,7 +153,8 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             tokenParams.contractInfoURI,
             roles,
             rolesAssignees,
-            royaltyInfo
+            royaltyInfo,
+            tokenParams.tokenURIDescriptor
         );
     }
 

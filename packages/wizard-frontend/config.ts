@@ -2,10 +2,27 @@ import { ChainId } from '@usedapp/core'
 
 type SupportedChains = ChainId.Rinkeby | ChainId.Localhost
 
-export const CHAIN_ID: SupportedChains = ChainId.Rinkeby
+export const CHAIN_ID: SupportedChains = ChainId.Localhost
 
 export const secrets = {
   alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+}
+
+interface ContractAddresses {
+  deployerAddress: string
+  svgPlaceholderAddress: string
+}
+
+const contractsConfig: Record<SupportedChains, ContractAddresses> = {
+  [ChainId.Localhost]: {
+    deployerAddress: process.env.NEXT_PUBLIC_LOCAL_DEPLOYER_CONTRACT,
+    svgPlaceholderAddress:
+      process.env.NEXT_PUBLIC_LOCAL_SVG_PLACEHOLDER_CONTRACT,
+  },
+  [ChainId.Rinkeby]: {
+    deployerAddress: '0x2443cC08E34E361eE3A40C08EEe26ef20104CE0D',
+    svgPlaceholderAddress: '',
+  },
 }
 
 const tallyApiURIConfig: Record<SupportedChains, string> = {
@@ -16,11 +33,7 @@ const tallyApiURIConfig: Record<SupportedChains, string> = {
 export const tallyApiURI = tallyApiURIConfig[CHAIN_ID]
 export const tallyWebBaseURI = 'https://alpha.withtally.com/governance/'
 
-const deployerAddresses: Record<SupportedChains, string> = {
-  [ChainId.Localhost]: '0x8A791620dd6260079BF849Dc5567aDC3F2FdC318',
-  [ChainId.Rinkeby]: '0x2443cC08E34E361eE3A40C08EEe26ef20104CE0D',
-}
-export const deployerAddress = deployerAddresses[CHAIN_ID]
+export const contractsAddresses = contractsConfig[CHAIN_ID]
 
 // Multicall needs to be configured only for Localhost
 export const multicallOnLocalhost = '0x5FbDB2315678afecb367f032d93F642f64180aa3'

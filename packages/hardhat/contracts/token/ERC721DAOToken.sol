@@ -5,11 +5,11 @@
 pragma solidity ^0.8.6;
 
 import { ERC721CheckpointableUpgradable, ERC721EnumerableUpgradeable } from "./ERC721CheckpointableUpgradable.sol";
-import { SVGPlaceholder } from "../lib/SVGPlaceholder.sol";
 import { AccessControlEnumerableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 import { ERC2981ContractWideRoyalties } from "./ERC2981ContractWideRoyalties.sol";
 import { IRoyaltyInfo } from "./IRoyaltyInfo.sol";
 import { IProxyRegistry } from "../lib/IProxyRegistry.sol";
+import { ITokenURIDescriptor } from "./ITokenURIDescriptor.sol";
 
 contract ERC721DAOToken is
     ERC721CheckpointableUpgradable,
@@ -34,12 +34,14 @@ contract ERC721DAOToken is
     bool public baseURIEnabled;
     IProxyRegistry public proxyRegistry;
     bool public proxyRegistryEnabled;
+    ITokenURIDescriptor public tokenURIDescriptor;
 
     event BaseURIChanged(string newURI);
     event ContractInfoURIChanged(string newContractInfoURI);
     event BaseURIEnabledChanged(bool baseURIEnabled);
     event ProxyRegistryChanged(address newProxyRegistry);
     event ProxyRegistryEnabledChanged(bool proxyRegistryEnabled);
+    event TokenURIDescriptorChanged(address newTokenURIDescriptor);
 
     function supportsInterface(bytes4 interfaceId)
         public
@@ -58,16 +60,18 @@ contract ERC721DAOToken is
         string memory contractInfoURI_,
         bytes32[] memory roles,
         address[] memory rolesAssignees,
-        IRoyaltyInfo.RoyaltyInfo memory royaltiesInfo
+        IRoyaltyInfo.RoyaltyInfo memory royaltiesInfo,
+        ITokenURIDescriptor tokenURIDescriptor_
     ) public initializer {
         require(roles.length == rolesAssignees.length, "ERC721DAOToken::initializer: roles assignment arity mismatch");
 
         __ERC721_init(name_, symbol_);
         baseURI = baseURI_;
-        
+
         contractInfoURI = contractInfoURI_;
         _setRoyalties(royaltiesInfo.recipient, royaltiesInfo.bps);
         proxyRegistryEnabled = false;
+        tokenURIDescriptor = tokenURIDescriptor_;
 
         _setRoleAdmin(ADMINS_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
         _setRoleAdmin(MINTER_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
@@ -140,9 +144,12 @@ contract ERC721DAOToken is
         if (baseURIEnabled) {
             return super.tokenURI(tokenId);
         } else {
-            return SVGPlaceholder.placeholderTokenUri(name(), tokenId);
+            // return SVGPlaceholder.placeholderTokenUri(name(), tokenId);
+            return tokenURIDescriptor.tokenURI(tokenId, name(), symbol());
         }
     }
+
+    //TODO: add setter for tokenURIdescriptor + event
 
     function setContractInfoURI(string memory contractInfoURI_) public onlyRole(BASE_URI_ROLE) {
         contractInfoURI = contractInfoURI_;
