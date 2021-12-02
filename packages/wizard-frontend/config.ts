@@ -27,7 +27,7 @@ const contractsConfig: Record<SupportedChains, ContractAddresses> = {
 
 const tallyApiURIConfig: Record<SupportedChains, string> = {
   [ChainId.Localhost]: 'http://localhost:5000/query',
-  [ChainId.Rinkeby]: 'https://api.staging.withtally.com/query',
+  [ChainId.Rinkeby]: 'https://api2.withtally.com/query',
 }
 
 export const tallyApiURI = tallyApiURIConfig[CHAIN_ID]
