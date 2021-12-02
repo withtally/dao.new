@@ -23,6 +23,7 @@ import { TokenInputs } from '../components/TokenInputs'
 import { MinterInputs } from '../components/MinterInputs'
 import { GovernorInputs } from '../components/GovernorInputs'
 import { ClonesView } from '../components/ClonesView'
+import { ContractsConfig } from '../components/ContractsConfig'
 
 /**
  * Constants & Helpers
@@ -172,6 +173,7 @@ function HomeIndex(): JSX.Element {
       <Heading as="h1" mb="8" px={4}>
         Create NFT DAO 🧙‍♀️
       </Heading>
+      <ContractsConfig />
       <Box maxWidth="container.sm" px={4}>
         <form onSubmit={deployClones}>
           <TokenInputs

@@ -57,6 +57,7 @@ describe("CloneFactory", () => {
         recipient: ethers.constants.AddressZero,
         bps: 0,
       },
+      zeroAddress,
     ]);
 
     const tx = await factory.clone(0, callData);

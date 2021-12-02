@@ -7,7 +7,7 @@ import {
 import { ethers } from 'ethers'
 import { getSharesByCreatorPercentage } from '../lib/contractUtils'
 import { StateType } from './wizardTypes'
-import { deployerAddress } from '../config'
+import { contractsAddresses } from '../config'
 
 export async function clone(
   account: string,
@@ -16,7 +16,7 @@ export async function clone(
 ) {
   const signer = library.getSigner()
   const deployer = new ERC721DAODeployer__factory(signer).attach(
-    deployerAddress
+    contractsAddresses.deployerAddress
   )
 
   let extraInitCallData
@@ -75,6 +75,7 @@ export async function clone(
       ...state.tokenConfig,
       ...state.royaltiesConfig,
       royaltiesRecipientOverride: royaltiesRecipientOverride,
+      tokenURIDescriptor: contractsAddresses.svgPlaceholderAddress,
     },
     state.governorConfig,
     {

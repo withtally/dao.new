@@ -1,9 +1,10 @@
 import chai from "chai";
 import { ethers } from "hardhat";
-import { solidity } from "ethereum-waffle";
+import { deployMockContract, solidity } from "ethereum-waffle";
 import { deployAndInitDAOToken, mineBlock } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ERC721DAOToken } from "../typechain";
+import ITokenURIDescriptor from "../artifacts/contracts/token/ITokenURIDescriptor.sol/ITokenURIDescriptor.json";
 
 chai.use(solidity);
 const { expect } = chai;
@@ -181,6 +182,25 @@ describe("ERC721DAOToken", () => {
       await token.setContractInfoURI("ipfs://different-uri");
 
       expect(await token.contractURI()).to.be.equal("ipfs://different-uri");
+    });
+  });
+
+  describe("token uri descriptor", async () => {
+    it("changes the uri descriptor", async () => {
+      expect(await token.tokenURI(123)).to.satisfy((s: string) =>
+        s.startsWith("data:application/json;base64")
+      );
+
+      const mockDescriptorContract = await deployMockContract(
+        // @ts-ignore
+        deployer,
+        ITokenURIDescriptor.abi
+      );
+      await mockDescriptorContract.mock.tokenURI.returns("new descriptor");
+
+      await token.setTokenURIDescriptor(mockDescriptorContract.address);
+
+      expect(await token.tokenURI(123)).to.be.equal("new descriptor");
     });
   });
 });

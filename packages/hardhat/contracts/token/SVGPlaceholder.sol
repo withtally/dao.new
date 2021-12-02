@@ -5,13 +5,18 @@
 pragma solidity ^0.8.6;
 
 import { Base64 } from "base64-sol/base64.sol";
+import { ITokenURIDescriptor } from "./ITokenURIDescriptor.sol";
 import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 
-library SVGPlaceholder {
+contract SVGPlaceholder is ITokenURIDescriptor {
     using StringsUpgradeable for uint256;
 
-    function placeholderTokenUri(string memory tokenName, uint256 tokenId) internal pure returns (string memory) {
-        string memory text = string(abi.encodePacked(tokenName, " token #", tokenId.toString()));
+    function tokenURI(
+        uint256 tokenId,
+        string calldata name,
+        string calldata
+    ) external pure override returns (string memory) {
+        string memory text = string(abi.encodePacked(name, " token #", tokenId.toString()));
         string memory description = string(abi.encodePacked("Placeholder art for ", text));
         string[5] memory parts;
         parts[

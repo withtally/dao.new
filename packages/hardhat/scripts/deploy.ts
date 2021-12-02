@@ -18,6 +18,7 @@ import {
   RequiredNFTsMintingFilter__factory,
   RejectedNFTsMintingFilter__factory,
   CompositeMintingFilter__factory,
+  SVGPlaceholder__factory,
 } from "../typechain";
 
 const contractAddressFile = `${config.paths.artifacts}/contracts/contractAddress.ts`;
@@ -49,6 +50,11 @@ async function main() {
   const governorImpl = await deployContract(
     new ERC721Governor__factory(deployer),
     "ERC721Governor"
+  );
+
+  const svgPlaceholder = await deployContract(
+    new SVGPlaceholder__factory(deployer),
+    "SVGPlaceholder"
   );
 
   /*
