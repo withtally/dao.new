@@ -120,6 +120,11 @@ contract ERC721DAOToken is
         emit ProxyRegistryEnabledChanged(proxyRegistryEnabled_);
     }
 
+    function setTokenURIDescriptor(ITokenURIDescriptor tokenURIDescriptor_) public onlyRole(BASE_URI_ROLE) {
+        tokenURIDescriptor = tokenURIDescriptor_;
+        emit TokenURIDescriptorChanged(address(tokenURIDescriptor_));
+    }
+
     function setRoyalties(address recipient, uint256 bps) public onlyRole(ROYALTIES_ROLE) {
         _setRoyalties(recipient, bps);
     }
