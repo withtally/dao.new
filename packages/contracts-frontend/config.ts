@@ -27,7 +27,7 @@ const allConfigs: Record<SupportedChains, ContractsConfig> = {
     minterType: MinterType.FixedPriceSequentialMinter,
   },
   [ChainId.Rinkeby]: {
-    deployerAddress: '0x85b03fba4362D0C468D6fd1EB222B8049baffd9d',
+    deployerAddress: '0xA1B37128AEfa079CD6A8E41b8bBE9dD807297BBc',
     tokenAddress: '0x8Ea3c6b1b6d130e0B6B5eF9c69c43EBa19b653FB',
     minterAddress: '0xF5b5850DE3d239A0DA079FB56D9376494bF1a6c7',
     governorAddress: '0x1e17E92BbCa1c14cF1ac3B32c35c626e6E57418A',

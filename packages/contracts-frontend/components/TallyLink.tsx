@@ -8,7 +8,7 @@ export const TallyLink = ({ linkText }) => {
   // TODO: support mainnet
   let tallyLink = ''
   if (chainId === ChainId.Rinkeby) {
-    tallyLink = `https://hackathon.withtally.com/governance/eip155:4:${config.governorAddress}`
+    tallyLink = `https://alpha.withtally.com/governance/eip155:4:${config.governorAddress}`
   }
 
   return (

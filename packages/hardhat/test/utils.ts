@@ -17,6 +17,8 @@ import { ContractReceipt } from "@ethersproject/contracts";
 import { ERC721DAODeployer } from "../typechain/ERC721DAODeployer";
 import { ERC721DAODeployer__factory } from "../typechain/factories/ERC721DAODeployer__factory";
 import { BytesLike } from "ethers";
+import { ITokenURIDescriptor } from "../typechain/ITokenURIDescriptor";
+import { SVGPlaceholder__factory } from "../typechain/factories/SVGPlaceholder__factory";
 
 const keccak256 = ethers.utils.keccak256;
 const toUtf8Bytes = ethers.utils.toUtf8Bytes;
@@ -97,6 +99,7 @@ export const deployAndInitDAOToken = async (
   contractInfoURI?: string
 ): Promise<ERC721DAOToken> => {
   const token = await new ERC721DAOToken__factory(deployer).deploy();
+  const svgPlaceholder = await new SVGPlaceholder__factory(deployer).deploy();
 
   return await initToken(
     token,
@@ -105,7 +108,8 @@ export const deployAndInitDAOToken = async (
     minter?.address,
     baseURIer?.address,
     baseURI,
-    contractInfoURI
+    contractInfoURI,
+    svgPlaceholder.address
   );
 };
 
@@ -217,7 +221,8 @@ export const initToken = async (
   minter?: string,
   baseURIer?: string,
   baseURI: string = "BaseURI",
-  contractInfoURI: string = "some contract JSON URI"
+  contractInfoURI: string = "some contract JSON URI",
+  tokenURIDescriptor: string = zeroAddress
 ) => {
   const actualAdmin = admin || deployer;
   const actualMinter = minter || deployer;
@@ -240,7 +245,8 @@ export const initToken = async (
     {
       recipient: ethers.constants.AddressZero,
       bps: 0,
-    }
+    },
+    tokenURIDescriptor
   );
   return token;
 };

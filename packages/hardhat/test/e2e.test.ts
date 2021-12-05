@@ -152,6 +152,7 @@ const cloneWithFixedPriceSequentialMinter = async (
         royaltiesRecipientOverride !== undefined
           ? royaltiesRecipientOverride
           : ethers.constants.AddressZero,
+      tokenURIDescriptor: zeroAddress,
     },
     {
       name: "GovName",
@@ -202,6 +203,7 @@ const cloneWithIDMinter = async () => {
       contractInfoURI: "",
       royaltiesBPs: 0,
       royaltiesRecipientOverride: ethers.constants.AddressZero,
+      tokenURIDescriptor: zeroAddress,
     },
     {
       name: "GovName",
@@ -253,7 +255,8 @@ const cloneWithSequentialMinterAndRequiredNFTFilter = async () => {
     {
       recipient: ethers.constants.AddressZero,
       bps: 0,
-    }
+    },
+    zeroAddress
   );
 
   const tx = await deployer.clone(
@@ -265,6 +268,7 @@ const cloneWithSequentialMinterAndRequiredNFTFilter = async () => {
       contractInfoURI: "",
       royaltiesBPs: 0,
       royaltiesRecipientOverride: ethers.constants.AddressZero,
+      tokenURIDescriptor: zeroAddress,
     },
     {
       name: "GovName",
@@ -934,7 +938,8 @@ describe("End to end flows", () => {
           {
             recipient: ethers.constants.AddressZero,
             bps: 0,
-          }
+          },
+          zeroAddress
         );
 
         mintingFilter = await new RequiredNFTsMintingFilter__factory(
