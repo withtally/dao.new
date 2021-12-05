@@ -261,8 +261,8 @@ export const TokenAdmin = () => {
           </form>
           <Text fontSize="sm" color="gray.400">
             On the Ethereum mainnet the OpenSea proxy registry is at
-            0xa5409ec958c83c3f309868babaca7c86dcb077c1. On Rinkeby it's at
-            0xf57b2c51dEd3a29e6891aba85459d600256cf317.
+            0xa5409ec958C83C3f309868babACA7c86DCB077c1. On Rinkeby it's at
+            0xF57B2c51dED3A29e6891aba85459d600256Cf317.
           </Text>
         </VStack>
       </VStack>
