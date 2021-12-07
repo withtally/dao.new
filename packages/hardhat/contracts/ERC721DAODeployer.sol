@@ -154,7 +154,8 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             roles,
             rolesAssignees,
             royaltyInfo,
-            tokenParams.tokenURIDescriptor
+            tokenParams.tokenURIDescriptor,
+            creatorAddress
         );
     }
 

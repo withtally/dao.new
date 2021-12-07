@@ -256,7 +256,8 @@ const cloneWithSequentialMinterAndRequiredNFTFilter = async () => {
       recipient: ethers.constants.AddressZero,
       bps: 0,
     },
-    zeroAddress
+    zeroAddress,
+    signer.address
   );
 
   const tx = await deployer.clone(
@@ -939,7 +940,8 @@ describe("End to end flows", () => {
             recipient: ethers.constants.AddressZero,
             bps: 0,
           },
-          zeroAddress
+          zeroAddress,
+          signer.address
         );
 
         mintingFilter = await new RequiredNFTsMintingFilter__factory(
@@ -1143,6 +1145,15 @@ describe("End to end flows", () => {
       ).to.be.revertedWith(
         `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
       );
+    });
+
+    it("creator is owner of contract", async () => {
+      expect(await token.owner()).to.be.equal(creator.address);
+    });
+
+    it("creator can transfer ownership", async () => {
+      await token.connect(creator).transferOwnership(rando.address);
+      expect(await token.owner()).to.be.equal(rando.address);
     });
   });
 
