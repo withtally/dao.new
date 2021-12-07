@@ -215,6 +215,7 @@ function HomeIndex(): JSX.Element {
           clones={state.clones}
           clonesBlockNumber={clonesBlockNumber}
           governorName={state.governorConfig.name}
+          needsVerification={state.governorConfig.upgradable}
         />
       ) : (
         <></>

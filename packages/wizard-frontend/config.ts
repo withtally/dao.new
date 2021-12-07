@@ -6,6 +6,7 @@ export const CHAIN_ID: SupportedChains = ChainId.Rinkeby
 
 export const secrets = {
   alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+  etherscanApiKey: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
 }
 
 interface ContractAddresses {
@@ -37,3 +38,9 @@ export const contractsAddresses = contractsConfig[CHAIN_ID]
 
 // Multicall needs to be configured only for Localhost
 export const multicallOnLocalhost = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+
+const etherscanEndpoints: Record<SupportedChains, string> = {
+  [ChainId.Localhost]: 'https://api-rinkeby.etherscan.io/',
+  [ChainId.Rinkeby]: 'https://api-rinkeby.etherscan.io/',
+}
+export const etherscanEndpoint = etherscanEndpoints[CHAIN_ID]

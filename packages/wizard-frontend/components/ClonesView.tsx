@@ -1,18 +1,36 @@
-import { Box, Heading, Text } from '@chakra-ui/react'
+import { VStack, Heading, Text } from '@chakra-ui/react'
 import { Table, Thead, Tbody, Tr, Td, Th } from '@chakra-ui/react'
 import { ConnectToTally } from './ConnectToTally'
 import { CHAIN_ID } from '../config'
+import { EtherscanVerifyProxies } from './EtherscanVerifyProxies'
 
-export const ClonesView = ({ clones, clonesBlockNumber, governorName }) => {
+export const ClonesView = ({
+  clones,
+  clonesBlockNumber,
+  governorName,
+  needsVerification,
+}) => {
+  const tallyHeadingIndex = needsVerification ? '3' : '2'
   return (
-    <>
-      <Box maxWidth="container.sm" p={4} ms={4} mt={8} bg="gray.100">
-        <Heading as="h2" size="lg" mb={4}>
-          Your NFT DAO contracts:
+    <VStack
+      alignItems="flex-start"
+      spacing={6}
+      maxWidth="container.sm"
+      p={4}
+      ms={4}
+      mt={8}
+      bg="gray.100"
+    >
+      <Heading as="h2" size="lg" mb={4}>
+        Your NFT DAO is deployed!
+      </Heading>
+      <VStack spacing={2} alignItems="flex-start">
+        <Heading as="h3" size="md">
+          1. Save your contract addresses
         </Heading>
         <Text color="gray.600" fontSize="sm">
-          Save these addresses so you can easily find contracts later. You can
-          always find them again on Etherscan, in the transaction you just sent.
+          So you can easily find contracts later. You can always find them again
+          on Etherscan, in the transaction you just sent.
         </Text>
         <Table variant="unstyled" mt={8}>
           <Thead>
@@ -40,8 +58,23 @@ export const ClonesView = ({ clones, clonesBlockNumber, governorName }) => {
             </Tr>
           </Tbody>
         </Table>
-        <Heading as="h3" size="md" mb={4}>
-          Manage your DAO on Tally
+      </VStack>
+      {needsVerification ? (
+        <VStack spacing={4} alignItems="flex-start" width="100%">
+          <Heading as="h3" size="md">
+            2. Verify your contracts on Etherscan
+          </Heading>
+          <EtherscanVerifyProxies
+            governorAddress={clones.governor}
+            timelockAddress={clones.timelock}
+          />
+        </VStack>
+      ) : (
+        <></>
+      )}
+      <VStack spacing={4} alignItems="flex-start">
+        <Heading as="h3" size="md">
+          {tallyHeadingIndex}. Manage your DAO on Tally
         </Heading>
         <ConnectToTally
           orgName={governorName}
@@ -50,7 +83,7 @@ export const ClonesView = ({ clones, clonesBlockNumber, governorName }) => {
           startBlock={clonesBlockNumber}
           governanceAddress={clones.governor}
         />
-      </Box>
-    </>
+      </VStack>
+    </VStack>
   )
 }
