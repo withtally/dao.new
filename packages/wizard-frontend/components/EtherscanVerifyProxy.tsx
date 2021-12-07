@@ -5,8 +5,8 @@ import { RepeatIcon } from '@chakra-ui/icons'
 
 export const EtherscanVerifyProxy = ({ name, address }) => {
   const [isStartLoading, setIsStartLoading] = useState(false)
-  const [verifyGuid, setGovVerifyGuid] = useState('')
-  const [verifyStatus, setGovVerifyStatus] = useState('Not verified.')
+  const [verifyGuid, setVerifyGuid] = useState('')
+  const [verifyStatus, setVerifyStatus] = useState('Not verified.')
   const [isCheckLoading, setIsCheckLoading] = useState(false)
   const [isVerificationSuccessful, setIsVerificationSuccessful] =
     useState(false)
@@ -16,13 +16,13 @@ export const EtherscanVerifyProxy = ({ name, address }) => {
     try {
       const checkResponse = await checkProxyVerification(verifyGuid)
       if (checkResponse.success) {
-        setGovVerifyStatus('Verification succeeded!')
+        setVerifyStatus('Verification succeeded!')
         setIsVerificationSuccessful(true)
       } else {
-        setGovVerifyStatus(checkResponse.message)
+        setVerifyStatus(checkResponse.message)
       }
     } catch (e) {
-      setGovVerifyStatus(`Error: ${e}`)
+      setVerifyStatus(`Error: ${JSON.stringify(e)}`)
     } finally {
       setIsCheckLoading(false)
     }
@@ -33,15 +33,15 @@ export const EtherscanVerifyProxy = ({ name, address }) => {
     try {
       const verifyResult = await verifyProxy(address)
       if (!verifyResult.success) {
-        setGovVerifyStatus(`Verification failed: ${verifyResult.messageOrGuid}`)
+        setVerifyStatus(`Verification failed: ${verifyResult.messageOrGuid}`)
       } else {
-        setGovVerifyGuid(verifyResult.messageOrGuid)
-        setGovVerifyStatus(
+        setVerifyGuid(verifyResult.messageOrGuid)
+        setVerifyStatus(
           'Verification queued. Click refresh until you get a final success/failure status.'
         )
       }
     } catch (e) {
-      setGovVerifyStatus(`Error: ${e}`)
+      setVerifyStatus(`Error: ${JSON.stringify(e)}`)
     } finally {
       setIsStartLoading(false)
     }
@@ -56,7 +56,6 @@ export const EtherscanVerifyProxy = ({ name, address }) => {
         colorScheme="teal"
         onClick={startVerification}
         isLoading={isStartLoading}
-        isDisabled={isStartLoading}
       >
         Verify {name}
       </Button>
