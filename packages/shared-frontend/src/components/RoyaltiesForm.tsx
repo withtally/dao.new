@@ -82,7 +82,8 @@ export const RoyaltiesForm = ({ values, onValuesChange }) => {
           >
             EIP-2981
           </Link>
-          .
+          . Rarible honors this new standard, while OpenSea doesn't (we believe
+          it will at some point).
         </FormHelperText>
       </FormControl>
       <FormControl id="token-royaltiesoverrideradio" isRequired>
