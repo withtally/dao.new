@@ -3,8 +3,6 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   ERC721DAOToken,
   ERC721DAOToken__factory,
-  CloneFactory,
-  CloneFactory__factory,
   FixedPriceSequentialMinter__factory,
   ERC721Governor,
   ERC721Governor__factory,
@@ -178,14 +176,6 @@ export const deployIDMinter = async (
   );
 
   return minter;
-};
-
-export const deployCloneFactory = async (
-  deployer: SignerWithAddress
-): Promise<CloneFactory> => {
-  const factory = await new CloneFactory__factory(deployer).deploy();
-  await factory.initialize();
-  return factory;
 };
 
 export const deployAndInitDeployer = async (
