@@ -6,6 +6,7 @@ pragma solidity ^0.8.6;
 
 import { ERC721CheckpointableUpgradable, ERC721EnumerableUpgradeable } from "./ERC721CheckpointableUpgradable.sol";
 import { AccessControlEnumerableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+import { OwnableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import { ERC2981ContractWideRoyalties } from "./ERC2981ContractWideRoyalties.sol";
 import { IRoyaltyInfo } from "./IRoyaltyInfo.sol";
 import { IProxyRegistry } from "../lib/IProxyRegistry.sol";
@@ -14,7 +15,8 @@ import { ITokenURIDescriptor } from "./ITokenURIDescriptor.sol";
 contract ERC721DAOToken is
     ERC721CheckpointableUpgradable,
     ERC2981ContractWideRoyalties,
-    AccessControlEnumerableUpgradeable
+    AccessControlEnumerableUpgradeable,
+    OwnableUpgradeable
 {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant MINTER_ADMIN_ROLE = keccak256("MINTER_ADMIN_ROLE");
@@ -61,9 +63,14 @@ contract ERC721DAOToken is
         bytes32[] memory roles,
         address[] memory rolesAssignees,
         IRoyaltyInfo.RoyaltyInfo memory royaltiesInfo,
-        ITokenURIDescriptor tokenURIDescriptor_
+        ITokenURIDescriptor tokenURIDescriptor_,
+        address creator
     ) public initializer {
         require(roles.length == rolesAssignees.length, "ERC721DAOToken::initializer: roles assignment arity mismatch");
+
+        // Owner is needed in order to edit collection details on marketplaces (e.g opensea / rarible)
+        __Ownable_init_unchained();
+        transferOwnership(creator);
 
         __ERC721_init(name_, symbol_);
         baseURI = baseURI_;
