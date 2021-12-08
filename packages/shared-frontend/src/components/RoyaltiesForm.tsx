@@ -83,7 +83,15 @@ export const RoyaltiesForm = ({ values, onValuesChange }) => {
             EIP-2981
           </Link>
           . Rarible honors this new standard, while OpenSea doesn't (we believe
-          it will at some point).
+          it will at some point).{' '}
+          <Link
+            isExternal
+            href="https://support.opensea.io/hc/en-us/articles/1500009575482-How-do-royalties-work-on-OpenSea-"
+            tabIndex={-1}
+          >
+            You may configure royalties on OpenSea in their collection editor
+            UI.
+          </Link>
         </FormHelperText>
       </FormControl>
       <FormControl id="token-royaltiesoverrideradio" isRequired>
