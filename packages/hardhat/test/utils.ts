@@ -349,3 +349,13 @@ export const setNextBlockTimestamp = async (
   await rpc({ method: "evm_setNextBlockTimestamp", params: [n] });
   if (mine) await mineBlock();
 };
+
+export const cloneContract = async (
+  deployer: ERC721DAODeployer,
+  impl: string
+) => {
+  const cloneTx = await deployer.cloneContract(impl);
+  const receipt = await cloneTx.wait();
+  const event = receipt.events?.find((e) => e.event === "NewSingleClone");
+  return event?.args?.clone;
+};

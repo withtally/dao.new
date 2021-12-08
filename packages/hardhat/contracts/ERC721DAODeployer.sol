@@ -67,6 +67,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
     );
     event NewClone(address token, address timelock, address governor, address minter, address mintingFilter);
     event NewMintingFilterClone(address mintingFilter);
+    event NewSingleClone(address clone);
 
     function initialize(
         ERC721DAOToken token_,
@@ -256,6 +257,18 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             mintersToAddresses(minters_),
             mintingFiltersToAddresses(mintingFilters_)
         );
+    }
+
+    /**
+     * @dev Generic cloning function: just clones an implementation with initializing it. Serves as a basic building block for less common flows, e.g.
+     * if someone just wants to deploy a token with a minter, they can clone using this function, and complete the initialization sequence in client code.
+     *
+     * Emits a {NewSingleClone} event.
+     */
+    function cloneContract(address impl) external returns (address) {
+        address newClone = impl.clone();
+        emit NewSingleClone(newClone);
+        return newClone;
     }
 
     function createTimelockInstance(GovernorParams calldata governorParams) private returns (ERC721Timelock) {

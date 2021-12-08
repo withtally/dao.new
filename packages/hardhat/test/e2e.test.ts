@@ -23,6 +23,8 @@ import {
   ROYALTIES_ROLE,
   PROXY_REGISTRY_ADMIN_ROLE,
   PROXY_REGISTRY_ROLE,
+  cloneContract,
+  initToken,
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
@@ -1307,6 +1309,58 @@ describe("End to end flows", () => {
           "TimelockController: underlying transaction reverted"
         );
       });
+    });
+  });
+
+  describe.only("Deployer", async () => {
+    it("can use it to clone a token and minter and initialize them", async () => {
+      const tokenAddress = await cloneContract(deployer, tokenImpl.address);
+      const minterAddress = await cloneContract(
+        deployer,
+        simpleMinterImpl.address
+      );
+
+      const tokenClone = new ERC721DAOToken__factory(signer).attach(
+        tokenAddress
+      );
+      const minterClone = new FixedPriceSequentialMinter__factory(
+        signer
+      ).attach(minterAddress);
+
+      await initToken(
+        tokenClone,
+        signer.address,
+        signer.address,
+        minterClone.address,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        signer.address
+      );
+
+      await minterClone.initialize(
+        signer.address,
+        tokenClone.address,
+        1,
+        [signer.address],
+        [100],
+        ethers.constants.AddressZero,
+        minterClone.interface.encodeFunctionData("init", [
+          MAX_TOKENS,
+          TOKEN_PRICE,
+          MAX_MINTS_PER_WALLET,
+        ])
+      );
+
+      await minterClone.connect(signer).unpause();
+
+      await minterClone.mint(2, {
+        value: TOKEN_PRICE * 2,
+      });
+
+      expect(await tokenClone.totalSupply()).to.equal(2);
+      expect(await tokenClone.balanceOf(signer.address)).to.equal(2);
     });
   });
 });
