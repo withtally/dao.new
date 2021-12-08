@@ -25,6 +25,7 @@ import {
   PROXY_REGISTRY_ROLE,
   cloneContract,
   initToken,
+  cloneAndinitContract,
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
@@ -1021,6 +1022,65 @@ describe("End to end flows", () => {
 
   describe("Token Roles", async () => {
     before(cloneWithIDMinter);
+
+    it("non-creators cannot swap minters", async () => {
+      const newMinterAddress = await cloneAndinitContract(
+        deployer,
+        simpleMinterImpl.address,
+        simpleMinterImpl.interface.encodeFunctionData("initialize", [
+          creator.address,
+          token.address,
+          1,
+          [creator.address],
+          [100],
+          ethers.constants.AddressZero,
+          simpleMinterImpl.interface.encodeFunctionData("init", [
+            MAX_TOKENS,
+            TOKEN_PRICE,
+            MAX_MINTS_PER_WALLET,
+          ]),
+        ])
+      );
+      expect(await token.hasRole(MINTER_ROLE, idMinter.address)).to.be.true;
+
+      await expect(
+        token.connect(rando).swapMinter(newMinterAddress)
+      ).to.be.revertedWith(
+        `AccessControl: account ${rando.address.toLowerCase()} is missing role 0x70480ee89cb38eff00b7d23da25713d52ce19c6ed428691d22c58b2f615e3d67`
+      );
+    });
+
+    it("creator can swap minters", async () => {
+      const newMinterAddress = await cloneAndinitContract(
+        deployer,
+        simpleMinterImpl.address,
+        simpleMinterImpl.interface.encodeFunctionData("initialize", [
+          creator.address,
+          token.address,
+          1,
+          [creator.address],
+          [100],
+          ethers.constants.AddressZero,
+          simpleMinterImpl.interface.encodeFunctionData("init", [
+            MAX_TOKENS,
+            TOKEN_PRICE,
+            MAX_MINTS_PER_WALLET,
+          ]),
+        ])
+      );
+      expect(await token.hasRole(MINTER_ROLE, idMinter.address)).to.be.true;
+
+      const swapTx = await token.connect(creator).swapMinter(newMinterAddress);
+      const swapReceipt = await swapTx.wait();
+      const event = swapReceipt.events?.find(
+        (e) => e.event === "MinterChanged"
+      );
+
+      expect(event?.args?.newMinter).to.equal(newMinterAddress);
+      expect(event?.args?.oldMinter).to.equal(idMinter.address);
+      expect(await token.hasRole(MINTER_ROLE, idMinter.address)).to.be.false;
+      expect(await token.hasRole(MINTER_ROLE, newMinterAddress)).to.be.true;
+    });
 
     it("creator is admin of all roles: minter and base URI, and doesn't have default admin", async () => {
       expect(await token.hasRole(MINTER_ADMIN_ROLE, creator.address)).to.be

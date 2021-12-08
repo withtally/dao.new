@@ -44,6 +44,7 @@ contract ERC721DAOToken is
     event ProxyRegistryChanged(address newProxyRegistry);
     event ProxyRegistryEnabledChanged(bool proxyRegistryEnabled);
     event TokenURIDescriptorChanged(address newTokenURIDescriptor);
+    event MinterChanged(address oldMinter, address newMinter);
 
     function supportsInterface(bytes4 interfaceId)
         public
@@ -170,6 +171,15 @@ contract ERC721DAOToken is
 
     function contractURI() public view returns (string memory) {
         return contractInfoURI;
+    }
+
+    function swapMinter(address newMinter) public onlyRole(MINTER_ADMIN_ROLE) {
+        address oldMinter = getRoleMember(MINTER_ROLE, 0);
+
+        revokeRole(MINTER_ROLE, oldMinter);
+        grantRole(MINTER_ROLE, newMinter);
+
+        emit MinterChanged(oldMinter, newMinter);
     }
 
     function _baseURI() internal view override returns (string memory) {

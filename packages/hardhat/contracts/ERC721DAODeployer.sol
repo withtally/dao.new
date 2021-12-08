@@ -271,6 +271,21 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         return newClone;
     }
 
+    /**
+     * @dev Generic cloning function: clones and initializes a contract. Serves as a basic building block for less common flows, e.g.
+     * it can be used to deploy a new minter to swap minters on the same token.
+     *
+     * Emits a {NewSingleClone} event.
+     */
+    function cloneAndInitContract(address impl, bytes calldata initCallData) external returns (address) {
+        address newClone = impl.clone();
+        newClone.functionCall(initCallData);
+
+        emit NewSingleClone(newClone);
+
+        return newClone;
+    }
+
     function createTimelockInstance(GovernorParams calldata governorParams) private returns (ERC721Timelock) {
         if (governorParams.upgradable) {
             return ERC721Timelock(payable(new ERC1967Proxy(address(timelock), "")));

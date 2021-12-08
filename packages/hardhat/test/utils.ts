@@ -359,3 +359,14 @@ export const cloneContract = async (
   const event = receipt.events?.find((e) => e.event === "NewSingleClone");
   return event?.args?.clone;
 };
+
+export const cloneAndinitContract = async (
+  deployer: ERC721DAODeployer,
+  impl: string,
+  initCallData: BytesLike
+) => {
+  const cloneTx = await deployer.cloneAndInitContract(impl, initCallData);
+  const receipt = await cloneTx.wait();
+  const event = receipt.events?.find((e) => e.event === "NewSingleClone");
+  return event?.args?.clone;
+};
