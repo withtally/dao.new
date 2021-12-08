@@ -50,13 +50,12 @@ export const ConnectToTally = ({
         }`,
     })
     const orgId = createOrgResponse['data']['createOrganization']['id']
+    const tokenId = `${chainIdCAIP}/erc721:${params.tokenAddress}`
     await client.mutate({
       mutation: gql`
         mutation {
           createToken (
-              address: "${params.tokenAddress}"
-              chainId: "${chainIdCAIP}"
-              type:ERC721
+              id: "${tokenId}"
               start: "${params.startBlock}"
             ) {
               id
@@ -73,7 +72,7 @@ export const ConnectToTally = ({
             type: OPENZEPPELINGOVERNOR
             start: "${startBlock}"
             organization: ${orgId}
-            token: "${params.tokenAddress}"
+            tokenId: "${tokenId}"
           )
         }
       `,
