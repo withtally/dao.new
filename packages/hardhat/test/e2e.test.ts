@@ -1312,7 +1312,7 @@ describe("End to end flows", () => {
     });
   });
 
-  describe.only("Deployer", async () => {
+  describe("Deployer", async () => {
     it("can use it to clone a token and minter and initialize them", async () => {
       const tokenAddress = await cloneContract(deployer, tokenImpl.address);
       const minterAddress = await cloneContract(
