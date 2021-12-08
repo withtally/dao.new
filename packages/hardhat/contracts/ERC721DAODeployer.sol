@@ -325,7 +325,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         address creatorAddress,
         ERC721Minter minterClone
     ) private pure returns (bytes32[] memory, address[] memory) {
-        bytes32[] memory roles = new bytes32[](9);
+        bytes32[] memory roles = new bytes32[](11);
         roles[0] = token_.getAdminsAdminRole();
         roles[1] = token_.getMinterAdminRole();
         roles[2] = token_.getBaseURIAdminRole();
@@ -335,8 +335,10 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         roles[6] = token_.getRoyaltiesRole();
         roles[7] = token_.getProxyRegistryRole();
         roles[8] = token_.getProxyRegistryAdminRole();
+        roles[9] = token_.getTransfersRole();
+        roles[10] = token_.getTransfersAdminRole();
 
-        address[] memory rolesAssignees = new address[](9);
+        address[] memory rolesAssignees = new address[](11);
         rolesAssignees[0] = creatorAddress;
         rolesAssignees[1] = creatorAddress;
         rolesAssignees[2] = creatorAddress;
@@ -346,6 +348,8 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         rolesAssignees[6] = creatorAddress;
         rolesAssignees[7] = creatorAddress;
         rolesAssignees[8] = creatorAddress;
+        rolesAssignees[9] = creatorAddress;
+        rolesAssignees[10] = creatorAddress;
 
         return (roles, rolesAssignees);
     }

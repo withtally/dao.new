@@ -26,6 +26,8 @@ contract ERC721DAOToken is
     bytes32 public constant ROYALTIES_ADMIN_ROLE = keccak256("ROYALTIES_ADMIN_ROLE");
     bytes32 public constant PROXY_REGISTRY_ROLE = keccak256("PROXY_REGISTRY_ROLE");
     bytes32 public constant PROXY_REGISTRY_ADMIN_ROLE = keccak256("PROXY_REGISTRY_ADMIN_ROLE");
+    bytes32 public constant TRANSFERS_ROLE = keccak256("TRANSFERS_ROLE");
+    bytes32 public constant TRANSFERS_ADMIN_ROLE = keccak256("TRANSFERS_ADMIN_ROLE");
     bytes32 public constant ADMINS_ADMIN_ROLE = keccak256("ADMINS_ADMIN_ROLE");
 
     string public baseURI;
@@ -37,6 +39,7 @@ contract ERC721DAOToken is
     IProxyRegistry public proxyRegistry;
     bool public proxyRegistryEnabled;
     ITokenURIDescriptor public tokenURIDescriptor;
+    bool public transfersDisabled;
 
     event BaseURIChanged(string newURI);
     event ContractInfoURIChanged(string newContractInfoURI);
@@ -45,6 +48,7 @@ contract ERC721DAOToken is
     event ProxyRegistryEnabledChanged(bool proxyRegistryEnabled);
     event TokenURIDescriptorChanged(address newTokenURIDescriptor);
     event MinterChanged(address oldMinter, address newMinter);
+    event TransfersDisabledChanged(bool transfersDisabled);
 
     function supportsInterface(bytes4 interfaceId)
         public
@@ -80,16 +84,19 @@ contract ERC721DAOToken is
         _setRoyalties(royaltiesInfo.recipient, royaltiesInfo.bps);
         proxyRegistryEnabled = false;
         tokenURIDescriptor = tokenURIDescriptor_;
+        transfersDisabled = false;
 
         _setRoleAdmin(ADMINS_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
         _setRoleAdmin(MINTER_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
         _setRoleAdmin(BASE_URI_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
         _setRoleAdmin(ROYALTIES_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
         _setRoleAdmin(PROXY_REGISTRY_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
+        _setRoleAdmin(TRANSFERS_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
         _setRoleAdmin(MINTER_ROLE, MINTER_ADMIN_ROLE);
         _setRoleAdmin(BASE_URI_ROLE, BASE_URI_ADMIN_ROLE);
         _setRoleAdmin(ROYALTIES_ROLE, ROYALTIES_ADMIN_ROLE);
         _setRoleAdmin(PROXY_REGISTRY_ROLE, PROXY_REGISTRY_ADMIN_ROLE);
+        _setRoleAdmin(TRANSFERS_ROLE, TRANSFERS_ADMIN_ROLE);
 
         // assign roles
         for (uint256 i = 0; i < roles.length; i++) {
@@ -182,6 +189,25 @@ contract ERC721DAOToken is
         emit MinterChanged(oldMinter, newMinter);
     }
 
+    function setTransfersDisabled(bool transfersDisabled_) public onlyRole(TRANSFERS_ROLE) {
+        transfersDisabled = transfersDisabled_;
+
+        emit TransfersDisabledChanged(transfersDisabled_);
+    }
+
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal virtual override {
+        require(
+            isTransferMintOrBurn(from, to) || !transfersDisabled,
+            "ERC721DAOToken::_beforeTokenTransfer: transfers are disabled"
+        );
+
+        super._beforeTokenTransfer(from, to, tokenId);
+    }
+
     function _baseURI() internal view override returns (string memory) {
         return baseURI;
     }
@@ -220,5 +246,13 @@ contract ERC721DAOToken is
 
     function getProxyRegistryAdminRole() external pure returns (bytes32) {
         return PROXY_REGISTRY_ADMIN_ROLE;
+    }
+
+    function getTransfersRole() external pure returns (bytes32) {
+        return TRANSFERS_ROLE;
+    }
+
+    function getTransfersAdminRole() external pure returns (bytes32) {
+        return TRANSFERS_ADMIN_ROLE;
     }
 }

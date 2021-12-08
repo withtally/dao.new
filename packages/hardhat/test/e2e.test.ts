@@ -26,6 +26,8 @@ import {
   cloneContract,
   initToken,
   cloneAndinitContract,
+  TRANSFERS_ADMIN_ROLE,
+  TRANSFERS_ROLE,
 } from "./utils";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
@@ -1020,202 +1022,280 @@ describe("End to end flows", () => {
     });
   });
 
-  describe("Token Roles", async () => {
-    before(cloneWithIDMinter);
+  describe("Token", async () => {
+    describe("Minter Swap", async () => {
+      before(cloneWithIDMinter);
 
-    it("non-creators cannot swap minters", async () => {
-      const newMinterAddress = await cloneAndinitContract(
-        deployer,
-        simpleMinterImpl.address,
-        simpleMinterImpl.interface.encodeFunctionData("initialize", [
-          creator.address,
-          token.address,
-          1,
-          [creator.address],
-          [100],
-          ethers.constants.AddressZero,
-          simpleMinterImpl.interface.encodeFunctionData("init", [
-            MAX_TOKENS,
-            TOKEN_PRICE,
-            MAX_MINTS_PER_WALLET,
-          ]),
-        ])
-      );
-      expect(await token.hasRole(MINTER_ROLE, idMinter.address)).to.be.true;
+      it("non-creators cannot swap minters", async () => {
+        const newMinterAddress = await cloneAndinitContract(
+          deployer,
+          simpleMinterImpl.address,
+          simpleMinterImpl.interface.encodeFunctionData("initialize", [
+            creator.address,
+            token.address,
+            1,
+            [creator.address],
+            [100],
+            ethers.constants.AddressZero,
+            simpleMinterImpl.interface.encodeFunctionData("init", [
+              MAX_TOKENS,
+              TOKEN_PRICE,
+              MAX_MINTS_PER_WALLET,
+            ]),
+          ])
+        );
+        expect(await token.hasRole(MINTER_ROLE, idMinter.address)).to.be.true;
 
-      await expect(
-        token.connect(rando).swapMinter(newMinterAddress)
-      ).to.be.revertedWith(
-        `AccessControl: account ${rando.address.toLowerCase()} is missing role 0x70480ee89cb38eff00b7d23da25713d52ce19c6ed428691d22c58b2f615e3d67`
-      );
-    });
+        await expect(
+          token.connect(rando).swapMinter(newMinterAddress)
+        ).to.be.revertedWith(
+          `AccessControl: account ${rando.address.toLowerCase()} is missing role 0x70480ee89cb38eff00b7d23da25713d52ce19c6ed428691d22c58b2f615e3d67`
+        );
+      });
 
-    it("creator can swap minters", async () => {
-      const newMinterAddress = await cloneAndinitContract(
-        deployer,
-        simpleMinterImpl.address,
-        simpleMinterImpl.interface.encodeFunctionData("initialize", [
-          creator.address,
-          token.address,
-          1,
-          [creator.address],
-          [100],
-          ethers.constants.AddressZero,
-          simpleMinterImpl.interface.encodeFunctionData("init", [
-            MAX_TOKENS,
-            TOKEN_PRICE,
-            MAX_MINTS_PER_WALLET,
-          ]),
-        ])
-      );
-      expect(await token.hasRole(MINTER_ROLE, idMinter.address)).to.be.true;
+      it("creator can swap minters", async () => {
+        const newMinterAddress = await cloneAndinitContract(
+          deployer,
+          simpleMinterImpl.address,
+          simpleMinterImpl.interface.encodeFunctionData("initialize", [
+            creator.address,
+            token.address,
+            1,
+            [creator.address],
+            [100],
+            ethers.constants.AddressZero,
+            simpleMinterImpl.interface.encodeFunctionData("init", [
+              MAX_TOKENS,
+              TOKEN_PRICE,
+              MAX_MINTS_PER_WALLET,
+            ]),
+          ])
+        );
+        expect(await token.hasRole(MINTER_ROLE, idMinter.address)).to.be.true;
 
-      const swapTx = await token.connect(creator).swapMinter(newMinterAddress);
-      const swapReceipt = await swapTx.wait();
-      const event = swapReceipt.events?.find(
-        (e) => e.event === "MinterChanged"
-      );
-
-      expect(event?.args?.newMinter).to.equal(newMinterAddress);
-      expect(event?.args?.oldMinter).to.equal(idMinter.address);
-      expect(await token.hasRole(MINTER_ROLE, idMinter.address)).to.be.false;
-      expect(await token.hasRole(MINTER_ROLE, newMinterAddress)).to.be.true;
-    });
-
-    it("creator is admin of all roles: minter and base URI, and doesn't have default admin", async () => {
-      expect(await token.hasRole(MINTER_ADMIN_ROLE, creator.address)).to.be
-        .true;
-      expect(await token.hasRole(BASE_URI_ADMIN_ROLE, creator.address)).to.be
-        .true;
-      expect(await token.hasRole(ROYALTIES_ADMIN_ROLE, creator.address)).to.be
-        .true;
-      expect(await token.hasRole(PROXY_REGISTRY_ADMIN_ROLE, creator.address)).to
-        .be.true;
-
-      // DEFAULT_ADMIN_ROLE can be risky, best not to have it.
-      expect(await token.hasRole(DEFAULT_ADMIN_ROLE, creator.address)).to.be
-        .false;
-    });
-
-    it("creator can assign roles: minter, base URI and royalties", async () => {
-      await token.connect(creator).grantRole(MINTER_ROLE, rando.address);
-      await token.connect(creator).grantRole(BASE_URI_ROLE, user2.address);
-      await token.connect(creator).grantRole(ROYALTIES_ROLE, user3.address);
-      await token
-        .connect(creator)
-        .grantRole(PROXY_REGISTRY_ROLE, user1.address);
-    });
-
-    it("creator can assign the admin roles to the DAO", async () => {
-      await token
-        .connect(creator)
-        .grantRole(MINTER_ADMIN_ROLE, timelock.address);
-      await token
-        .connect(creator)
-        .grantRole(BASE_URI_ADMIN_ROLE, timelock.address);
-      await token
-        .connect(creator)
-        .grantRole(ROYALTIES_ADMIN_ROLE, timelock.address);
-      await token
-        .connect(creator)
-        .grantRole(PROXY_REGISTRY_ADMIN_ROLE, timelock.address);
-      await token
-        .connect(creator)
-        .grantRole(ADMINS_ADMIN_ROLE, timelock.address);
-
-      expect(await token.hasRole(MINTER_ADMIN_ROLE, timelock.address)).to.be
-        .true;
-      expect(await token.hasRole(BASE_URI_ADMIN_ROLE, timelock.address)).to.be
-        .true;
-      expect(await token.hasRole(ROYALTIES_ADMIN_ROLE, timelock.address)).to.be
-        .true;
-      expect(await token.hasRole(PROXY_REGISTRY_ADMIN_ROLE, timelock.address))
-        .to.be.true;
-      expect(await token.hasRole(ADMINS_ADMIN_ROLE, timelock.address)).to.be
-        .true;
-    });
-
-    it("creator can renounce admin roles and then cannot assign roles any longer", async () => {
-      await token
-        .connect(creator)
-        .renounceRole(MINTER_ADMIN_ROLE, creator.address);
-      await token
-        .connect(creator)
-        .renounceRole(BASE_URI_ADMIN_ROLE, creator.address);
-      await token
-        .connect(creator)
-        .renounceRole(ROYALTIES_ADMIN_ROLE, creator.address);
-      await token
-        .connect(creator)
-        .renounceRole(PROXY_REGISTRY_ADMIN_ROLE, creator.address);
-
-      await expect(
-        token.connect(creator).grantRole(MINTER_ROLE, user1.address)
-      ).to.revertedWith(
-        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x70480ee89cb38eff00b7d23da25713d52ce19c6ed428691d22c58b2f615e3d67`
-      );
-      await expect(
-        token.connect(creator).grantRole(BASE_URI_ROLE, user3.address)
-      ).to.revertedWith(
-        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0xe0d0d9e49dfab9a7a7b34707b3c82b3f11c47969a80cdc398ea138bce37e99a9`
-      );
-      await expect(
-        token.connect(creator).grantRole(ROYALTIES_ROLE, rando.address)
-      ).to.revertedWith(
-        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x0381f8bcf86f2b12a863dd00cfdf78e684eab780875b06ce2779aaa7475c64db`
-      );
-      await expect(
-        token.connect(creator).grantRole(PROXY_REGISTRY_ROLE, rando.address)
-      ).to.revertedWith(
-        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0xf8d9113c652f85b5d786c220fee7c2f4d9a34612f89b0401c1492016305e6382`
-      );
-    });
-
-    it("creator can renounce the super admin role, and then cannot assign admin roles", async () => {
-      expect(await token.hasRole(ADMINS_ADMIN_ROLE, creator.address)).to.be
-        .true;
-      await token
-        .connect(creator)
-        .renounceRole(ADMINS_ADMIN_ROLE, creator.address);
-      expect(await token.hasRole(ADMINS_ADMIN_ROLE, creator.address)).to.be
-        .false;
-
-      await expect(
-        token.connect(creator).grantRole(ADMINS_ADMIN_ROLE, timelock.address)
-      ).to.be.revertedWith(
-        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
-      );
-      await expect(
-        token.connect(creator).grantRole(MINTER_ADMIN_ROLE, timelock.address)
-      ).to.be.revertedWith(
-        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
-      );
-      await expect(
-        token.connect(creator).grantRole(BASE_URI_ADMIN_ROLE, timelock.address)
-      ).to.be.revertedWith(
-        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
-      );
-      await expect(
-        token.connect(creator).grantRole(ROYALTIES_ADMIN_ROLE, timelock.address)
-      ).to.be.revertedWith(
-        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
-      );
-      await expect(
-        token
+        const swapTx = await token
           .connect(creator)
-          .grantRole(PROXY_REGISTRY_ADMIN_ROLE, timelock.address)
-      ).to.be.revertedWith(
-        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
-      );
+          .swapMinter(newMinterAddress);
+        const swapReceipt = await swapTx.wait();
+        const event = swapReceipt.events?.find(
+          (e) => e.event === "MinterChanged"
+        );
+
+        expect(event?.args?.newMinter).to.equal(newMinterAddress);
+        expect(event?.args?.oldMinter).to.equal(idMinter.address);
+        expect(await token.hasRole(MINTER_ROLE, idMinter.address)).to.be.false;
+        expect(await token.hasRole(MINTER_ROLE, newMinterAddress)).to.be.true;
+      });
     });
 
-    it("creator is owner of contract", async () => {
-      expect(await token.owner()).to.be.equal(creator.address);
+    describe("Token Roles", async () => {
+      before(cloneWithIDMinter);
+
+      it("creator is admin of all roles: minter and base URI, and doesn't have default admin", async () => {
+        expect(await token.hasRole(MINTER_ADMIN_ROLE, creator.address)).to.be
+          .true;
+        expect(await token.hasRole(BASE_URI_ADMIN_ROLE, creator.address)).to.be
+          .true;
+        expect(await token.hasRole(ROYALTIES_ADMIN_ROLE, creator.address)).to.be
+          .true;
+        expect(await token.hasRole(PROXY_REGISTRY_ADMIN_ROLE, creator.address))
+          .to.be.true;
+        expect(await token.hasRole(TRANSFERS_ADMIN_ROLE, creator.address)).to.be
+          .true;
+
+        // DEFAULT_ADMIN_ROLE can be risky, best not to have it.
+        expect(await token.hasRole(DEFAULT_ADMIN_ROLE, creator.address)).to.be
+          .false;
+      });
+
+      it("creator can assign roles: minter, base URI, royalties and transfers", async () => {
+        await token.connect(creator).grantRole(MINTER_ROLE, rando.address);
+        await token.connect(creator).grantRole(BASE_URI_ROLE, user2.address);
+        await token.connect(creator).grantRole(ROYALTIES_ROLE, user3.address);
+        await token
+          .connect(creator)
+          .grantRole(PROXY_REGISTRY_ROLE, user1.address);
+        await token.connect(creator).grantRole(TRANSFERS_ROLE, rando.address);
+      });
+
+      it("creator can assign the admin roles to the DAO", async () => {
+        await token
+          .connect(creator)
+          .grantRole(MINTER_ADMIN_ROLE, timelock.address);
+        await token
+          .connect(creator)
+          .grantRole(BASE_URI_ADMIN_ROLE, timelock.address);
+        await token
+          .connect(creator)
+          .grantRole(ROYALTIES_ADMIN_ROLE, timelock.address);
+        await token
+          .connect(creator)
+          .grantRole(PROXY_REGISTRY_ADMIN_ROLE, timelock.address);
+        await token
+          .connect(creator)
+          .grantRole(TRANSFERS_ADMIN_ROLE, timelock.address);
+        await token
+          .connect(creator)
+          .grantRole(ADMINS_ADMIN_ROLE, timelock.address);
+
+        expect(await token.hasRole(MINTER_ADMIN_ROLE, timelock.address)).to.be
+          .true;
+        expect(await token.hasRole(BASE_URI_ADMIN_ROLE, timelock.address)).to.be
+          .true;
+        expect(await token.hasRole(ROYALTIES_ADMIN_ROLE, timelock.address)).to
+          .be.true;
+        expect(await token.hasRole(PROXY_REGISTRY_ADMIN_ROLE, timelock.address))
+          .to.be.true;
+        expect(await token.hasRole(TRANSFERS_ADMIN_ROLE, timelock.address)).to
+          .be.true;
+        expect(await token.hasRole(ADMINS_ADMIN_ROLE, timelock.address)).to.be
+          .true;
+      });
+
+      it("creator can renounce admin roles and then cannot assign roles any longer", async () => {
+        await token
+          .connect(creator)
+          .renounceRole(MINTER_ADMIN_ROLE, creator.address);
+        await token
+          .connect(creator)
+          .renounceRole(BASE_URI_ADMIN_ROLE, creator.address);
+        await token
+          .connect(creator)
+          .renounceRole(ROYALTIES_ADMIN_ROLE, creator.address);
+        await token
+          .connect(creator)
+          .renounceRole(PROXY_REGISTRY_ADMIN_ROLE, creator.address);
+        await token
+          .connect(creator)
+          .renounceRole(TRANSFERS_ADMIN_ROLE, creator.address);
+
+        await expect(
+          token.connect(creator).grantRole(MINTER_ROLE, user1.address)
+        ).to.revertedWith(
+          `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x70480ee89cb38eff00b7d23da25713d52ce19c6ed428691d22c58b2f615e3d67`
+        );
+        await expect(
+          token.connect(creator).grantRole(BASE_URI_ROLE, user3.address)
+        ).to.revertedWith(
+          `AccessControl: account ${creator.address.toLowerCase()} is missing role 0xe0d0d9e49dfab9a7a7b34707b3c82b3f11c47969a80cdc398ea138bce37e99a9`
+        );
+        await expect(
+          token.connect(creator).grantRole(ROYALTIES_ROLE, rando.address)
+        ).to.revertedWith(
+          `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x0381f8bcf86f2b12a863dd00cfdf78e684eab780875b06ce2779aaa7475c64db`
+        );
+        await expect(
+          token.connect(creator).grantRole(PROXY_REGISTRY_ROLE, rando.address)
+        ).to.revertedWith(
+          `AccessControl: account ${creator.address.toLowerCase()} is missing role 0xf8d9113c652f85b5d786c220fee7c2f4d9a34612f89b0401c1492016305e6382`
+        );
+        await expect(
+          token.connect(creator).grantRole(TRANSFERS_ROLE, user2.address)
+        ).to.revertedWith(
+          `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x6ef6c12113840e73bf704de56ef147ea7406477154c3d8cfa0b9d1a47c607472`
+        );
+      });
+
+      it("creator can renounce the super admin role, and then cannot assign admin roles", async () => {
+        expect(await token.hasRole(ADMINS_ADMIN_ROLE, creator.address)).to.be
+          .true;
+        await token
+          .connect(creator)
+          .renounceRole(ADMINS_ADMIN_ROLE, creator.address);
+        expect(await token.hasRole(ADMINS_ADMIN_ROLE, creator.address)).to.be
+          .false;
+
+        await expect(
+          token.connect(creator).grantRole(ADMINS_ADMIN_ROLE, timelock.address)
+        ).to.be.revertedWith(
+          `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
+        );
+        await expect(
+          token.connect(creator).grantRole(MINTER_ADMIN_ROLE, timelock.address)
+        ).to.be.revertedWith(
+          `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
+        );
+        await expect(
+          token
+            .connect(creator)
+            .grantRole(BASE_URI_ADMIN_ROLE, timelock.address)
+        ).to.be.revertedWith(
+          `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
+        );
+        await expect(
+          token
+            .connect(creator)
+            .grantRole(ROYALTIES_ADMIN_ROLE, timelock.address)
+        ).to.be.revertedWith(
+          `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
+        );
+        await expect(
+          token
+            .connect(creator)
+            .grantRole(PROXY_REGISTRY_ADMIN_ROLE, timelock.address)
+        ).to.be.revertedWith(
+          `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
+        );
+        await expect(
+          token
+            .connect(creator)
+            .grantRole(TRANSFERS_ADMIN_ROLE, timelock.address)
+        ).to.be.revertedWith(
+          `AccessControl: account ${creator.address.toLowerCase()} is missing role 0x778f133ac0489209d5e8c78e45e9d0226a824164fd90f9892f5d8214632583e0'`
+        );
+      });
+
+      it("creator is owner of contract", async () => {
+        expect(await token.owner()).to.be.equal(creator.address);
+      });
+
+      it("creator can transfer ownership", async () => {
+        await token.connect(creator).transferOwnership(rando.address);
+        expect(await token.owner()).to.be.equal(rando.address);
+      });
     });
 
-    it("creator can transfer ownership", async () => {
-      await token.connect(creator).transferOwnership(rando.address);
-      expect(await token.owner()).to.be.equal(rando.address);
+    describe("Disable Transfers", async () => {
+      before(() => cloneWithFixedPriceSequentialMinter());
+
+      it("allows transfers by default", async () => {
+        expect(await token.transfersDisabled()).to.be.false;
+        await simpleMinter.connect(creator).ownerMint(user1.address, 2);
+
+        await token
+          .connect(user1)
+          .transferFrom(user1.address, user2.address, 1);
+
+        expect(await token.ownerOf(1)).to.equal(user2.address);
+      });
+
+      it("blocks non-creators from disabling transfers", async () => {
+        await expect(
+          token.connect(rando).setTransfersDisabled(true)
+        ).to.be.revertedWith(
+          `AccessControl: account ${rando.address.toLowerCase()} is missing role 0x87cc606d01ebb1094d9a6177e5e096c8ea6b6505e2a8a00a3ea7a38ad55b3619`
+        );
+      });
+
+      it("allows creator to disable transfers", async () => {
+        await token.connect(creator).setTransfersDisabled(true);
+
+        await expect(
+          token.connect(user1).transferFrom(user1.address, user2.address, 2)
+        ).to.be.revertedWith(
+          "ERC721DAOToken::_beforeTokenTransfer: transfers are disabled"
+        );
+      });
+
+      it("still supports minting when transfers are disabled", async () => {
+        await token.connect(creator).setTransfersDisabled(true);
+
+        await simpleMinter.connect(creator).ownerMint(user3.address, 2);
+
+        await simpleMinter.connect(user3).mint(1, {
+          value: TOKEN_PRICE,
+        });
+      });
     });
   });
 

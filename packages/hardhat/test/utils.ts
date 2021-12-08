@@ -37,6 +37,8 @@ export const PROXY_REGISTRY_ADMIN_ROLE = hashString(
   "PROXY_REGISTRY_ADMIN_ROLE"
 );
 export const CREATOR_ROLE = hashString("CREATOR_ROLE");
+export const TRANSFERS_ROLE = hashString("TRANSFERS_ROLE");
+export const TRANSFERS_ADMIN_ROLE = hashString("TRANSFERS_ADMIN_ROLE");
 
 const zeroAddress = "0x0000000000000000000000000000000000000000";
 

@@ -101,14 +101,14 @@ abstract contract ERC721CheckpointableUpgradable is ERC721EnumerableUpgradeable 
         address from,
         address to,
         uint256 tokenId
-    ) internal override {
+    ) internal virtual override {
         super._beforeTokenTransfer(from, to, tokenId);
 
         /// @notice Differs from `_transferTokens()` to use `delegates` override method to simulate auto-delegation
         _moveDelegates(delegates(from), delegates(to), 1);
 
         // mint or burn
-        if (from == address(0) || to == address(0)) {
+        if (isTransferMintOrBurn(from, to)) {
             _writeTotalSupplyCheckpoint();
         }
     }
@@ -309,6 +309,10 @@ abstract contract ERC721CheckpointableUpgradable is ERC721EnumerableUpgradeable 
         } else {
             _totalSupplyCheckpoints.push(Checkpoint(blockNumber, newTotalSupply));
         }
+    }
+
+    function isTransferMintOrBurn(address from, address to) internal pure returns (bool) {
+        return from == address(0) || to == address(0);
     }
 
     function safe32(uint256 n, string memory errorMessage) internal pure returns (uint32) {
