@@ -21,8 +21,8 @@ const contractsConfig: Record<SupportedChains, ContractAddresses> = {
       process.env.NEXT_PUBLIC_LOCAL_SVG_PLACEHOLDER_CONTRACT,
   },
   [ChainId.Rinkeby]: {
-    deployerAddress: '0x9764c367879c84Ac40B3A07f45750f586131E38E',
-    svgPlaceholderAddress: '0xE4DbFdf4b7719deb70BB28F057A3553AF8E1f60A',
+    deployerAddress: '0xC95d98da541FF990D773F9015996d34663dF0735',
+    svgPlaceholderAddress: '0xC3F5DC2E7cF6207273EA5363C7e78b71b3aD5280',
   },
 }
 
