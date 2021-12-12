@@ -15,7 +15,7 @@ export const SpecificIdMinterMintForm = ({ tokenPrice }) => {
   const [tokenIdToMint, setTokenIdToMint] = useState(1234)
   const valueToSend = tokenPrice
 
-  const mint = useSpecificIdMinterMint()
+  const { send: mint, state: mintState } = useSpecificIdMinterMint()
 
   const mintClicked = () => {
     mint(tokenIdToMint, { value: valueToSend })
@@ -39,6 +39,13 @@ export const SpecificIdMinterMintForm = ({ tokenPrice }) => {
       <Button w="100%" onClick={mintClicked}>
         MINT
       </Button>
+
+      <Box>
+        {mintState.status !== 'None' ? `tx status: ${mintState.status}` : ''}
+      </Box>
+      <Box>
+        {mintState.status === 'Exception' ? mintState.errorMessage : ''}
+      </Box>
     </VStack>
   )
 }

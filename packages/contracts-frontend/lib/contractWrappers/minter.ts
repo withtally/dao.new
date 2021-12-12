@@ -125,8 +125,7 @@ export const useSpecificIdMinterMint = () => {
     config.minterAddress,
     FixedPriceSpecificIDMinterAbi
   )
-  const { send } = useContractFunction(contract, 'mint')
-  return send
+  return useContractFunction(contract, 'mint')
 }
 
 export const usePauseSale = () => {
