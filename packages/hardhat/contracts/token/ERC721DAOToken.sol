@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: MIT
 
 /// @title ERC-721 token for DAOs.
 
@@ -164,12 +164,9 @@ contract ERC721DAOToken is
         if (baseURIEnabled) {
             return super.tokenURI(tokenId);
         } else {
-            // return SVGPlaceholder.placeholderTokenUri(name(), tokenId);
             return tokenURIDescriptor.tokenURI(tokenId, name(), symbol());
         }
     }
-
-    //TODO: add setter for tokenURIdescriptor + event
 
     function setContractInfoURI(string memory contractInfoURI_) public onlyRole(BASE_URI_ROLE) {
         contractInfoURI = contractInfoURI_;

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: MIT
 
 /// @title Minter for ERC721DAOToken, selling tokens at a fixed price, allowing minters to choose specific IDs.
 

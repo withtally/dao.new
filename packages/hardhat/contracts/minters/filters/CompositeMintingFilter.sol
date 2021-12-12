@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: MIT
 
 /// @title CompositeMintingFilter is a MintingFilter that invokes multiple filters.
 

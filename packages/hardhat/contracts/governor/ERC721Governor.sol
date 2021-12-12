@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: MIT
 
 /// @title Governor for ERC721DAOToken.
 
@@ -13,7 +13,6 @@ import { TimelockControllerUpgradeable } from "@openzeppelin/contracts-upgradeab
 import { GovernorProposalThresholdUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorProposalThresholdUpgradeable.sol";
 import { IGovernorUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/IGovernorUpgradeable.sol";
 import { UUPSUpgradeable } from "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
-
 
 contract ERC721Governor is
     GovernorVotesERC721QuorumFractionUpgradeable,

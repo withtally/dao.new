@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: MIT
 
 /// @title NFTsMintingFilter is a MintingFilter that enforces requirements of owning or not owning specific NFT tokens.
 

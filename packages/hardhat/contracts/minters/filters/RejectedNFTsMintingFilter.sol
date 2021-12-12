@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: MIT
 
 /// @title RejectedNFTsMintingFilter is a MintingFilter that enforces requirements of NOT owning specific NFT tokens over a minimal balances.
 

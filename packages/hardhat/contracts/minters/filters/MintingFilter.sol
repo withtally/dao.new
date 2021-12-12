@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: MIT
 
 /// @title MintingFilter helps minter contracts make sure minting users meet certain criteria, like holding a certain NFT.
 
