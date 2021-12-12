@@ -3,9 +3,8 @@
 //
 // When running the script with `hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-import { Contract, ContractFactory } from "ethers";
-import { config, ethers } from "hardhat";
-import fs from "fs";
+import { ContractFactory } from "ethers";
+import { ethers } from "hardhat";
 import {
   ERC721DAOToken__factory,
   ERC721Governor__factory,
@@ -21,8 +20,6 @@ import {
   SVGPlaceholder__factory,
 } from "../typechain";
 
-const contractAddressFile = `${config.paths.artifacts}/contracts/contractAddress.ts`;
-
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
   // line interface.
@@ -31,13 +28,12 @@ async function main() {
   // manually to make sure everything is compiled
   // await hre.run('compile');
 
-  if (fs.existsSync(contractAddressFile)) {
-    fs.unlinkSync(contractAddressFile);
-  }
-
   const [deployer] = await ethers.getSigners();
 
-  await deployContract(new Multicall__factory(deployer), "Multicall");
+  if ((await ethers.provider.getNetwork()).chainId == 1337) {
+    // Deploy Multicall on localhost
+    await deployContract(new Multicall__factory(deployer), "Multicall");
+  }
 
   const tokenImpl = await deployContract(
     new ERC721DAOToken__factory(deployer),
@@ -52,10 +48,7 @@ async function main() {
     "ERC721Governor"
   );
 
-  const svgPlaceholder = await deployContract(
-    new SVGPlaceholder__factory(deployer),
-    "SVGPlaceholder"
-  );
+  await deployContract(new SVGPlaceholder__factory(deployer), "SVGPlaceholder");
 
   /*
    *  Minters
@@ -109,18 +102,8 @@ async function main() {
 async function deployContract(factory: ContractFactory, name: string) {
   const contract = await factory.deploy();
   await contract.deployed();
-  saveFrontendFiles(contract, name);
+  console.log("%s deployed to: %s", name, contract.address);
   return contract;
-}
-
-// https://github.com/nomiclabs/hardhat-hackathon-boilerplate/blob/master/scripts/deploy.js
-function saveFrontendFiles(contract: Contract, contractName: string) {
-  const varName = contractName + "Address";
-  fs.appendFileSync(
-    contractAddressFile,
-    `export const ${varName} = '${contract.address}'\n`
-  );
-  console.log("%s deployed to: %s", contractName, contract.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
