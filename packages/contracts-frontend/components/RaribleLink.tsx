@@ -9,6 +9,8 @@ export const RaribleLink = ({ linkText }) => {
   let raribleLink = ''
   if (chainId === ChainId.Rinkeby) {
     raribleLink = `https://rinkeby.rarible.com/collection/${config.tokenAddress}`
+  } else if (chainId == ChainId.Mainnet) {
+    raribleLink = `https://rarible.com/collection/${config.tokenAddress}`
   }
 
   return (
