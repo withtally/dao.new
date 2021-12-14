@@ -32,7 +32,8 @@ These pages are meant as an example. Feel free to fork & extend.
 
    3.3 Update `minterType` to the type of minter you have chosed. Options are: `MinterType.FixedPriceSequentialMinter` or `MinterType.FixedPriceSpecificIDMinter`
 
-4. Create `packages/contracts-frontend/.env` file similar to the `.env.example` file in the same folder. You can get an Alchemy api key by [signing up](https://www.alchemy.com/).
+4. Create `packages/contracts-frontend/.env` file similar to the `.env.example` file in the same folder.
+   The JSON RPC urls should look something like: `https://eth-rinkeby.alchemyapi.io/v2/dkgAjugSdf`. You can get an Alchemy api key by [signing up](https://www.alchemy.com/).
 
 5. Run the webapp in development mode
 
