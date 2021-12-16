@@ -127,7 +127,6 @@ export const MinterInputs = ({
           <NumberInput
             defaultValue={defaultStartBlock}
             step={300} // a bit more than an hour
-            min={defaultStartBlock}
             value={minterConfig.startingBlock.toString()}
             onChange={onMinterStartBlockChange}
           >
