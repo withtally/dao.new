@@ -1,7 +1,7 @@
 import { Box, Button, Heading, Text } from '@chakra-ui/react'
 import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
 import { providers, utils } from 'ethers'
-import React, { useReducer, useState } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import { Layout } from '@create-nft-dao/shared'
 import {
   DEFAULT_TOKEN_SUPPLY,
@@ -13,6 +13,7 @@ import {
   DEFAULT_VOTING_PERIOD,
   DEFAULT_QUORUM_NUMERATOR,
   DEFAULT_CREATOR_PERCENTAGE,
+  DEFAULT_SALE_START_DELAY,
 } from '../lib/contractUtils'
 import { MintingFilterInputs } from '../components/MintingFilterInputs'
 import { RoyaltiesParams } from '@create-nft-dao/shared'
@@ -24,6 +25,7 @@ import { MinterInputs } from '../components/MinterInputs'
 import { GovernorInputs } from '../components/GovernorInputs'
 import { ClonesView } from '../components/ClonesView'
 import { ContractsConfig } from '../components/ContractsConfig'
+import { Web3Provider } from '@ethersproject/providers'
 
 /**
  * Constants & Helpers
@@ -35,6 +37,11 @@ const localProvider = new providers.StaticJsonRpcProvider(
 /**
  * Component
  */
+function getDefaultStartBlock(library: Web3Provider): number {
+  return library && library.getSigner().provider.blockNumber > 0
+    ? library.getSigner().provider.blockNumber + DEFAULT_SALE_START_DELAY
+    : 0
+}
 
 const initialState: StateType = {
   isLoading: false,
@@ -78,6 +85,20 @@ function HomeIndex(): JSX.Element {
   const [state, dispatch] = useReducer(wizardReducer, initialState)
   const { account, chainId, library } = useEthers()
   const [clonesBlockNumber, setClonesBlockNumber] = useState(0)
+  const [
+    didSetStartBlockWithLatestChainValue,
+    setDidSetStartBlockWithLatestChainValue,
+  ] = useState(false)
+
+  useEffect(() => {
+    if (
+      getDefaultStartBlock(library) !== 0 &&
+      !didSetStartBlockWithLatestChainValue
+    ) {
+      setStartingBlockDefaultValue(getDefaultStartBlock(library))
+      setDidSetStartBlockWithLatestChainValue(true)
+    }
+  }, [getDefaultStartBlock(library)])
 
   const isLocalChain =
     chainId === ChainId.Localhost || chainId === ChainId.Hardhat
@@ -120,6 +141,16 @@ function HomeIndex(): JSX.Element {
     sendTransaction({
       to: account,
       value: utils.parseEther('1'),
+    })
+  }
+
+  function setStartingBlockDefaultValue(startingBlock: number) {
+    dispatch({
+      type: 'SET_MINTER_CONFIG',
+      minterConfig: {
+        ...state.minterConfig,
+        startingBlock: startingBlock,
+      },
     })
   }
 
@@ -185,6 +216,7 @@ function HomeIndex(): JSX.Element {
           <MinterInputs
             minterConfig={state.minterConfig}
             onMinterConfigChange={onMinterConfigChange}
+            defaultStartBlock={getDefaultStartBlock(library)}
           />
 
           <MintingFilterInputs

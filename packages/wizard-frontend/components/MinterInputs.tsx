@@ -13,15 +13,12 @@ import {
   RadioGroup,
   Radio,
 } from '@chakra-ui/react'
-import { useEthers } from '@usedapp/core'
-import { DEFAULT_SALE_START_DELAY } from '../lib/contractUtils'
 
-export const MinterInputs = ({ minterConfig, onMinterConfigChange }) => {
-  const { library } = useEthers()
-  const startBlockMinValue = library
-    ? library.getSigner().provider.blockNumber
-    : 0
-
+export const MinterInputs = ({
+  minterConfig,
+  onMinterConfigChange,
+  defaultStartBlock,
+}) => {
   function onMinterMaxTokensChange(e) {
     const newValues = Object.assign({}, minterConfig)
     newValues.maxTokens = e
@@ -128,9 +125,8 @@ export const MinterInputs = ({ minterConfig, onMinterConfigChange }) => {
         <FormControl id="minter-startblock" isRequired>
           <FormLabel>Sale start block</FormLabel>
           <NumberInput
-            defaultValue={startBlockMinValue + DEFAULT_SALE_START_DELAY}
+            defaultValue={defaultStartBlock}
             step={300} // a bit more than an hour
-            min={startBlockMinValue}
             value={minterConfig.startingBlock.toString()}
             onChange={onMinterStartBlockChange}
           >
