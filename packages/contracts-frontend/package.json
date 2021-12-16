@@ -25,7 +25,7 @@
     "@chakra-ui/icons": "^1.0.17",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
-    "@usedapp/core": "^0.6.3",
+    "@usedapp/core": "/Users/david/projects/crypto/useDApp/packages/core",
     "@web3-react/walletconnect-connector": "^6.2.4",
     "blockies-ts": "^1.0.0",
     "deepmerge": "^4.2.2",

@@ -3201,6 +3201,18 @@
     lodash.merge "^4.6.2"
     nanoid "3.1.22"
 
+"@usedapp/core@file:../useDApp/packages/core":
+  version "0.7.1"
+  dependencies:
+    "@types/react" "17.0.1"
+    "@uniswap/token-lists" "^1.0.0-beta.27"
+    "@web3-react/core" "6.1.1"
+    "@web3-react/injected-connector" "6.0.7"
+    "@web3-react/network-connector" "6.1.5"
+    ethers "5.5.1"
+    lodash.merge "^4.6.2"
+    nanoid "3.1.22"
+
 "@walletconnect/browser-utils@^1.6.2":
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/@walletconnect/browser-utils/-/browser-utils-1.6.2.tgz#f86312d712f43e9a3688b58eea16fd792c840702"

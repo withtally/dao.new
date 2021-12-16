@@ -45,6 +45,10 @@ const config: HardhatUserConfig = {
       url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
       accounts: { mnemonic: process.env.MNEMONIC || "dummy-value" },
     },
+    "optimistic-kovan": {
+      url: "https://kovan.optimism.io",
+      accounts: { mnemonic: process.env.MNEMONIC || "dummy-value" },
+    },
   },
   etherscan: {
     apiKey: `${process.env.ETHERSCAN_API_KEY}`,
