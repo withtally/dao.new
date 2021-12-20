@@ -11,10 +11,10 @@ import {
 } from '@usedapp/core'
 import type { AppProps } from 'next/app'
 import React from 'react'
-import { CHAIN_ID, multicallOnLocalhost } from '../config'
+import { multicallOnLocalhost } from '../config'
 
 const config: Config = {
-  readOnlyChainId: CHAIN_ID,
+  readOnlyChainId: ChainId.Rinkeby,
   readOnlyUrls: {
     [ChainId.Mainnet]: process.env.NEXT_PUBLIC_MAINNET_JSON_RPC,
     [ChainId.Rinkeby]: process.env.NEXT_PUBLIC_RINKEBY_JSON_RPC,

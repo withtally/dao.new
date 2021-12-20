@@ -1,7 +1,7 @@
 import { VStack, Heading, Text } from '@chakra-ui/react'
 import { Table, Thead, Tbody, Tr, Td, Th } from '@chakra-ui/react'
+import { useEthers } from '@usedapp/core'
 import { ConnectToTally } from './ConnectToTally'
-import { CHAIN_ID } from '../config'
 import { EtherscanVerifyProxies } from './EtherscanVerifyProxies'
 
 export const ClonesView = ({
@@ -10,6 +10,8 @@ export const ClonesView = ({
   governorName,
   needsVerification,
 }) => {
+  const { chainId } = useEthers()
+
   const tallyHeadingIndex = needsVerification ? '3' : '2'
   return (
     <VStack
@@ -79,7 +81,7 @@ export const ClonesView = ({
         <ConnectToTally
           orgName={governorName}
           tokenAddress={clones.token}
-          chainId={CHAIN_ID}
+          chainId={chainId}
           startBlock={clonesBlockNumber}
           governanceAddress={clones.governor}
         />

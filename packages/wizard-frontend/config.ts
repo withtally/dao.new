@@ -5,8 +5,6 @@ type SupportedChains =
   | ChainId.Localhost
   | ChainId.OptimismKovan
 
-export const CHAIN_ID: SupportedChains = ChainId.OptimismKovan
-
 export const secrets = {
   alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
   etherscanApiKey: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
@@ -17,7 +15,7 @@ interface ContractAddresses {
   svgPlaceholderAddress: string
 }
 
-const contractsConfig: Record<SupportedChains, ContractAddresses> = {
+export const chainIdToContracts: Record<SupportedChains, ContractAddresses> = {
   [ChainId.Localhost]: {
     deployerAddress: process.env.NEXT_PUBLIC_LOCAL_DEPLOYER_CONTRACT,
     svgPlaceholderAddress:
@@ -33,23 +31,19 @@ const contractsConfig: Record<SupportedChains, ContractAddresses> = {
   },
 }
 
-const tallyApiURIConfig: Record<SupportedChains, string> = {
+export const chainIdToTallyApiURIConfig: Record<SupportedChains, string> = {
   [ChainId.Localhost]: 'http://localhost:5000/query',
   [ChainId.Rinkeby]: 'https://api2.withtally.com/query',
   [ChainId.OptimismKovan]: '',
 }
 
-export const tallyApiURI = tallyApiURIConfig[CHAIN_ID]
 export const tallyWebBaseURI = 'https://alpha.withtally.com/governance/'
-
-export const contractsAddresses = contractsConfig[CHAIN_ID]
 
 // Multicall needs to be configured only for Localhost
 export const multicallOnLocalhost = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
 
-const etherscanEndpoints: Record<SupportedChains, string> = {
+export const etherscanEndpoints: Record<SupportedChains, string> = {
   [ChainId.Localhost]: 'https://api-rinkeby.etherscan.io/',
   [ChainId.Rinkeby]: 'https://api-rinkeby.etherscan.io/',
   [ChainId.OptimismKovan]: 'TODO',
 }
-export const etherscanEndpoint = etherscanEndpoints[CHAIN_ID]

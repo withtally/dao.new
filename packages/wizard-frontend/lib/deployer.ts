@@ -7,16 +7,18 @@ import {
 import { ethers } from 'ethers'
 import { getSharesByCreatorPercentage } from '../lib/contractUtils'
 import { StateType } from './wizardTypes'
-import { contractsAddresses } from '../config'
+import { chainIdToContracts } from '../config'
+import { ChainId } from '@usedapp/core'
 
 export async function clone(
   account: string,
   library: ethers.providers.Web3Provider,
-  state: StateType
+  state: StateType,
+  chainId: ChainId
 ) {
   const signer = library.getSigner()
   const deployer = new ERC721DAODeployer__factory(signer).attach(
-    contractsAddresses.deployerAddress
+    chainIdToContracts[chainId].deployerAddress
   )
 
   let extraInitCallData
@@ -75,7 +77,7 @@ export async function clone(
       ...state.tokenConfig,
       ...state.royaltiesConfig,
       royaltiesRecipientOverride: royaltiesRecipientOverride,
-      tokenURIDescriptor: contractsAddresses.svgPlaceholderAddress,
+      tokenURIDescriptor: chainIdToContracts[chainId].svgPlaceholderAddress,
     },
     state.governorConfig,
     {
