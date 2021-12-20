@@ -1,7 +1,7 @@
 import { ApolloClient, gql, InMemoryCache } from '@apollo/client'
 import { Box, Button, Link } from '@chakra-ui/react'
 import React, { useState } from 'react'
-import { tallyApiURI, tallyWebBaseURI } from '../config'
+import { chainIdToTallyApiURIConfig, tallyWebBaseURI } from '../config'
 
 interface TallyCreateGovParams {
   name: string
@@ -29,7 +29,7 @@ export const ConnectToTally = ({
   const chainIdCAIP = `eip155:${chainId}`
 
   const client = new ApolloClient({
-    uri: tallyApiURI,
+    uri: chainIdToTallyApiURIConfig[chainId],
     cache: new InMemoryCache(),
   })
 

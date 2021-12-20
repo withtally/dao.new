@@ -1,10 +1,11 @@
 import axios from 'axios'
-import { secrets, etherscanEndpoint } from '../config'
+import { secrets, etherscanEndpoints } from '../config'
 import qs from 'qs'
+import { ChainId } from '@usedapp/core'
 
-export async function verifyProxy(address: string) {
+export async function verifyProxy(address: string, chainId: ChainId) {
   const body = qs.stringify({ address })
-  const res = await axios.post(`${etherscanEndpoint}api`, body, {
+  const res = await axios.post(`${etherscanEndpoints[chainId]}api`, body, {
     params: {
       module: 'contract',
       action: 'verifyproxycontract',
@@ -18,8 +19,8 @@ export async function verifyProxy(address: string) {
   }
 }
 
-export async function checkProxyVerification(guid: string) {
-  const res = await axios.get(`${etherscanEndpoint}api`, {
+export async function checkProxyVerification(guid: string, chainId: ChainId) {
+  const res = await axios.get(`${etherscanEndpoints[chainId]}api`, {
     params: {
       module: 'contract',
       action: 'checkproxyverification',

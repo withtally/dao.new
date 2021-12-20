@@ -120,7 +120,7 @@ function HomeIndex(): JSX.Element {
     })
 
     try {
-      const cloneResult = await clone(account, library, state)
+      const cloneResult = await clone(account, library, state, chainId)
 
       setClonesBlockNumber(cloneResult.clonesBlockNumber)
       dispatch({

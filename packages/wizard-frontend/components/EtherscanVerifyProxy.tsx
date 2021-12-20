@@ -2,8 +2,10 @@ import { VStack, Button, Text, Flex, Spacer, Heading } from '@chakra-ui/react'
 import { verifyProxy, checkProxyVerification } from '../lib/etherscan'
 import { useState } from 'react'
 import { RepeatIcon } from '@chakra-ui/icons'
+import { useEthers } from '@usedapp/core'
 
 export const EtherscanVerifyProxy = ({ name, address }) => {
+  const { chainId } = useEthers()
   const [isStartLoading, setIsStartLoading] = useState(false)
   const [verifyGuid, setVerifyGuid] = useState('')
   const [verifyStatus, setVerifyStatus] = useState('Not verified.')
@@ -14,7 +16,7 @@ export const EtherscanVerifyProxy = ({ name, address }) => {
   const checkVerification = async () => {
     setIsCheckLoading(true)
     try {
-      const checkResponse = await checkProxyVerification(verifyGuid)
+      const checkResponse = await checkProxyVerification(verifyGuid, chainId)
       if (checkResponse.success) {
         setVerifyStatus('Verification succeeded!')
         setIsVerificationSuccessful(true)
@@ -31,7 +33,7 @@ export const EtherscanVerifyProxy = ({ name, address }) => {
   const startVerification = async () => {
     setIsStartLoading(true)
     try {
-      const verifyResult = await verifyProxy(address)
+      const verifyResult = await verifyProxy(address, chainId)
       if (!verifyResult.success) {
         setVerifyStatus(`Verification failed: ${verifyResult.messageOrGuid}`)
       } else {
