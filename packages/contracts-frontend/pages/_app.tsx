@@ -6,7 +6,7 @@ import {
   Hardhat,
   Localhost,
   Mainnet,
-  OptimisticKovan,
+  OptimismKovan,
   Rinkeby,
 } from '@usedapp/core'
 import type { AppProps } from 'next/app'
@@ -18,11 +18,11 @@ const config: Config = {
   readOnlyUrls: {
     [ChainId.Mainnet]: process.env.NEXT_PUBLIC_MAINNET_JSON_RPC,
     [ChainId.Rinkeby]: process.env.NEXT_PUBLIC_RINKEBY_JSON_RPC,
-    [ChainId.OptimisticKovan]: 'https://kovan.optimism.io',
+    [ChainId.OptimismKovan]: 'https://kovan.optimism.io',
     [ChainId.Hardhat]: 'http://localhost:8545',
     [ChainId.Localhost]: 'http://localhost:8545',
   },
-  networks: [Mainnet, Rinkeby, Localhost, Hardhat, OptimisticKovan],
+  networks: [Mainnet, Rinkeby, Localhost, Hardhat, OptimismKovan],
   multicallAddresses: {
     [ChainId.Localhost]: multicallOnLocalhost,
   },

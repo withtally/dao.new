@@ -3,7 +3,11 @@ import {
   ChainId,
   Config,
   DAppProvider,
-  MULTICALL_ADDRESSES,
+  Hardhat,
+  Localhost,
+  Mainnet,
+  OptimismKovan,
+  Rinkeby,
 } from '@usedapp/core'
 import type { AppProps } from 'next/app'
 import React from 'react'
@@ -14,21 +18,13 @@ const config: Config = {
   readOnlyUrls: {
     [ChainId.Mainnet]: process.env.NEXT_PUBLIC_MAINNET_JSON_RPC,
     [ChainId.Rinkeby]: process.env.NEXT_PUBLIC_RINKEBY_JSON_RPC,
-    [69]: 'https://kovan.optimism.io',
+    [ChainId.OptimismKovan]: 'https://kovan.optimism.io',
     [ChainId.Hardhat]: 'http://localhost:8545',
     [ChainId.Localhost]: 'http://localhost:8545',
   },
-  supportedChains: [
-    ChainId.Mainnet,
-    ChainId.Rinkeby,
-    ChainId.Localhost,
-    ChainId.Hardhat,
-    69,
-  ],
+  networks: [Mainnet, Rinkeby, Localhost, Hardhat, OptimismKovan],
   multicallAddresses: {
     [ChainId.Localhost]: multicallOnLocalhost,
-    [69]: '0xE71bf4622578c7d1526A88CD3060f03030E99a04',
-    ...MULTICALL_ADDRESSES,
   },
 }
 
