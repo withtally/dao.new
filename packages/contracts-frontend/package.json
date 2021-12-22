@@ -25,7 +25,7 @@
     "@chakra-ui/icons": "^1.0.17",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
-    "@usedapp/core": "https://github.com/ternaryteam/useDApp/raw/npm-pack/packages/core/usedapp-core-0.7.1.tgz",
+    "@usedapp/core": "^0.7.2",
     "@web3-react/walletconnect-connector": "^6.2.4",
     "blockies-ts": "^1.0.0",
     "deepmerge": "^4.2.2",
