@@ -89,7 +89,7 @@ export const GovernorInputs = ({ governorConfig, onGovernorConfigChange }) => {
             </NumberInputStepper>
           </NumberInput>
           <FormHelperText>
-            How many tokens much someone own before they can submit a proposal
+            How many tokens must someone own before they can submit a proposal
             to the DAO?
           </FormHelperText>
         </FormControl>
