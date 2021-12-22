@@ -33,7 +33,7 @@ export const chainIdToContracts: Record<SupportedChains, ContractAddresses> = {
 
 export const chainIdToTallyApiURIConfig: Record<SupportedChains, string> = {
   [ChainId.Localhost]: 'http://localhost:5000/query',
-  [ChainId.Rinkeby]: 'https://api2.withtally.com/query',
+  [ChainId.Rinkeby]: 'https://api.withtally.com/query',
   [ChainId.OptimismKovan]: '',
 }
 
