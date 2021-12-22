@@ -3187,9 +3187,10 @@
   resolved "https://registry.yarnpkg.com/@uniswap/token-lists/-/token-lists-1.0.0-beta.27.tgz#8b02a979b0b0024cc96f60e694a3f6db6b2ccab2"
   integrity sha512-x5hmIniQ9TGqOBCRqfWcmZi/U5kB0qrHMDQ9igs3nMbK0wwmYLraL4owbIwXFGR/co6/lJYJC4K/Gjn4wZY5mQ==
 
-"@usedapp/core@https://github.com/ternaryteam/useDApp/raw/npm-pack/packages/core/usedapp-core-0.7.1.tgz":
-  version "0.7.1"
-  resolved "https://github.com/ternaryteam/useDApp/raw/npm-pack/packages/core/usedapp-core-0.7.1.tgz#5334109b9165578ce9577724c913a478fdf2a26d"
+"@usedapp/core@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@usedapp/core/-/core-0.7.2.tgz#54a830eb21ccf5e644dc53343e0ccd268295d5a0"
+  integrity sha512-4zBbSMSzgCOAJPPSB4txQaVj47ytZPkU8gkQ9VHiQxJD/MCWzoGFn1gljirXLhdy420RffUTjG0e6kWlTYATEQ==
   dependencies:
     "@types/react" "17.0.1"
     "@uniswap/token-lists" "^1.0.0-beta.27"
