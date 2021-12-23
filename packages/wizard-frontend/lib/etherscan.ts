@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { secrets, etherscanEndpoints } from '../config'
+import { etherscanEndpoints, etherscanApiKeys } from '../config'
 import qs from 'qs'
 import { ChainId } from '@usedapp/core'
 
@@ -9,7 +9,7 @@ export async function verifyProxy(address: string, chainId: ChainId) {
     params: {
       module: 'contract',
       action: 'verifyproxycontract',
-      apikey: secrets.etherscanApiKey,
+      apiKey: etherscanApiKeys[chainId],
     },
   })
 
@@ -25,7 +25,7 @@ export async function checkProxyVerification(guid: string, chainId: ChainId) {
       module: 'contract',
       action: 'checkproxyverification',
       guid,
-      apikey: secrets.etherscanApiKey,
+      apiKey: etherscanApiKeys[chainId],
     },
   })
 

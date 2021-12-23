@@ -7,7 +7,6 @@ type SupportedChains =
 
 export const secrets = {
   alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
-  etherscanApiKey: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
 }
 
 interface ContractAddresses {
@@ -45,5 +44,11 @@ export const multicallOnLocalhost = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
 export const etherscanEndpoints: Record<SupportedChains, string> = {
   [ChainId.Localhost]: 'https://api-rinkeby.etherscan.io/',
   [ChainId.Rinkeby]: 'https://api-rinkeby.etherscan.io/',
-  [ChainId.OptimismKovan]: 'TODO',
+  [ChainId.OptimismKovan]: 'https://api-kovan-optimistic.etherscan.io/',
+}
+
+export const etherscanApiKeys: Record<SupportedChains, string> = {
+  [ChainId.Localhost]: '',
+  [ChainId.Rinkeby]: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
+  [ChainId.OptimismKovan]: process.env.NEXT_PUBLIC_ETHERSCAN_OPTIMISM_API_KEY,
 }
