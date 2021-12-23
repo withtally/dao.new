@@ -22,7 +22,8 @@
     "console:rinkeby": "yarn workspace @create-nft-dao/hardhat console:rinkeby",
     "clean": "yarn workspace @create-nft-dao/hardhat clean",
     "prebuild": "yarn shared:build && yarn hardhat:build",
-    "verify:rinkeby": "yarn workspace @create-nft-dao/hardhat verify:rinkeby"
+    "verify:rinkeby": "yarn workspace @create-nft-dao/hardhat verify:rinkeby",
+    "verify:optimistic-kovan": "yarn workspace @create-nft-dao/hardhat verify:optimistic-kovan"
   },
   "devDependencies": {
     "prettier": "^2.4.1",
