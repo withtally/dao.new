@@ -12,11 +12,11 @@ export const ContractsConfig = () => {
         <>
           <Box>Chain: {getChainById(chainId).chainName}</Box>
           <Box>
-            Deployer contract: {chainIdToContracts[chainId].deployerAddress}
+            Deployer contract: {chainIdToContracts[chainId]?.deployerAddress}
           </Box>
           <Box>
             SVGPlaceholder contract:{' '}
-            {chainIdToContracts[chainId].svgPlaceholderAddress}
+            {chainIdToContracts[chainId]?.svgPlaceholderAddress}
           </Box>
         </>
       ) : (
