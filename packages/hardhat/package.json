@@ -12,12 +12,14 @@
     "compile": "npx hardhat compile",
     "deploy": "npx hardhat --network localhost run scripts/deploy.ts",
     "deploy:rinkeby": "npx hardhat --network rinkeby run scripts/deploy.ts",
+    "deploy:arbitrum-rinkeby": "npx hardhat --network arbitrum-rinkeby run scripts/deploy.ts",
     "test": "npx hardhat test --network hardhat",
     "test-gas": "REPORT_GAS=1 npx hardhat test --network hardhat",
     "console": "npx hardhat console --network localhost",
     "console:rinkeby": "npx hardhat console --network rinkeby",
     "verify:rinkeby": "npx hardhat verify --network rinkeby",
-    "verify:optimistic-kovan": "npx hardhat verify --network optimistic-kovan"
+    "verify:optimistic-kovan": "npx hardhat verify --network optimistic-kovan",
+    "verify:arbitrum-rinkeby": "npx hardhat verify --network arbitrum-rinkeby"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",

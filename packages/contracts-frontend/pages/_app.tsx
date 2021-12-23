@@ -1,5 +1,6 @@
 import { ChakraProvider } from '@chakra-ui/react'
 import {
+  ArbitrumRinkeby,
   ChainId,
   Config,
   DAppProvider,
@@ -19,10 +20,18 @@ const config: Config = {
     [ChainId.Mainnet]: process.env.NEXT_PUBLIC_MAINNET_JSON_RPC,
     [ChainId.Rinkeby]: process.env.NEXT_PUBLIC_RINKEBY_JSON_RPC,
     [ChainId.OptimismKovan]: 'https://kovan.optimism.io',
+    [ChainId.ArbitrumRinkeby]: 'https://rinkeby.arbitrum.io/rpc',
     [ChainId.Hardhat]: 'http://localhost:8545',
     [ChainId.Localhost]: 'http://localhost:8545',
   },
-  networks: [Mainnet, Rinkeby, Localhost, Hardhat, OptimismKovan],
+  networks: [
+    Mainnet,
+    Rinkeby,
+    Localhost,
+    Hardhat,
+    OptimismKovan,
+    ArbitrumRinkeby,
+  ],
   multicallAddresses: {
     [ChainId.Localhost]: multicallOnLocalhost,
   },

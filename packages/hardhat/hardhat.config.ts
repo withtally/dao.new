@@ -49,6 +49,10 @@ const config: HardhatUserConfig = {
       url: "https://kovan.optimism.io",
       accounts: { mnemonic: process.env.MNEMONIC || "dummy-value" },
     },
+    "arbitrum-rinkeby": {
+      url: "https://rinkeby.arbitrum.io/rpc",
+      accounts: { mnemonic: process.env.MNEMONIC || "dummy-value" },
+    },
   },
   etherscan: {
     apiKey: `${process.env.ETHERSCAN_API_KEY}`,

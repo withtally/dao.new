@@ -1,5 +1,6 @@
 import { ChakraProvider } from '@chakra-ui/react'
 import {
+  ArbitrumRinkeby,
   ChainId,
   Config,
   DAppProvider,
@@ -22,7 +23,14 @@ const config: Config = {
     [ChainId.Hardhat]: 'http://localhost:8545',
     [ChainId.Localhost]: 'http://localhost:8545',
   },
-  networks: [Mainnet, Rinkeby, Localhost, Hardhat, OptimismKovan],
+  networks: [
+    Mainnet,
+    Rinkeby,
+    Localhost,
+    Hardhat,
+    OptimismKovan,
+    ArbitrumRinkeby,
+  ],
   multicallAddresses: {
     [ChainId.Localhost]: multicallOnLocalhost,
   },
