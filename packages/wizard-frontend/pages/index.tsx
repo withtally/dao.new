@@ -252,12 +252,16 @@ function HomeIndex(): JSX.Element {
       ) : (
         <></>
       )}
-      <Box maxWidth="container.sm" mt={16} ms={4}>
-        <Text mb="4">This button only works on a Local Chain.</Text>
-        <Button onClick={sendFunds} isDisabled={!isLocalChain}>
-          Send Funds From Local Hardhat Chain
-        </Button>
-      </Box>
+      {chainId == ChainId.Localhost ? (
+        <Box maxWidth="container.sm" mt={16} ms={4}>
+          <Text mb="4">This button only works on a Local Chain.</Text>
+          <Button onClick={sendFunds} isDisabled={!isLocalChain}>
+            Send Funds From Local Hardhat Chain
+          </Button>
+        </Box>
+      ) : (
+        <></>
+      )}
     </Layout>
   )
 }
