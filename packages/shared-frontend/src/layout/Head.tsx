@@ -1,11 +1,5 @@
 import NextHead from 'next/head'
-import { useRouter } from 'next/router'
 import React from 'react'
-
-/**
- * Constants & Helpers
- */
-export const WEBSITE_HOST_URL = 'https://nextjs-ethereum-starter.vercel.app/'
 
 /**
  * Prop Types
@@ -25,7 +19,6 @@ export const Head = ({
 }: {
   customMeta?: MetaProps
 }): JSX.Element => {
-  const router = useRouter()
   const meta: MetaProps = {
     title: 'Create NFT DAO',
     type: 'website',
@@ -37,8 +30,6 @@ export const Head = ({
     <NextHead>
       <title>{meta.title}</title>
       <meta content={meta.description} name="description" />
-      <meta property="og:url" content={`${WEBSITE_HOST_URL}${router.asPath}`} />
-      <link rel="canonical" href={`${WEBSITE_HOST_URL}${router.asPath}`} />
       <meta property="og:type" content={meta.type} />
       <meta property="og:site_name" content="Create NFT DAO" />
       <meta property="og:description" content={meta.description} />
