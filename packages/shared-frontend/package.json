@@ -13,7 +13,7 @@
     "@chakra-ui/react": "^1.6.3",
     "@chakra-ui/icons": "^1.0.17",
     "@chakra-ui/button": "1.5.1",
-    "@usedapp/core": "https://github.com/davidbrai/useDApp/raw/0455530f0aca4a7a0baa8ed8b552f0e4f8cc9734/packages/core/usedapp-core-0.7.2.tgz",
+    "@usedapp/core": "^0.7.3",
     "ethers": "^5.5.1",
     "@web3-react/walletconnect-connector": "^6.2.4",
     "next": "^11.0.1",

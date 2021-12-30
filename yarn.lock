@@ -3187,10 +3187,10 @@
   resolved "https://registry.yarnpkg.com/@uniswap/token-lists/-/token-lists-1.0.0-beta.27.tgz#8b02a979b0b0024cc96f60e694a3f6db6b2ccab2"
   integrity sha512-x5hmIniQ9TGqOBCRqfWcmZi/U5kB0qrHMDQ9igs3nMbK0wwmYLraL4owbIwXFGR/co6/lJYJC4K/Gjn4wZY5mQ==
 
-"@usedapp/core@https://github.com/davidbrai/useDApp/raw/0455530f0aca4a7a0baa8ed8b552f0e4f8cc9734/packages/core/usedapp-core-0.7.2.tgz":
-  version "0.7.2"
-  uid fd01bd42eece72620237b959d1e72818fc3cf870
-  resolved "https://github.com/davidbrai/useDApp/raw/0455530f0aca4a7a0baa8ed8b552f0e4f8cc9734/packages/core/usedapp-core-0.7.2.tgz#fd01bd42eece72620237b959d1e72818fc3cf870"
+"@usedapp/core@^0.7.3":
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/@usedapp/core/-/core-0.7.3.tgz#867cc57a9ad95ebc00377d80fc28beb4b2174687"
+  integrity sha512-0Jaidc5E62YdkH4GUKio6Z9cP9ZK81OTgra7UAREMGHhqYuT18EVtvUbDezHqf1jDnYB5E+hZ/J2o17XLOo63w==
   dependencies:
     "@types/react" "17.0.1"
     "@uniswap/token-lists" "^1.0.0-beta.27"
