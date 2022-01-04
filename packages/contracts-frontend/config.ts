@@ -19,7 +19,7 @@ type SupportedChains =
   | ChainId.OptimismKovan
   | ChainId.ArbitrumRinkeby
 
-export const CHAIN_ID: SupportedChains = ChainId.ArbitrumRinkeby
+export const CHAIN_ID: SupportedChains = ChainId.Rinkeby
 
 const allConfigs: Record<SupportedChains, ContractsConfig> = {
   [ChainId.Localhost]: {
@@ -31,11 +31,11 @@ const allConfigs: Record<SupportedChains, ContractsConfig> = {
     minterType: MinterType.FixedPriceSequentialMinter,
   },
   [ChainId.Rinkeby]: {
-    deployerAddress: '0xA1B37128AEfa079CD6A8E41b8bBE9dD807297BBc',
-    tokenAddress: '0x8Ea3c6b1b6d130e0B6B5eF9c69c43EBa19b653FB',
-    minterAddress: '0xF5b5850DE3d239A0DA079FB56D9376494bF1a6c7',
-    governorAddress: '0x1e17E92BbCa1c14cF1ac3B32c35c626e6E57418A',
-    timelockAddress: '0xC279683194AE3CB7ff8994b59fA86f6fe46e6Fde',
+    deployerAddress: '0xC95d98da541FF990D773F9015996d34663dF0735',
+    tokenAddress: '0x6A675c307F9d7E461351d663a2e4D47720aD59ef',
+    minterAddress: '0x7601b5A6C09818F4E4C7d64925B5c5828471B119',
+    governorAddress: '0x04411dd13a3A65478F991Fa42256758405FD53C0',
+    timelockAddress: '0xF8E0A22Ec95F8B21B903Ca6b8f86D68CF72dd9d1',
     minterType: MinterType.FixedPriceSequentialMinter,
   },
   [ChainId.OptimismKovan]: {
