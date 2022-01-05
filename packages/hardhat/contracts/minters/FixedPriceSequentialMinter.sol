@@ -44,4 +44,8 @@ contract FixedPriceSequentialMinter is FixedPriceFixedSupplyMinter {
         require(!isOwnerMintLocked, "FixedPriceSequentialMinter: ownerMint is locked");
         mintBatch(to, amount);
     }
+
+    function setMaxMintsPerTx(uint256 maxMintsPerTx_) external onlyRole(CREATOR_ROLE) {
+        maxMintsPerTx = maxMintsPerTx_;
+    }
 }
