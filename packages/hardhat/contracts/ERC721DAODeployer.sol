@@ -58,6 +58,12 @@ contract ERC721DAODeployer is OwnableUpgradeable {
     ERC721Minter[] public minters;
     MintingFilter[] public mintingFilters;
 
+    // a % of minting fees will go to this address as payment for using the contracts
+    address payable public serviceFeeAddress;
+
+    // fee in basis points, e.g 250 = 2.5%
+    uint256 public serviceFeeBasisPoints;
+
     event ImplementationsSet(
         address token,
         address timelock,
@@ -68,17 +74,22 @@ contract ERC721DAODeployer is OwnableUpgradeable {
     event NewClone(address token, address timelock, address governor, address minter, address mintingFilter);
     event NewMintingFilterClone(address mintingFilter);
     event NewSingleClone(address clone);
+    event ServiceFeeAddressUpdated(address serviceFeeAddress);
+    event ServiceFeeBasisPointsUpdated(uint256 serviceFeeBasisPoints);
 
     function initialize(
         ERC721DAOToken token_,
         ERC721Timelock timelock_,
         ERC721Governor governor_,
         ERC721Minter[] calldata minters_,
-        MintingFilter[] calldata mintingFilters_
+        MintingFilter[] calldata mintingFilters_,
+        address payable serviceFeeAddress_
     ) public initializer {
         __Ownable_init();
 
         _setImplementations(token_, timelock_, governor_, minters_, mintingFilters_);
+        serviceFeeAddress = serviceFeeAddress_;
+        serviceFeeBasisPoints = 250;
     }
 
     function clone(
@@ -196,7 +207,10 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             payees,
             shares,
             mintingFilter,
-            minterParams.extraInitCallData
+            minterParams.extraInitCallData,
+            serviceFeeAddress,
+            serviceFeeBasisPoints,
+            owner()
         );
     }
 
@@ -235,6 +249,16 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         MintingFilter[] calldata mintingFilters_
     ) external onlyOwner {
         _setImplementations(token_, timelock_, governor_, minters_, mintingFilters_);
+    }
+
+    function setServiceFeeAddress(address payable newAddress) external onlyOwner {
+        serviceFeeAddress = newAddress;
+        emit ServiceFeeAddressUpdated(serviceFeeAddress);
+    }
+
+    function setServiceFeeBasisPoints(uint256 serviceFeeBasisPoints_) external onlyOwner {
+        serviceFeeBasisPoints = serviceFeeBasisPoints_;
+        emit ServiceFeeBasisPointsUpdated(serviceFeeBasisPoints);
     }
 
     function _setImplementations(

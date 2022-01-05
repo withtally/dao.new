@@ -20,6 +20,8 @@ import {
   SVGPlaceholder__factory,
 } from "../typechain";
 
+const SERVICE_FEE_ADDRESS = "0x4cce31b5E734934c62f0F411BaF53c2b3e14c3f4"; // TODO update this to DAO address
+
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
   // line interface.
@@ -95,7 +97,8 @@ async function main() {
       requiredNFTMintingFilter.address,
       rejectedNFTsMintingFilter.address,
       compositeMintingFilter.address,
-    ]
+    ],
+    SERVICE_FEE_ADDRESS
   );
 }
 
