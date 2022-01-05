@@ -17,7 +17,7 @@ const { expect } = chai;
 const MAX_TOKENS = 10;
 const TOKEN_PRICE_ETH = 0.1;
 const TOKEN_PRICE = ethers.utils.parseEther(TOKEN_PRICE_ETH.toString());
-const MAX_MINTS_PER_WALLET = 10;
+const MAX_MINTS_PER_TX = 10;
 const STARTING_BLOCK = 1;
 
 describe("FixedPriceSequentialMinter", () => {
@@ -43,7 +43,7 @@ describe("FixedPriceSequentialMinter", () => {
       token.address,
       MAX_TOKENS,
       TOKEN_PRICE,
-      MAX_MINTS_PER_WALLET,
+      MAX_MINTS_PER_TX,
       STARTING_BLOCK,
       payees,
       shares
@@ -62,9 +62,7 @@ describe("FixedPriceSequentialMinter", () => {
 
   it("does not let init be called again", async () => {
     await expect(
-      minter
-        .connect(deployer)
-        .init(MAX_TOKENS, TOKEN_PRICE, MAX_MINTS_PER_WALLET)
+      minter.connect(deployer).init(MAX_TOKENS, TOKEN_PRICE, MAX_MINTS_PER_TX)
     ).to.be.revertedWith("Initializable: contract is already initialized");
   });
 
@@ -116,16 +114,38 @@ describe("FixedPriceSequentialMinter", () => {
       expect(await token.ownerOf(4)).equals(user3.address);
     });
 
-    it("wont mint too many at once", async () => {
-      const numToMint = MAX_MINTS_PER_WALLET + 1;
+    describe("max mints per tx", async () => {
+      it("wont mint too many at once", async () => {
+        const numToMint = MAX_MINTS_PER_TX + 1;
 
-      await expect(
-        minter.connect(user).mint(MAX_MINTS_PER_WALLET + 1, {
-          value: ethers.utils.parseEther(
-            (TOKEN_PRICE_ETH * numToMint).toString()
-          ),
-        })
-      ).to.be.reverted;
+        await expect(
+          minter.connect(user).mint(MAX_MINTS_PER_TX + 1, {
+            value: ethers.utils.parseEther(
+              (TOKEN_PRICE_ETH * numToMint).toString()
+            ),
+          })
+        ).to.be.reverted;
+      });
+
+      it("allows creator to change max mints per tx", async () => {
+        // allows minting 3 be default
+        await minter.connect(user).mint(4, { value: TOKEN_PRICE.mul(4) });
+
+        await minter.connect(creator).setMaxMintsPerTx(3);
+
+        await minter.connect(user).mint(3, { value: TOKEN_PRICE.mul(3) });
+        await expect(
+          minter.connect(user).mint(4, { value: TOKEN_PRICE.mul(4) })
+        ).to.be.reverted;
+      });
+
+      it("doesn't allow non creator to change max mints per tx", async () => {
+        await expect(
+          minter.connect(user).setMaxMintsPerTx(3)
+        ).to.be.revertedWith(
+          `AccessControl: account ${user.address.toLowerCase()} is missing role 0x828634d95e775031b9ff576b159a8509d3053581a8c9c4d7d86899e0afcd882`
+        );
+      });
     });
 
     it("wont exceed max supply", async () => {
