@@ -1555,6 +1555,16 @@ describe("End to end flows", () => {
   });
 
   describe("Deployer charging minting fees", async () => {
+    let snapshotId: number;
+
+    beforeEach(async () => {
+      snapshotId = await ethers.provider.send("evm_snapshot", []);
+    });
+
+    afterEach(async () => {
+      await ethers.provider.send("evm_revert", [snapshotId]);
+    });
+
     it("doesn't allow non deployer owner to change the fee params of a cloned project", async () => {
       await cloneWithFixedPriceSequentialMinter();
 
@@ -1607,6 +1617,31 @@ describe("End to end flows", () => {
         creator,
         TOKEN_PRICE.mul(8).mul(FOUNDER_SHARES).div(TOTAL_SHARES)
       );
+    });
+
+    it("allows deployer owner to change default service fee and address", async () => {
+      await expect(deployer.connect(signer).setServiceFeeAddress(user3.address))
+        .to.emit(deployer, "ServiceFeeAddressUpdated")
+        .withArgs(user3.address);
+
+      await expect(deployer.connect(signer).setServiceFeeBasisPoints(1234))
+        .to.emit(deployer, "ServiceFeeBasisPointsUpdated")
+        .withArgs(1234);
+
+      await cloneWithFixedPriceSequentialMinter();
+
+      expect(await simpleMinter.serviceFeeAddress()).to.equal(user3.address);
+      expect(await simpleMinter.serviceFeeBasisPoints()).to.equal(1234);
+    });
+
+    it("doesn't let non deployer owners to change default service fee params", async () => {
+      await expect(
+        deployer.connect(user3).setServiceFeeAddress(user3.address)
+      ).to.be.revertedWith("Ownable: caller is not the owner");
+
+      await expect(
+        deployer.connect(user3).setServiceFeeBasisPoints(11)
+      ).to.be.revertedWith("Ownable: caller is not the owner");
     });
   });
 });
