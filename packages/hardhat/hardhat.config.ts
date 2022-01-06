@@ -53,9 +53,14 @@ const config: HardhatUserConfig = {
       url: "https://rinkeby.arbitrum.io/rpc",
       accounts: { mnemonic: process.env.MNEMONIC || "dummy-value" },
     },
+    mumbai: {
+      url: process.env.MUMBAI_RPC_URL,
+      accounts: { mnemonic: process.env.MNEMONIC || "dummy-value" },
+    },
   },
   etherscan: {
-    apiKey: `${process.env.ETHERSCAN_API_KEY}`,
+    apiKey: process.env.ETHERSCAN_API_KEY,
+    // apiKey: process.env.POLYGONSCAN_API_KEY,
   },
   typechain: {
     outDir: "./typechain",

@@ -7,6 +7,7 @@ import {
   Hardhat,
   Localhost,
   Mainnet,
+  Mumbai,
   OptimismKovan,
   Rinkeby,
 } from '@usedapp/core'
@@ -23,6 +24,8 @@ const config: Config = {
     [ChainId.ArbitrumRinkeby]: 'https://rinkeby.arbitrum.io/rpc',
     [ChainId.Hardhat]: 'http://localhost:8545',
     [ChainId.Localhost]: 'http://localhost:8545',
+    [ChainId.Mumbai]:
+      'https://rpc-mumbai.maticvigil.com/v1/02ce83b56ad2783400835e64c6775f90ba09b376',
   },
   networks: [
     Mainnet,
@@ -31,6 +34,7 @@ const config: Config = {
     Hardhat,
     OptimismKovan,
     ArbitrumRinkeby,
+    Mumbai,
   ],
   multicallAddresses: {
     [ChainId.Localhost]: multicallOnLocalhost,
