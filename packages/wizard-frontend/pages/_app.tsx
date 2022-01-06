@@ -7,6 +7,7 @@ import {
   Hardhat,
   Localhost,
   Mainnet,
+  Mumbai,
   OptimismKovan,
   Rinkeby,
 } from '@usedapp/core'
@@ -30,6 +31,7 @@ const config: Config = {
     Hardhat,
     OptimismKovan,
     ArbitrumRinkeby,
+    Mumbai,
   ],
   multicallAddresses: {
     [ChainId.Localhost]: multicallOnLocalhost,
