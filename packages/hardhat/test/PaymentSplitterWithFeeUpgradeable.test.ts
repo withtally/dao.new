@@ -44,7 +44,7 @@ describe("PaymentSplitterWithFeeUpradeable", async () => {
     );
   };
 
-  it("sends service when releasing funds", async () => {
+  it("sends service fee when releasing funds", async () => {
     await deployPaymentSplitter();
 
     const initialBalance = parseEther("3");
