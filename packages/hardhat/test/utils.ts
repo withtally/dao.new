@@ -149,7 +149,7 @@ export const deployFixedPriceSequentialMinter = async (
     ]),
     zeroAddress,
     0,
-    zeroAddress
+    deployer.address
   );
 
   return minter;

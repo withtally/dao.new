@@ -242,6 +242,21 @@ describe("FixedPriceSequentialMinter", () => {
         );
       });
     });
+
+    describe("service fee", async () => {
+      it("emits event when deployer changes service fee", async () => {
+        await expect(minter.connect(deployer).setServiceFeeBasisPoints(1234))
+          .to.emit(minter, "ServiceFeeBasisPointsUpdated")
+          .withArgs(1234);
+      });
+
+      it("emits event when changing service fee address", async () => {
+        const address = "0x8888888888888888888888888888888888888888";
+        await expect(minter.connect(deployer).setServiceFeeAddress(address))
+          .to.emit(minter, "ServiceFeeAddressUpdated")
+          .withArgs(address);
+      });
+    });
   });
 
   describe("FixedPriceFixedSupplyMinter", async () => {
