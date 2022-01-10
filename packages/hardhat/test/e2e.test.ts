@@ -1630,8 +1630,8 @@ describe("End to end flows", () => {
 
       await cloneWithFixedPriceSequentialMinter();
 
-      expect(await simpleMinter.serviceFeeAddress()).to.equal(user3.address);
-      expect(await simpleMinter.serviceFeeBasisPoints()).to.equal(1234);
+      expect(await simpleMinter.getServiceFeeAddress()).to.equal(user3.address);
+      expect(await simpleMinter.getServiceFeeBasisPoints()).to.equal(1234);
     });
 
     it("doesn't let non deployer owners to change default service fee params", async () => {

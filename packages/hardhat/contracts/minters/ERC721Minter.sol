@@ -26,9 +26,6 @@ abstract contract ERC721Minter is
     uint256 public startingBlock;
     bool public isStartingBlockLocked;
 
-    event ServiceFeeAddressUpdated(address serviceFeeAddress);
-    event ServiceFeeBasisPointsUpdated(uint256 serviceFeeBasisPoints);
-
     modifier afterStartingBlock() {
         require(block.number >= startingBlock, "ERC721Minter: Sale hasn't started yet!");
         _;
@@ -69,13 +66,11 @@ abstract contract ERC721Minter is
     }
 
     function setServiceFeeBasisPoints(uint256 serviceFeeBasisPoints_) external onlyRole(DEPLOYER_ROLE) {
-        serviceFeeBasisPoints = serviceFeeBasisPoints_;
-        emit ServiceFeeBasisPointsUpdated(serviceFeeBasisPoints_);
+        _setServiceFeeBasisPoints(serviceFeeBasisPoints_);
     }
 
     function setServiceFeeAddress(address payable serviceFeeAddress_) external onlyRole(DEPLOYER_ROLE) {
-        serviceFeeAddress = serviceFeeAddress_;
-        emit ServiceFeeAddressUpdated(serviceFeeAddress_);
+        _setServiceFeeAddress(serviceFeeAddress_);
     }
 
     function pause() public onlyRole(CREATOR_ROLE) {

@@ -14,4 +14,12 @@ contract PaymentSplitterWithFeeUpgradeableDerived is Initializable, PaymentSplit
     ) external initializer {
         __PaymentSplitterWithFee_init(payees, shares_, serviceFeeAddress_, serviceFeeBasisPoints_);
     }
+
+    function setServiceFeeBasisPoints(uint256 serviceFeeBasisPoints_) public {
+        _setServiceFeeBasisPoints(serviceFeeBasisPoints_);
+    }
+
+    function setServiceFeeAddress(address payable serviceFeeAddress_) public {
+        _setServiceFeeAddress(serviceFeeAddress_);
+    }
 }

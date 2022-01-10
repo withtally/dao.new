@@ -28,6 +28,8 @@ contract PaymentSplitterWithFeeUpgradeable is Initializable, ContextUpgradeable 
     event PayeeAdded(address account, uint256 shares);
     event PaymentReleased(address to, uint256 amount, uint256 fee);
     event PaymentReceived(address from, uint256 amount);
+    event ServiceFeeAddressUpdated(address serviceFeeAddress);
+    event ServiceFeeBasisPointsUpdated(uint256 serviceFeeBasisPoints);
 
     uint256 private _totalShares;
     uint256 private _totalReleased;
@@ -36,8 +38,8 @@ contract PaymentSplitterWithFeeUpgradeable is Initializable, ContextUpgradeable 
     mapping(address => uint256) private _released;
     address[] private _payees;
 
-    address payable public serviceFeeAddress;
-    uint256 public serviceFeeBasisPoints;
+    address payable private serviceFeeAddress;
+    uint256 private serviceFeeBasisPoints;
 
     /**
      * @dev Creates an instance of `PaymentSplitter` where each account in `payees` is assigned the number of shares at
@@ -64,6 +66,7 @@ contract PaymentSplitterWithFeeUpgradeable is Initializable, ContextUpgradeable 
     ) internal initializer {
         require(payees.length == shares_.length, "PaymentSplitter: payees and shares length mismatch");
         require(payees.length > 0, "PaymentSplitter: no payees");
+        require(serviceFeeBasisPoints_ <= 10000, "Max fee: 10000");
 
         for (uint256 i = 0; i < payees.length; i++) {
             _addPayee(payees[i], shares_[i]);
@@ -160,6 +163,34 @@ contract PaymentSplitterWithFeeUpgradeable is Initializable, ContextUpgradeable 
         _shares[account] = shares_;
         _totalShares = _totalShares + shares_;
         emit PayeeAdded(account, shares_);
+    }
+
+    /**
+     * @dev Change the service fee. Derived contracts should decide on access control to this function.
+     * @param serviceFeeBasisPoints_ The new service fee in basis points (maximum 10000)
+     */
+    function _setServiceFeeBasisPoints(uint256 serviceFeeBasisPoints_) internal {
+        require(serviceFeeBasisPoints_ <= 10000, "Max fee: 10000");
+
+        serviceFeeBasisPoints = serviceFeeBasisPoints_;
+        emit ServiceFeeBasisPointsUpdated(serviceFeeBasisPoints_);
+    }
+
+    function getServiceFeeBasisPoints() public view returns (uint256) {
+        return serviceFeeBasisPoints;
+    }
+
+    /**
+     * @dev Change the receiving fee address. Derived contracts should decide on access control to this function
+     * @param serviceFeeAddress_ The new address to receive fees.
+     */
+    function _setServiceFeeAddress(address payable serviceFeeAddress_) internal {
+        serviceFeeAddress = serviceFeeAddress_;
+        emit ServiceFeeAddressUpdated(serviceFeeAddress_);
+    }
+
+    function getServiceFeeAddress() public view returns (address) {
+        return serviceFeeAddress;
     }
 
     uint256[45] private __gap;
