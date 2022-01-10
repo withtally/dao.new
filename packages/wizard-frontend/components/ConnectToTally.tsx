@@ -57,10 +57,7 @@ export const ConnectToTally = ({
           createToken (
               id: "${tokenId}"
               start: "${params.startBlock}"
-            ) {
-              id
-              address
-            }
+            )
         }`,
     })
     await client.mutate({
