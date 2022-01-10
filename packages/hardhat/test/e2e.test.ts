@@ -55,10 +55,12 @@ import { GovernorUpgradeMock__factory } from "../typechain/factories/GovernorUpg
 import { GovernorUpgradeMock } from "../typechain/GovernorUpgradeMock";
 import { TimelockUpgradeMock } from "../typechain/TimelockUpgradeMock";
 import { TimelockUpgradeMock__factory } from "../typechain/factories/TimelockUpgradeMock__factory";
+import { BigNumber } from "ethers";
 
 chai.use(solidity);
 const { expect } = chai;
 const zeroAddress = "0x0000000000000000000000000000000000000000";
+const SERVICE_FEE_ADDRESS = "0xbeef0000beef0000beef0000beef0000beef0000";
 
 // Token Config
 const BASE_URI =
@@ -66,11 +68,12 @@ const BASE_URI =
 
 // Minter Config
 const MAX_TOKENS = 10;
-const TOKEN_PRICE = 100;
+const TOKEN_PRICE = parseEther("0.1");
 const MAX_MINTS_PER_WALLET = 10;
 const STARTING_BLOCK = 1;
 const TOTAL_SHARES = 10000;
 const FOUNDER_REWARD = 0.05;
+const FEE_BASIS_POINTS = 250;
 const FOUNDER_SHARES = FOUNDER_REWARD * TOTAL_SHARES;
 const DAO_SHARES = TOTAL_SHARES - FOUNDER_SHARES;
 
@@ -136,7 +139,8 @@ const deploy = async () => {
     timelockImpl,
     governorImpl,
     [simpleMinterImpl.address, idMinterImpl.address],
-    [requiredNFTFilterImpl.address]
+    [requiredNFTFilterImpl.address],
+    SERVICE_FEE_ADDRESS
   );
 };
 
@@ -324,93 +328,115 @@ describe("End to end flows", () => {
   describe("Using FixedPriceSequentialMinter", async () => {
     before(() => cloneWithFixedPriceSequentialMinter());
 
-    it("lets users mint", async () => {
-      let expectedMinterBalance = 0;
-      expect(await ethers.provider.getBalance(simpleMinter.address)).to.equal(
-        expectedMinterBalance
-      );
+    describe("minting and spending funds", async () => {
+      it("lets users mint", async () => {
+        let expectedMinterBalance = BigNumber.from(0);
+        expect(await ethers.provider.getBalance(simpleMinter.address)).to.equal(
+          expectedMinterBalance
+        );
 
-      await simpleMinter.connect(user1).mint(4, {
-        value: TOKEN_PRICE * 4,
+        await simpleMinter.connect(user1).mint(4, {
+          value: TOKEN_PRICE.mul(4),
+        });
+        expectedMinterBalance = expectedMinterBalance.add(TOKEN_PRICE.mul(4));
+        expect(await ethers.provider.getBalance(simpleMinter.address)).to.equal(
+          expectedMinterBalance
+        );
+
+        await simpleMinter.connect(user2).mint(1, {
+          value: TOKEN_PRICE,
+        });
+        expectedMinterBalance = expectedMinterBalance.add(TOKEN_PRICE);
+        expect(await ethers.provider.getBalance(simpleMinter.address)).to.equal(
+          expectedMinterBalance
+        );
+
+        await simpleMinter.connect(user3).mint(1, {
+          value: TOKEN_PRICE,
+        });
+        expectedMinterBalance = expectedMinterBalance.add(TOKEN_PRICE);
+        expect(await ethers.provider.getBalance(simpleMinter.address)).to.equal(
+          expectedMinterBalance
+        );
+
+        expect(await token.ownerOf(1)).equals(user1.address);
+        expect(await token.ownerOf(2)).equals(user1.address);
+        expect(await token.ownerOf(3)).equals(user1.address);
+        expect(await token.ownerOf(4)).equals(user1.address);
+        expect(await token.ownerOf(5)).equals(user2.address);
+        expect(await token.ownerOf(6)).equals(user3.address);
       });
-      expectedMinterBalance += TOKEN_PRICE * 4;
-      expect(await ethers.provider.getBalance(simpleMinter.address)).to.equal(
-        expectedMinterBalance
-      );
 
-      await simpleMinter.connect(user2).mint(1, {
-        value: TOKEN_PRICE,
+      it("allows founder and DAO to withdraw minting funds", async () => {
+        const totalSupply = await token.totalSupply();
+        const totalProceeds = TOKEN_PRICE.mul(totalSupply);
+        expect(await ethers.provider.getBalance(simpleMinter.address)).to.equal(
+          totalProceeds
+        );
+        expect(await ethers.provider.getBalance(timelock.address)).to.equal(0);
+        const expectedFounderProfit = totalProceeds
+          .mul(FOUNDER_SHARES)
+          .div(TOTAL_SHARES);
+        const founderProfitFee = expectedFounderProfit
+          .mul(FEE_BASIS_POINTS)
+          .div(10000);
+        const expectedFounderProfitMinusFee =
+          expectedFounderProfit.sub(founderProfitFee);
+
+        const expectedDAOProfit = totalProceeds.sub(expectedFounderProfit);
+        const expectedDAOProfitFee = expectedDAOProfit
+          .mul(FEE_BASIS_POINTS)
+          .div(10000);
+        const expectedDAOProfitMinusFee =
+          expectedDAOProfit.sub(expectedDAOProfitFee);
+
+        await expect(() =>
+          simpleMinter.release(creator.address)
+        ).to.changeEtherBalance(creator, expectedFounderProfitMinusFee);
+
+        await simpleMinter.release(timelock.address);
+        expect(await ethers.provider.getBalance(timelock.address)).to.equal(
+          expectedDAOProfitMinusFee
+        );
+
+        expect(await ethers.provider.getBalance(SERVICE_FEE_ADDRESS)).to.equal(
+          expectedDAOProfitFee.add(founderProfitFee)
+        );
       });
-      expectedMinterBalance += TOKEN_PRICE;
-      expect(await ethers.provider.getBalance(simpleMinter.address)).to.equal(
-        expectedMinterBalance
-      );
 
-      await simpleMinter.connect(user3).mint(1, {
-        value: TOKEN_PRICE,
+      it("allows DAO to spend via proposals", async () => {
+        const targets = [rando.address];
+        const values = [TOKEN_PRICE];
+        const callDatas = ["0x"];
+        const description = "description";
+        const descriptionHash = hashString(description);
+
+        const propInfo = createTransferProp(rando.address, TOKEN_PRICE);
+
+        const proposalId = await propose(user1, governor, propInfo);
+        await advanceBlocks(VOTING_DELAY);
+
+        await governor.connect(user1).castVote(proposalId, 1);
+        await advanceBlocks(VOTING_PERIOD);
+
+        await governor.queue(targets, values, callDatas, descriptionHash);
+        const eta = await governor.proposalEta(proposalId);
+        await setNextBlockTimestamp(eta.toNumber(), false);
+
+        expect(() =>
+          governor.execute(targets, values, callDatas, descriptionHash)
+        ).to.changeEtherBalance(rando, TOKEN_PRICE);
       });
-      expectedMinterBalance += TOKEN_PRICE;
-      expect(await ethers.provider.getBalance(simpleMinter.address)).to.equal(
-        expectedMinterBalance
-      );
-
-      expect(await token.ownerOf(1)).equals(user1.address);
-      expect(await token.ownerOf(2)).equals(user1.address);
-      expect(await token.ownerOf(3)).equals(user1.address);
-      expect(await token.ownerOf(4)).equals(user1.address);
-      expect(await token.ownerOf(5)).equals(user2.address);
-      expect(await token.ownerOf(6)).equals(user3.address);
     });
 
-    it("allows founder and DAO to withdraw minting funds", async () => {
-      const totalSupply = await token.totalSupply();
-      const totalProceeds = TOKEN_PRICE * totalSupply.toNumber();
-      expect(await ethers.provider.getBalance(simpleMinter.address)).to.equal(
-        totalProceeds
-      );
-      expect(await ethers.provider.getBalance(timelock.address)).to.equal(0);
-      const expectedFounderProfit = FOUNDER_REWARD * totalProceeds;
-      const expectedDAOProfit = totalProceeds - expectedFounderProfit;
+    describe("ownerMint", async () => {
+      it("lets the creator use ownerMint on themselves", async () => {
+        await simpleMinter.connect(creator).ownerMint(creator.address, 1);
+      });
 
-      await expect(() =>
-        simpleMinter.release(creator.address)
-      ).to.changeEtherBalance(creator, expectedFounderProfit);
-      await simpleMinter.release(timelock.address);
-      expect(await ethers.provider.getBalance(timelock.address)).to.equal(
-        expectedDAOProfit
-      );
-    });
-
-    it("allows DAO to spend via proposals", async () => {
-      const targets = [rando.address];
-      const values = [TOKEN_PRICE];
-      const callDatas = ["0x"];
-      const description = "description";
-      const descriptionHash = hashString(description);
-
-      const propInfo = createTransferProp(rando.address, TOKEN_PRICE);
-
-      const proposalId = await propose(user1, governor, propInfo);
-      await advanceBlocks(VOTING_DELAY);
-
-      await governor.connect(user1).castVote(proposalId, 1);
-      await advanceBlocks(VOTING_PERIOD);
-
-      await governor.queue(targets, values, callDatas, descriptionHash);
-      const eta = await governor.proposalEta(proposalId);
-      await setNextBlockTimestamp(eta.toNumber(), false);
-
-      expect(() =>
-        governor.execute(targets, values, callDatas, descriptionHash)
-      ).to.changeEtherBalance(rando, TOKEN_PRICE);
-    });
-
-    it("lets the creator use ownerMint on themselves", async () => {
-      await simpleMinter.connect(creator).ownerMint(creator.address, 1);
-    });
-
-    it("lets the creator use ownerMint on Timelock", async () => {
-      await simpleMinter.connect(creator).ownerMint(timelock.address, 1);
+      it("lets the creator use ownerMint on Timelock", async () => {
+        await simpleMinter.connect(creator).ownerMint(timelock.address, 1);
+      });
     });
 
     describe("Governance Parameter Changes", async () => {
@@ -768,7 +794,7 @@ describe("End to end flows", () => {
     describe("Delegates", async () => {
       before(async () => {
         await simpleMinter.connect(user1).mint(4, {
-          value: TOKEN_PRICE * 4,
+          value: TOKEN_PRICE.mul(4),
         });
       });
 
@@ -844,7 +870,7 @@ describe("End to end flows", () => {
 
         // making sure user1 can propose and vote
         await simpleMinter.connect(user2).mint(4, {
-          value: TOKEN_PRICE * 4,
+          value: TOKEN_PRICE.mul(4),
         });
       });
 
@@ -876,7 +902,7 @@ describe("End to end flows", () => {
     before(cloneWithIDMinter);
 
     it("lets users mint", async () => {
-      let expectedMinterBalance = 0;
+      let expectedMinterBalance = BigNumber.from(0);
       expect(await ethers.provider.getBalance(idMinter.address)).to.equal(
         expectedMinterBalance
       );
@@ -884,7 +910,7 @@ describe("End to end flows", () => {
       await idMinter.connect(user1).mint(0, {
         value: TOKEN_PRICE,
       });
-      expectedMinterBalance += TOKEN_PRICE;
+      expectedMinterBalance = expectedMinterBalance.add(TOKEN_PRICE);
       expect(await ethers.provider.getBalance(idMinter.address)).to.equal(
         expectedMinterBalance
       );
@@ -892,7 +918,7 @@ describe("End to end flows", () => {
       await idMinter.connect(user2).mint(1, {
         value: TOKEN_PRICE,
       });
-      expectedMinterBalance += TOKEN_PRICE;
+      expectedMinterBalance = expectedMinterBalance.add(TOKEN_PRICE);
       expect(await ethers.provider.getBalance(idMinter.address)).to.equal(
         expectedMinterBalance
       );
@@ -900,7 +926,7 @@ describe("End to end flows", () => {
       await idMinter.connect(user3).mint(2, {
         value: TOKEN_PRICE,
       });
-      expectedMinterBalance += TOKEN_PRICE;
+      expectedMinterBalance = expectedMinterBalance.add(TOKEN_PRICE);
       expect(await ethers.provider.getBalance(idMinter.address)).to.equal(
         expectedMinterBalance
       );
@@ -912,20 +938,35 @@ describe("End to end flows", () => {
 
     it("allows founder and DAO to withdraw minting funds", async () => {
       const totalSupply = await token.totalSupply();
-      const totalProceeds = TOKEN_PRICE * totalSupply.toNumber();
+      const totalProceeds = TOKEN_PRICE.mul(totalSupply.toNumber());
       expect(await ethers.provider.getBalance(idMinter.address)).to.equal(
         totalProceeds
       );
       expect(await ethers.provider.getBalance(timelock.address)).to.equal(0);
-      const expectedFounderProfit = FOUNDER_REWARD * totalProceeds;
-      const expectedDAOProfit = totalProceeds - expectedFounderProfit;
+
+      const expectedFounderProfit = totalProceeds
+        .mul(FOUNDER_SHARES)
+        .div(TOTAL_SHARES);
+      const founderProfitFee = expectedFounderProfit
+        .mul(FEE_BASIS_POINTS)
+        .div(10000);
+      const expectedFounderProfitMinusFee =
+        expectedFounderProfit.sub(founderProfitFee);
+
+      const expectedDAOProfit = totalProceeds.sub(expectedFounderProfit);
+      const expectedDAOProfitFee = expectedDAOProfit
+        .mul(FEE_BASIS_POINTS)
+        .div(10000);
+      const expectedDAOProfitMinusFee =
+        expectedDAOProfit.sub(expectedDAOProfitFee);
 
       await expect(() =>
         idMinter.release(creator.address)
-      ).to.changeEtherBalance(creator, expectedFounderProfit);
+      ).to.changeEtherBalance(creator, expectedFounderProfitMinusFee);
+
       await idMinter.release(timelock.address);
       expect(await ethers.provider.getBalance(timelock.address)).to.equal(
-        expectedDAOProfit
+        expectedDAOProfitMinusFee
       );
     });
 
@@ -1042,6 +1083,9 @@ describe("End to end flows", () => {
               TOKEN_PRICE,
               MAX_MINTS_PER_WALLET,
             ]),
+            zeroAddress,
+            0,
+            zeroAddress,
           ])
         );
         expect(await token.hasRole(MINTER_ROLE, idMinter.address)).to.be.true;
@@ -1069,6 +1113,9 @@ describe("End to end flows", () => {
               TOKEN_PRICE,
               MAX_MINTS_PER_WALLET,
             ]),
+            zeroAddress,
+            0,
+            zeroAddress,
           ])
         );
         expect(await token.hasRole(MINTER_ROLE, idMinter.address)).to.be.true;
@@ -1321,7 +1368,7 @@ describe("End to end flows", () => {
 
       it("allows gov to upgrade", async () => {
         await simpleMinter.connect(user1).mint(4, {
-          value: TOKEN_PRICE * 4,
+          value: TOKEN_PRICE.mul(4),
         });
 
         const calldata = governor.interface.encodeFunctionData("upgradeTo", [
@@ -1368,7 +1415,7 @@ describe("End to end flows", () => {
 
       it("allows gov to upgrade", async () => {
         await simpleMinter.connect(user1).mint(4, {
-          value: TOKEN_PRICE * 4,
+          value: TOKEN_PRICE.mul(4),
         });
 
         const calldata = timelock.interface.encodeFunctionData("upgradeTo", [
@@ -1490,17 +1537,111 @@ describe("End to end flows", () => {
           MAX_TOKENS,
           TOKEN_PRICE,
           MAX_MINTS_PER_WALLET,
-        ])
+        ]),
+        zeroAddress,
+        0,
+        zeroAddress
       );
 
       await minterClone.connect(signer).unpause();
 
       await minterClone.mint(2, {
-        value: TOKEN_PRICE * 2,
+        value: TOKEN_PRICE.mul(2),
       });
 
       expect(await tokenClone.totalSupply()).to.equal(2);
       expect(await tokenClone.balanceOf(signer.address)).to.equal(2);
+    });
+  });
+
+  describe("Deployer charging minting fees", async () => {
+    let snapshotId: number;
+
+    beforeEach(async () => {
+      snapshotId = await ethers.provider.send("evm_snapshot", []);
+    });
+
+    afterEach(async () => {
+      await ethers.provider.send("evm_revert", [snapshotId]);
+    });
+
+    it("doesn't allow non deployer owner to change the fee params of a cloned project", async () => {
+      await cloneWithFixedPriceSequentialMinter();
+
+      await expect(
+        simpleMinter.connect(creator).setServiceFeeBasisPoints(0)
+      ).to.be.revertedWith(
+        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0xfc425f2263d0df187444b70e47283d622c70181c5baebb1306a01edba1ce184c`
+      );
+
+      await expect(
+        simpleMinter.connect(creator).setServiceFeeAddress(creator.address)
+      ).to.be.revertedWith(
+        `AccessControl: account ${creator.address.toLowerCase()} is missing role 0xfc425f2263d0df187444b70e47283d622c70181c5baebb1306a01edba1ce184c`
+      );
+    });
+
+    it("allows deployer owner to change fee params", async () => {
+      await cloneWithFixedPriceSequentialMinter();
+
+      await simpleMinter.connect(signer).setServiceFeeBasisPoints(5000);
+      await simpleMinter
+        .connect(signer)
+        .setServiceFeeAddress("0x1234567812345678123456781234567812345678");
+
+      await simpleMinter.connect(user1).mint(8, { value: TOKEN_PRICE.mul(8) });
+      await simpleMinter.release(timelock.address);
+      await simpleMinter.release(creator.address);
+
+      expect(
+        await ethers.provider.getBalance(
+          "0x1234567812345678123456781234567812345678"
+        )
+      ).to.equal(TOKEN_PRICE.mul(8).div(2));
+    });
+
+    it("allows deployer owner to set fees to zero", async () => {
+      await cloneWithFixedPriceSequentialMinter();
+
+      await simpleMinter.connect(signer).setServiceFeeBasisPoints(0);
+      await simpleMinter.connect(user1).mint(8, { value: TOKEN_PRICE.mul(8) });
+      await expect(
+        await simpleMinter.release(timelock.address)
+      ).to.changeEtherBalance(
+        timelock,
+        TOKEN_PRICE.mul(8).mul(DAO_SHARES).div(TOTAL_SHARES)
+      );
+      await expect(
+        await simpleMinter.release(creator.address)
+      ).to.changeEtherBalance(
+        creator,
+        TOKEN_PRICE.mul(8).mul(FOUNDER_SHARES).div(TOTAL_SHARES)
+      );
+    });
+
+    it("allows deployer owner to change default service fee and address", async () => {
+      await expect(deployer.connect(signer).setServiceFeeAddress(user3.address))
+        .to.emit(deployer, "ServiceFeeAddressUpdated")
+        .withArgs(user3.address);
+
+      await expect(deployer.connect(signer).setServiceFeeBasisPoints(1234))
+        .to.emit(deployer, "ServiceFeeBasisPointsUpdated")
+        .withArgs(1234);
+
+      await cloneWithFixedPriceSequentialMinter();
+
+      expect(await simpleMinter.getServiceFeeAddress()).to.equal(user3.address);
+      expect(await simpleMinter.getServiceFeeBasisPoints()).to.equal(1234);
+    });
+
+    it("doesn't let non deployer owners to change default service fee params", async () => {
+      await expect(
+        deployer.connect(user3).setServiceFeeAddress(user3.address)
+      ).to.be.revertedWith("Ownable: caller is not the owner");
+
+      await expect(
+        deployer.connect(user3).setServiceFeeBasisPoints(11)
+      ).to.be.revertedWith("Ownable: caller is not the owner");
     });
   });
 });

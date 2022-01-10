@@ -146,7 +146,10 @@ export const deployFixedPriceSequentialMinter = async (
       maxTokens,
       tokenPrice,
       maxMintsPerTx,
-    ])
+    ]),
+    zeroAddress,
+    0,
+    deployer.address
   );
 
   return minter;
@@ -174,7 +177,10 @@ export const deployIDMinter = async (
     payees,
     shares,
     zeroAddress,
-    minter.interface.encodeFunctionData("init", [maxTokens, tokenPrice])
+    minter.interface.encodeFunctionData("init", [maxTokens, tokenPrice]),
+    zeroAddress,
+    0,
+    zeroAddress
   );
 
   return minter;
@@ -186,7 +192,8 @@ export const deployAndInitDeployer = async (
   timelock: ERC721Timelock,
   governor: ERC721Governor,
   minters: string[],
-  mintingFilters: string[]
+  mintingFilters: string[],
+  serviceFeeAddress: string = zeroAddress
 ): Promise<ERC721DAODeployer> => {
   const instance = await new ERC721DAODeployer__factory(deployer).deploy();
   await instance.initialize(
@@ -194,7 +201,8 @@ export const deployAndInitDeployer = async (
     timelock.address,
     governor.address,
     minters,
-    mintingFilters
+    mintingFilters,
+    serviceFeeAddress
   );
   return instance;
 };
@@ -312,7 +320,7 @@ export const proposeAndExecute = async (
 
 export const createTransferProp = (
   targetAddress: string,
-  value: number
+  value: BigNumberish
 ): ProposalInfo => {
   const description = "description";
   return {

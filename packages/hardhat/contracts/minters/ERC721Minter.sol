@@ -6,15 +6,20 @@ pragma solidity ^0.8.6;
 
 import { ERC721DAOToken } from "../token/ERC721DAOToken.sol";
 import { MintingFilter } from "./filters/MintingFilter.sol";
-import { PaymentSplitterUpgradeable } from "@openzeppelin/contracts-upgradeable/finance/PaymentSplitterUpgradeable.sol";
+import { PaymentSplitterWithFeeUpgradeable } from "./PaymentSplitterWithFeeUpgradeable.sol";
 import { AccessControlEnumerableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 import { PausableUpgradeable } from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import { AddressUpgradeable } from "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 
-abstract contract ERC721Minter is PaymentSplitterUpgradeable, AccessControlEnumerableUpgradeable, PausableUpgradeable {
+abstract contract ERC721Minter is
+    PaymentSplitterWithFeeUpgradeable,
+    AccessControlEnumerableUpgradeable,
+    PausableUpgradeable
+{
     using AddressUpgradeable for address;
 
     bytes32 public constant CREATOR_ROLE = keccak256("CREATOR_ROLE");
+    bytes32 public constant DEPLOYER_ROLE = keccak256("DEPLOYER_ROLE");
 
     ERC721DAOToken public token;
     MintingFilter public mintingFilter;
@@ -40,12 +45,17 @@ abstract contract ERC721Minter is PaymentSplitterUpgradeable, AccessControlEnume
         address[] memory payees_,
         uint256[] memory shares_,
         MintingFilter mintingFilter_,
-        bytes memory extraInitCallData_
+        bytes memory extraInitCallData_,
+        address payable serviceFeeAddress_,
+        uint256 serviceFeeBasisPoints_,
+        address deployerOwner
     ) public virtual initializer {
         _setRoleAdmin(CREATOR_ROLE, CREATOR_ROLE);
         _setupRole(CREATOR_ROLE, creator_);
+        _setRoleAdmin(DEPLOYER_ROLE, DEPLOYER_ROLE);
+        _setupRole(DEPLOYER_ROLE, deployerOwner);
 
-        __PaymentSplitter_init(payees_, shares_);
+        __PaymentSplitterWithFee_init(payees_, shares_, serviceFeeAddress_, serviceFeeBasisPoints_);
 
         token = token_;
         startingBlock = startingBlock_;
@@ -53,6 +63,14 @@ abstract contract ERC721Minter is PaymentSplitterUpgradeable, AccessControlEnume
         _pause();
 
         address(this).functionCall(extraInitCallData_);
+    }
+
+    function setServiceFeeBasisPoints(uint256 serviceFeeBasisPoints_) external onlyRole(DEPLOYER_ROLE) {
+        _setServiceFeeBasisPoints(serviceFeeBasisPoints_);
+    }
+
+    function setServiceFeeAddress(address payable serviceFeeAddress_) external onlyRole(DEPLOYER_ROLE) {
+        _setServiceFeeAddress(serviceFeeAddress_);
     }
 
     function pause() public onlyRole(CREATOR_ROLE) {
