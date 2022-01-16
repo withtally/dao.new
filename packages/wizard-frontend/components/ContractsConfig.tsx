@@ -52,7 +52,6 @@ export const ContractsConfig = () => {
 
   const handleChangeNetwork = async (chainId) => {
     const desiredChainIdHex = `0x${chainId.toString(16)}`
-    console.log('desiredChainIdHex', desiredChainIdHex)
 
     library.provider
       .request({
