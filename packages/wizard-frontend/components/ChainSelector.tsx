@@ -12,7 +12,7 @@ import {
 import React from 'react'
 import { chainIdToContracts } from '../config'
 
-export const ContractsConfig = () => {
+export const ChainSelector = () => {
   const { chainId, library, account } = useEthers()
 
   const getAddChainParams = (chainId: number) => {

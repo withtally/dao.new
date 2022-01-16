@@ -24,8 +24,8 @@ import { TokenInputs } from '../components/TokenInputs'
 import { MinterInputs } from '../components/MinterInputs'
 import { GovernorInputs } from '../components/GovernorInputs'
 import { ClonesView } from '../components/ClonesView'
-import { ContractsConfig } from '../components/ContractsConfig'
 import { Web3Provider } from '@ethersproject/providers'
+import { ChainSelector } from '../components/ChainSelector'
 
 /**
  * Constants & Helpers
@@ -208,7 +208,7 @@ function HomeIndex(): JSX.Element {
         <Heading as="h2" mb={6} mt={6}>
           1. Connect wallet & select chain
         </Heading>
-        <ContractsConfig />
+        <ChainSelector />
         <form onSubmit={deployClones}>
           <TokenInputs
             tokenConfig={state.tokenConfig}
