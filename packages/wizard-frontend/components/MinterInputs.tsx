@@ -58,7 +58,7 @@ export const MinterInputs = ({
   return (
     <>
       <Heading as="h2" mb={6} mt={6}>
-        2. Minter
+        3. Minter
       </Heading>
       <VStack spacing={6}>
         <FormControl id="minter-totalsupply" isRequired>

@@ -61,7 +61,7 @@ export const GovernorInputs = ({ governorConfig, onGovernorConfigChange }) => {
   return (
     <>
       <Heading as="h2" mb={6} mt={6}>
-        3. Governor
+        4. Governor
       </Heading>
       <VStack spacing={6}>
         <FormControl id="governor-name" isRequired>

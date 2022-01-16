@@ -22,7 +22,7 @@ export const MintingFilterInputs = ({ values, onValuesChange }) => {
   return (
     <>
       <Heading as="h3" size="lg" mb={6} mt={6}>
-        2.1 Buyer Filtering
+        3.1 Buyer Filtering
       </Heading>
       <VStack spacing={6} alignItems="flex-start">
         <MintingFilterToggle

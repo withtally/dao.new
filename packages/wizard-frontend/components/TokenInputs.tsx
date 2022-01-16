@@ -42,7 +42,7 @@ export const TokenInputs = ({
   return (
     <>
       <Heading as="h2" mb={6} mt={6}>
-        1. Token
+        2. Token
       </Heading>
       <VStack spacing={6}>
         <FormControl id="token-name" isRequired>

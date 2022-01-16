@@ -204,8 +204,11 @@ function HomeIndex(): JSX.Element {
       <Heading as="h1" mb="8" px={4}>
         Create NFT DAO 🧙‍♀️
       </Heading>
-      <ContractsConfig />
       <Box maxWidth="container.sm" px={4}>
+        <Heading as="h2" mb={6} mt={6}>
+          1. Connect wallet & select chain
+        </Heading>
+        <ContractsConfig />
         <form onSubmit={deployClones}>
           <TokenInputs
             tokenConfig={state.tokenConfig}
