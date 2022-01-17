@@ -21,7 +21,7 @@ export const MintingFilterEditNFTs = ({
         }
       })
     )
-  }, [mintingFilterAddress, tokenFilters, onValuesChange])
+  }, [mintingFilterAddress, tokenFilters])
 
   return (
     <MintingFilterNFTsInputs values={values} onValuesChange={onValuesChange} />
