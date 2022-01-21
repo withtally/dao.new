@@ -36,6 +36,7 @@
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.5.1",
     "hardhat": "^2.6.7",
+    "hardhat-contract-sizer": "^2.4.0",
     "hardhat-gas-reporter": "^1.0.4",
     "ts-node": "^10.4.0",
     "typechain": "^6.0.2",

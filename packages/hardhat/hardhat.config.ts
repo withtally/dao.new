@@ -3,6 +3,7 @@ import "@nomiclabs/hardhat-waffle";
 import "@nomiclabs/hardhat-etherscan";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
+import "hardhat-contract-sizer";
 import { task } from "hardhat/config";
 import { HardhatUserConfig } from "hardhat/types";
 require("dotenv").config();

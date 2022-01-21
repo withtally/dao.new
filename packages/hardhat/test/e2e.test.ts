@@ -1329,9 +1329,7 @@ describe("End to end flows", () => {
 
         await expect(
           token.connect(user1).transferFrom(user1.address, user2.address, 2)
-        ).to.be.revertedWith(
-          "ERC721DAOToken::_beforeTokenTransfer: transfers are disabled"
-        );
+        ).to.be.revertedWith("TransfersDisabled()");
       });
 
       it("still supports minting when transfers are disabled", async () => {

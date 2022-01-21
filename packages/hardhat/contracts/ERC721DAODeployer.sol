@@ -348,19 +348,19 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         ERC721DAOToken token_,
         address creatorAddress,
         ERC721Minter minterClone
-    ) private pure returns (bytes32[] memory, address[] memory) {
+    ) private view returns (bytes32[] memory, address[] memory) {
         bytes32[] memory roles = new bytes32[](11);
-        roles[0] = token_.getAdminsAdminRole();
-        roles[1] = token_.getMinterAdminRole();
-        roles[2] = token_.getBaseURIAdminRole();
-        roles[3] = token_.getRoyaltiesAdminRole();
-        roles[4] = token_.getBaseURIRole();
-        roles[5] = token_.getMinterRole();
-        roles[6] = token_.getRoyaltiesRole();
-        roles[7] = token_.getProxyRegistryRole();
-        roles[8] = token_.getProxyRegistryAdminRole();
-        roles[9] = token_.getTransfersRole();
-        roles[10] = token_.getTransfersAdminRole();
+        roles[0] = token_.ADMINS_ADMIN_ROLE();
+        roles[1] = token_.MINTER_ADMIN_ROLE();
+        roles[2] = token_.BASE_URI_ADMIN_ROLE();
+        roles[3] = token_.ROYALTIES_ADMIN_ROLE();
+        roles[4] = token_.BASE_URI_ROLE();
+        roles[5] = token_.MINTER_ROLE();
+        roles[6] = token_.ROYALTIES_ROLE();
+        roles[7] = token_.PROXY_REGISTRY_ROLE();
+        roles[8] = token_.PROXY_REGISTRY_ADMIN_ROLE();
+        roles[9] = token_.TRANSFERS_ROLE();
+        roles[10] = token_.TRANSFERS_ADMIN_ROLE();
 
         address[] memory rolesAssignees = new address[](11);
         rolesAssignees[0] = creatorAddress;
