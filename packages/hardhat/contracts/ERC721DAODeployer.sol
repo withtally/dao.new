@@ -26,6 +26,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         uint256 royaltiesBPs;
         address royaltiesRecipientOverride;
         ITokenURIDescriptor tokenURIDescriptor;
+        string bgImageURI;
     }
 
     struct GovernorParams {
@@ -167,6 +168,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             rolesAssignees,
             royaltyInfo,
             tokenParams.tokenURIDescriptor,
+            tokenParams.bgImageURI,
             creatorAddress
         );
     }

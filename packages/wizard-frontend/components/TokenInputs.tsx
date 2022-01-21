@@ -8,13 +8,22 @@ import {
   Link,
 } from '@chakra-ui/react'
 import { RoyaltiesForm } from '@create-nft-dao/shared'
+import { TokenParams } from '../lib/wizardTypes'
+import { RoyaltiesParams } from '@create-nft-dao/shared'
+
+type TokenInputsProps = {
+  tokenConfig: TokenParams
+  onTokenConfigChange: any
+  royaltiesConfig: RoyaltiesParams
+  onRoyaltiesConfigChange: any
+}
 
 export const TokenInputs = ({
   tokenConfig,
   royaltiesConfig,
   onTokenConfigChange,
   onRoyaltiesConfigChange,
-}) => {
+}: TokenInputsProps) => {
   function onTokenNameChange(e) {
     const newValues = Object.assign({}, tokenConfig)
     newValues.name = e.target.value
@@ -30,6 +39,12 @@ export const TokenInputs = ({
   function onTokenBaseURIChange(e) {
     const newValues = Object.assign({}, tokenConfig)
     newValues.baseURI = e.target.value
+    onTokenConfigChange(newValues)
+  }
+
+  function onTokenBgImageURIChange(e) {
+    const newValues = Object.assign({}, tokenConfig)
+    newValues.bgImageURI = e.target.value
     onTokenConfigChange(newValues)
   }
 
@@ -86,6 +101,19 @@ export const TokenInputs = ({
             <br />
             If you don't yet have art on IPFS, you can leave this empty and your
             NFTs will have a placeholder image.
+          </FormHelperText>
+        </FormControl>
+        <FormControl>
+          <FormLabel>Background image URI</FormLabel>
+          <Input
+            type="url"
+            value={tokenConfig.bgImageURI}
+            onChange={onTokenBgImageURIChange}
+          />
+          <FormHelperText>
+            If not "Base URI" is provided, and on chain SVG will used as the
+            token image. You can set a background image which will be used as
+            the background image of the SVG.
           </FormHelperText>
         </FormControl>
         <FormControl id="token-contractinfouri">

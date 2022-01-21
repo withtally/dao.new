@@ -162,6 +162,7 @@ const cloneWithFixedPriceSequentialMinter = async (
           ? royaltiesRecipientOverride
           : ethers.constants.AddressZero,
       tokenURIDescriptor: zeroAddress,
+      bgImageURI: "",
     },
     {
       name: "GovName",
@@ -213,6 +214,7 @@ const cloneWithIDMinter = async () => {
       royaltiesBPs: 0,
       royaltiesRecipientOverride: ethers.constants.AddressZero,
       tokenURIDescriptor: zeroAddress,
+      bgImageURI: "",
     },
     {
       name: "GovName",
@@ -266,6 +268,7 @@ const cloneWithSequentialMinterAndRequiredNFTFilter = async () => {
       bps: 0,
     },
     zeroAddress,
+    "",
     signer.address
   );
 
@@ -279,6 +282,7 @@ const cloneWithSequentialMinterAndRequiredNFTFilter = async () => {
       royaltiesBPs: 0,
       royaltiesRecipientOverride: ethers.constants.AddressZero,
       tokenURIDescriptor: zeroAddress,
+      bgImageURI: "",
     },
     {
       name: "GovName",
@@ -987,6 +991,7 @@ describe("End to end flows", () => {
             bps: 0,
           },
           zeroAddress,
+          "bgImage",
           signer.address
         );
 

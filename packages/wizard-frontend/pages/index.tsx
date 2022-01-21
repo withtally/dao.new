@@ -50,6 +50,7 @@ const initialState: StateType = {
     symbol: '',
     baseURI: '',
     contractInfoURI: '',
+    bgImageURI: '',
   },
   minterConfig: {
     implementationIndex: 0,

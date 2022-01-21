@@ -8,6 +8,7 @@ interface ITokenURIDescriptor {
     function tokenURI(
         uint256 tokenId,
         string calldata name,
-        string calldata symbol
+        string calldata symbol,
+        string calldata bgImage
     ) external view returns (string memory);
 }

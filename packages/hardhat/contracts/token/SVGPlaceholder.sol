@@ -14,19 +14,23 @@ contract SVGPlaceholder is ITokenURIDescriptor {
     function tokenURI(
         uint256 tokenId,
         string calldata name,
-        string calldata
+        string calldata, // symbol,
+        string calldata bgImageURI
     ) external pure override returns (string memory) {
         string memory text = string(abi.encodePacked(name, " token #", tokenId.toString()));
         string memory description = string(abi.encodePacked("Placeholder art for ", text));
-        string[5] memory parts;
-        parts[
-            0
-        ] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><text x="10" y="20">';
-        parts[1] = text;
-        parts[2] = '</text><text x="11" y="21" style="fill: orange">';
-        parts[3] = text;
-        parts[4] = "</text></svg>";
-        string memory svg = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4]));
+        string[4] memory parts;
+        parts[0] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">';
+
+        if (bytes(bgImageURI).length > 0) {
+            parts[1] = string(abi.encodePacked('<image width="100%" height="100%" href="', bgImageURI, '"/>'));
+        } else {
+            parts[1] = "";
+        }
+
+        parts[2] = string(abi.encodePacked('<text x="10" y="20">', text, "</text>"));
+        parts[3] = "</svg>";
+        string memory svg = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3]));
         string memory json = Base64.encode(
             bytes(
                 string(

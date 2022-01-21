@@ -14,6 +14,7 @@ export type TokenParams = {
   symbol: string
   baseURI: string
   contractInfoURI: string
+  bgImageURI: string
 }
 
 export type GovernorParams = {

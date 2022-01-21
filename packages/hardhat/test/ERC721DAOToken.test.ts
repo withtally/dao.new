@@ -151,6 +151,57 @@ describe("ERC721DAOToken", () => {
       );
       expect(await token.baseURIEnabled()).to.be.false;
     });
+
+    const getSVGFromTokenUri = (tokenURI: string): string => {
+      expect(tokenURI).to.satisfy((s: string) =>
+        s.startsWith("data:application/json;base64")
+      );
+
+      const json = JSON.parse(atob(tokenURI.split(",")[1]));
+      expect(json["image"]).to.satisfy((s: string) =>
+        s.startsWith("data:image/svg+xml")
+      );
+      const svg = atob(json["image"].split(",")[1]);
+      return svg;
+    };
+
+    it("puts bgImage in SVG if not empty", async () => {
+      const token = await deployAndInitDAOToken(
+        deployer,
+        undefined,
+        undefined,
+        undefined,
+        "",
+        "",
+        "https://some-bg/img.png"
+      );
+
+      await token.mint(user1Address, 1);
+
+      const tokenURI: string = await token.tokenURI(1);
+      const svg = getSVGFromTokenUri(tokenURI);
+
+      expect(svg).to.have.string('<image href="https://some-bg/img.png"/>');
+    });
+
+    it("doesn't include image in SVG if bgImage is empty", async () => {
+      const token = await deployAndInitDAOToken(
+        deployer,
+        undefined,
+        undefined,
+        undefined,
+        "",
+        "",
+        ""
+      );
+
+      await token.mint(user1Address, 1);
+
+      const tokenURI: string = await token.tokenURI(1);
+      const svg = getSVGFromTokenUri(tokenURI);
+
+      expect(svg).to.not.have.string("<image");
+    });
   });
 
   describe("contract URI", async () => {

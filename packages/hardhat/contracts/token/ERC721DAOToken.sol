@@ -39,6 +39,7 @@ contract ERC721DAOToken is
     IProxyRegistry public proxyRegistry;
     bool public proxyRegistryEnabled;
     ITokenURIDescriptor public tokenURIDescriptor;
+    string public bgImageURI;
     bool public transfersDisabled;
 
     event BaseURIChanged(string newURI);
@@ -72,6 +73,7 @@ contract ERC721DAOToken is
         address[] memory rolesAssignees,
         IRoyaltyInfo.RoyaltyInfo memory royaltiesInfo,
         ITokenURIDescriptor tokenURIDescriptor_,
+        string calldata bgImageURI_,
         address creator
     ) public initializer {
         if (roles.length != rolesAssignees.length) {
@@ -89,6 +91,7 @@ contract ERC721DAOToken is
         _setRoyalties(royaltiesInfo.recipient, royaltiesInfo.bps);
         proxyRegistryEnabled = false;
         tokenURIDescriptor = tokenURIDescriptor_;
+        bgImageURI = bgImageURI_;
         transfersDisabled = false;
 
         _setRoleAdmin(ADMINS_ADMIN_ROLE, ADMINS_ADMIN_ROLE);
@@ -169,7 +172,7 @@ contract ERC721DAOToken is
         if (baseURIEnabled) {
             return super.tokenURI(tokenId);
         } else {
-            return tokenURIDescriptor.tokenURI(tokenId, name(), symbol());
+            return tokenURIDescriptor.tokenURI(tokenId, name(), symbol(), bgImageURI);
         }
     }
 
