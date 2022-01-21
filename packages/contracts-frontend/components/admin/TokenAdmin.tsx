@@ -18,6 +18,8 @@ import {
   useSetProxyRegistryEnabled,
   useProxyRegistry,
   useSetProxyRegistryAndEnable,
+  useTokenContractParam,
+  useTokenContractFunction,
 } from '../../lib/contractWrappers/token'
 import { useState } from 'react'
 import { RoyaltiesForm, RoyaltiesParams } from '@create-nft-dao/shared'
@@ -27,14 +29,18 @@ export const TokenAdmin = () => {
   const tokenName = useNFTName()
   const isBaseURIEnabled = useBaseURIEnabled()
   const baseURI = useBaseURI()
+  const bgImageURI = useTokenContractParam('bgImageURI')
   const contractInfoURI = useContractInfoURI()
 
   const [baseURIFormValue, setBaseURIFormValue] = useState('')
+  const [bgImageURIFormValue, setBGImageURIFormValue] = useState('')
   const [contractInfoURIFormValue, setContractInfoURIFormValue] = useState('')
 
   const { send: setBaseURIEnabled, state: setBaseURIEnabledState } =
     useSetBaseURIEnabled()
   const { send: setBaseURI, state: setBaseURIState } = useSetBaseURI()
+  const { send: setBGImageURI, state: setBGImageURIState } =
+    useTokenContractFunction('setBgImageURI')
   const { send: setContractInfoURI, state: setContractInfoURIState } =
     useSetContractInfoURI()
 
@@ -62,6 +68,11 @@ export const TokenAdmin = () => {
   const onBaseURISubmit = (e) => {
     e.preventDefault()
     setBaseURI(baseURIFormValue)
+  }
+
+  const onBGImageURISubmit = (e) => {
+    e.preventDefault()
+    setBGImageURI(bgImageURIFormValue)
   }
 
   const onContractInfoURISubmit = (e) => {
@@ -153,6 +164,32 @@ export const TokenAdmin = () => {
                 isLoading={setBaseURIState.status === 'Mining'}
               >
                 Update Base URI
+              </Button>
+            </HStack>
+          </form>
+        </VStack>
+        <VStack alignItems="baseline">
+          <Heading as="h4" size="md">
+            Background image URI
+          </Heading>
+          <Text>Current value: {bgImageURI}</Text>
+
+          <form onSubmit={onBGImageURISubmit}>
+            <HStack minW="md">
+              <Input
+                type="text"
+                value={bgImageURIFormValue}
+                onChange={(e) => {
+                  setBGImageURIFormValue(e.target.value)
+                }}
+              />
+              <Button
+                minW="min"
+                type="submit"
+                isDisabled={!bgImageURIFormValue}
+                isLoading={setBGImageURIState.status === 'Mining'}
+              >
+                Update background image URI
               </Button>
             </HStack>
           </form>

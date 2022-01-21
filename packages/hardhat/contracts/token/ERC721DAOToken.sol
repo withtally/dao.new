@@ -50,6 +50,7 @@ contract ERC721DAOToken is
     event TokenURIDescriptorChanged(address newTokenURIDescriptor);
     event MinterChanged(address oldMinter, address newMinter);
     event TransfersDisabledChanged(bool transfersDisabled);
+    event BGImageURIChanged(string bgImageURI);
 
     error RolesAssignmentArityMismatch();
     error TransfersDisabled();
@@ -146,6 +147,11 @@ contract ERC721DAOToken is
     function setTokenURIDescriptor(ITokenURIDescriptor tokenURIDescriptor_) public onlyRole(BASE_URI_ROLE) {
         tokenURIDescriptor = tokenURIDescriptor_;
         emit TokenURIDescriptorChanged(address(tokenURIDescriptor_));
+    }
+
+    function setBgImageURI(string calldata bgImageURI_) public onlyRole(BASE_URI_ROLE) {
+        bgImageURI = bgImageURI_;
+        emit BGImageURIChanged(bgImageURI_);
     }
 
     function setRoyalties(address recipient, uint256 bps) public onlyRole(ROYALTIES_ROLE) {

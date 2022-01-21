@@ -1,5 +1,5 @@
 import { useContractCall, useContractFunction } from '@usedapp/core'
-import { utils, Contract } from 'ethers'
+import { utils, Contract, ContractFactory } from 'ethers'
 import { Interface } from 'ethers/lib/utils'
 import { ERC721DAOTokenABI } from '@create-nft-dao/hardhat'
 import { config } from '../../config'
@@ -50,6 +50,17 @@ export const useBaseURI = () => {
   return baseURI
 }
 
+export const useTokenContractParam = (methodName: string) => {
+  const [value] =
+    useContractCall({
+      abi: tokenAbi,
+      address: config.tokenAddress,
+      method: methodName,
+      args: [],
+    }) || []
+  return value
+}
+
 export const useSetBaseURIEnabled = () => {
   const contract = new Contract(config.tokenAddress, tokenAbi)
   return useContractFunction(contract, 'setBaseURIEnabled')
@@ -58,6 +69,11 @@ export const useSetBaseURIEnabled = () => {
 export const useSetBaseURI = () => {
   const contract = new Contract(config.tokenAddress, tokenAbi)
   return useContractFunction(contract, 'setBaseURI')
+}
+
+export const useTokenContractFunction = (methodName: string) => {
+  const contract = new Contract(config.tokenAddress, tokenAbi)
+  return useContractFunction(contract, methodName)
 }
 
 export const useContractInfoURI = () => {

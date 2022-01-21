@@ -181,7 +181,55 @@ describe("ERC721DAOToken", () => {
       const tokenURI: string = await token.tokenURI(1);
       const svg = getSVGFromTokenUri(tokenURI);
 
-      expect(svg).to.have.string('<image href="https://some-bg/img.png"/>');
+      expect(svg).to.have.string(
+        '<image width="100%" height="100%" href="https://some-bg/img.png"/>'
+      );
+    });
+
+    it("creator can change bg image", async () => {
+      const [admin] = await ethers.getSigners();
+
+      const token = await deployAndInitDAOToken(
+        deployer,
+        admin,
+        undefined,
+        undefined,
+        "",
+        "",
+        "https://some-bg/img.png"
+      );
+
+      await token.mint(user1Address, 1);
+      await expect(token.connect(admin).setBgImageURI("https://new/img.png"))
+        .to.emit(token, "BGImageURIChanged")
+        .withArgs("https://new/img.png");
+
+      const tokenURI: string = await token.tokenURI(1);
+      const svg = getSVGFromTokenUri(tokenURI);
+
+      expect(svg).to.have.string(
+        '<image width="100%" height="100%" href="https://new/img.png"/>'
+      );
+    });
+
+    it("doesn't allow rando to change bg image", async () => {
+      const [admin, rando] = await ethers.getSigners();
+
+      const token = await deployAndInitDAOToken(
+        deployer,
+        admin,
+        undefined,
+        undefined,
+        "",
+        "",
+        "https://some-bg/img.png"
+      );
+
+      await expect(
+        token.connect(rando).setBgImageURI("lame-img")
+      ).to.be.revertedWith(
+        `AccessControl: account ${rando.address.toLowerCase()} is missing role ${await token.BASE_URI_ROLE()}`
+      );
     });
 
     it("doesn't include image in SVG if bgImage is empty", async () => {
