@@ -62,6 +62,10 @@ describe("ERC721Governor", () => {
       VOTING_PERIOD,
       QUORUM_NUMERATOR
     );
+
+    await token.connect(user).delegate(user.address);
+    await token.connect(user2).delegate(user2.address);
+    await token.connect(user3).delegate(user3.address);
   });
 
   beforeEach(async () => {
