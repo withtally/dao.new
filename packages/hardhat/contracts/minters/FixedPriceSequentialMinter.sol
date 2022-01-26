@@ -30,13 +30,8 @@ contract FixedPriceSequentialMinter is FixedPriceFixedSupplyMinter {
     }
 
     function mintBatch(address to, uint256 amount) private {
-        require(
-            nextTokenId - 1 + amount <= maxTokens,
-            "FixedPriceSequentialMinter: Minting this many would exceed supply!"
-        );
-
         for (uint256 i = 0; i < amount; i++) {
-            token.mint(to, nextTokenId++);
+            _mint(to, nextTokenId++);
         }
     }
 

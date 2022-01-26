@@ -22,13 +22,4 @@ contract FixedPriceSpecificIDMinter is FixedPriceFixedSupplyMinter {
         require(!isOwnerMintLocked, "FixedPriceSpecificIDMinter: ownerMint is locked");
         _mint(to, tokenId);
     }
-
-    function _mint(address to, uint256 tokenId) private {
-        require(
-            token.totalSupply() + 1 <= maxTokens,
-            "FixedPriceSpecificIDMinter: Minting this many would exceed supply!"
-        );
-
-        token.mint(to, tokenId);
-    }
 }

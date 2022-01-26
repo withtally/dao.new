@@ -158,7 +158,7 @@ describe("FixedPriceSequentialMinter", () => {
           value: ethers.utils.parseEther((TOKEN_PRICE_ETH * 2).toString()),
         })
       ).to.be.revertedWith(
-        "FixedPriceSequentialMinter: Minting this many would exceed supply!"
+        "FixedPriceFixedSupplyMinter: Minting this many would exceed supply!"
       );
     });
 
@@ -211,7 +211,7 @@ describe("FixedPriceSequentialMinter", () => {
       await expect(
         minter.connect(creator).ownerMint(user.address, 1)
       ).to.be.revertedWith(
-        "FixedPriceSequentialMinter: Minting this many would exceed supply!"
+        "FixedPriceFixedSupplyMinter: Minting this many would exceed supply!"
       );
     });
 
