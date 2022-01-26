@@ -42,6 +42,10 @@ const config: HardhatUserConfig = {
       chainId: 1337,
       loggingEnabled: false,
     },
+    mainnet: {
+      url: process.env.MAINNET_RPC_URL,
+      accounts: { mnemonic: process.env.MNEMONIC || "dummy-value" },
+    },
     rinkeby: {
       url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
       accounts: { mnemonic: process.env.MNEMONIC || "dummy-value" },

@@ -19,6 +19,7 @@
     "console": "npx hardhat console --network localhost",
     "console:rinkeby": "npx hardhat console --network rinkeby",
     "verify:rinkeby": "npx hardhat verify --network rinkeby",
+    "verify:mainnet": "npx hardhat verify --network mainnet",
     "verify:optimistic-kovan": "npx hardhat verify --network optimistic-kovan",
     "verify:arbitrum-rinkeby": "npx hardhat verify --network arbitrum-rinkeby",
     "verify:mumbai": "npx hardhat verify --network mumbai"
