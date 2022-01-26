@@ -11,14 +11,14 @@ import { ERC721DAOToken } from "../token/ERC721DAOToken.sol";
 abstract contract GovernorVotesERC721Upgradeable is Initializable, GovernorUpgradeable {
     ERC721DAOToken public token;
 
-    function __GovernorVotesERC721Upgradeable_init(ERC721DAOToken token_) internal initializer {
+    function __GovernorVotesERC721Upgradeable_init(ERC721DAOToken token_) internal onlyInitializing {
         __Context_init_unchained();
         __ERC165_init_unchained();
         __IGovernor_init_unchained();
         __GovernorVotesERC721Upgradeable_init_unchained(token_);
     }
 
-    function __GovernorVotesERC721Upgradeable_init_unchained(ERC721DAOToken token_) internal initializer {
+    function __GovernorVotesERC721Upgradeable_init_unchained(ERC721DAOToken token_) internal onlyInitializing {
         token = token_;
     }
 

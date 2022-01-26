@@ -7,7 +7,7 @@ pragma solidity ^0.8.6;
 import { OwnableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 abstract contract MintingFilter is OwnableUpgradeable {
-    function __MintingFilter_init(address creator) internal initializer {
+    function __MintingFilter_init(address creator) internal onlyInitializing {
         __Ownable_init();
         transferOwnership(creator);
     }

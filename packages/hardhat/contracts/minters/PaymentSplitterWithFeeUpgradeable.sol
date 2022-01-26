@@ -53,7 +53,7 @@ contract PaymentSplitterWithFeeUpgradeable is Initializable, ContextUpgradeable 
         uint256[] memory shares_,
         address payable serviceFeeAddress_,
         uint256 serviceFeeBasisPoints_
-    ) internal initializer {
+    ) internal onlyInitializing {
         __Context_init_unchained();
         __PaymentSplitterWithFee_init_unchained(payees, shares_, serviceFeeAddress_, serviceFeeBasisPoints_);
     }
@@ -63,7 +63,7 @@ contract PaymentSplitterWithFeeUpgradeable is Initializable, ContextUpgradeable 
         uint256[] memory shares_,
         address payable serviceFeeAddress_,
         uint256 serviceFeeBasisPoints_
-    ) internal initializer {
+    ) internal onlyInitializing {
         require(payees.length == shares_.length, "PaymentSplitter: payees and shares length mismatch");
         require(payees.length > 0, "PaymentSplitter: no payees");
         require(serviceFeeBasisPoints_ <= 10000, "Max fee: 10000");
