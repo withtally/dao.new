@@ -112,10 +112,8 @@ describe("ERC721DAOToken", () => {
       );
 
       const json = JSON.parse(atob(tokenURI.split(",")[1]));
-      expect(json["name"]).to.be.equal("AwesomeToken token #123");
-      expect(json["description"]).to.be.equal(
-        "Placeholder art for AwesomeToken token #123"
-      );
+      expect(json["name"]).to.be.equal("ASM:#123");
+      expect(json["description"]).to.be.equal("AwesomeToken ASM:#123");
 
       expect(json["image"]).to.satisfy((s: string) =>
         s.startsWith("data:image/svg+xml")

@@ -32,11 +32,11 @@ const allConfigs: Record<SupportedChains, ContractsConfig> = {
     minterType: MinterType.FixedPriceSequentialMinter,
   },
   [ChainId.Rinkeby]: {
-    deployerAddress: '0x25979F892440e384dF1d11dc621c8f4179A5b55F',
-    tokenAddress: '0x4D241905bB6348c31D23547D7c39921FBC51F9Ce',
-    minterAddress: '0x8C5b51aa7652A7755b902c7A220cB9FA92e4d73A',
-    governorAddress: '0xAc6545Dfd53a565c4969548FFc646385EC74bD02',
-    timelockAddress: '0x2a2b42e6C2E774eCD99f85D6792615Fb830db8d0',
+    deployerAddress: '0x02CB117254a82E2401B8c341CE668eDfF2f268FD',
+    tokenAddress: '0xaa507B6082C753d962f6A9f01c575Ba8D1739b82',
+    minterAddress: '0x2C57c1530df4807804395f5A8D53fc98A3F880D2',
+    governorAddress: '0x34E804E07CB973A689dc8Da5B098e0711aCA2374',
+    timelockAddress: '0x69059161a9030096ad3245a854687D05e8ffEE52',
     minterType: MinterType.FixedPriceSequentialMinter,
   },
   [ChainId.OptimismKovan]: {
