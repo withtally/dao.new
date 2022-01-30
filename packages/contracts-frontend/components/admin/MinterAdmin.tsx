@@ -175,7 +175,7 @@ export const MinterAdmin = () => {
     )
 
     setMintingFilter(cloneEvent.args.mintingFilter)
-  }, [cloneAndInitMintingFilterEvents, setMintingFilter])
+  }, [cloneAndInitMintingFilterEvents])
 
   return (
     <>
