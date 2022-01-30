@@ -4,16 +4,16 @@
 
 pragma solidity ^0.8.6;
 
-import { ERC721CheckpointableUpgradable, ERC721EnumerableUpgradeable } from "./ERC721CheckpointableUpgradable.sol";
 import { AccessControlEnumerableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 import { OwnableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import { ERC721VotesUpgradeable, ERC721Upgradeable } from "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/draft-ERC721VotesUpgradeable.sol";
 import { ERC2981ContractWideRoyalties } from "./ERC2981ContractWideRoyalties.sol";
 import { IRoyaltyInfo } from "./IRoyaltyInfo.sol";
 import { IProxyRegistry } from "../lib/IProxyRegistry.sol";
 import { ITokenURIDescriptor } from "./ITokenURIDescriptor.sol";
 
 contract ERC721DAOToken is
-    ERC721CheckpointableUpgradable,
+    ERC721VotesUpgradeable,
     ERC2981ContractWideRoyalties,
     AccessControlEnumerableUpgradeable,
     OwnableUpgradeable
@@ -57,7 +57,7 @@ contract ERC721DAOToken is
         public
         view
         virtual
-        override(ERC721EnumerableUpgradeable, ERC2981ContractWideRoyalties, AccessControlEnumerableUpgradeable)
+        override(ERC721Upgradeable, ERC2981ContractWideRoyalties, AccessControlEnumerableUpgradeable)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
@@ -209,7 +209,15 @@ contract ERC721DAOToken is
         super._beforeTokenTransfer(from, to, tokenId);
     }
 
+    function isTransferMintOrBurn(address from, address to) internal pure returns (bool) {
+        return from == address(0) || to == address(0);
+    }
+
     function _baseURI() internal view override returns (string memory) {
         return baseURI;
+    }
+
+    function totalSupply() public view returns (uint256) {
+        return _getTotalSupply();
     }
 }

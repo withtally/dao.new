@@ -319,7 +319,7 @@ contract ERC721DAODeployer is OwnableUpgradeable {
 
     function createGovernorInstance(GovernorParams calldata governorParams) private returns (ERC721Governor) {
         if (governorParams.upgradable) {
-            return ERC721Governor(address(new ERC1967Proxy(address(governor), "")));
+            return ERC721Governor(payable(new ERC1967Proxy(address(governor), "")));
         }
         return ERC721Governor(payable(address(governor).clone()));
     }

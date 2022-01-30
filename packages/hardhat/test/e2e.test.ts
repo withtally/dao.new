@@ -413,6 +413,7 @@ describe("End to end flows", () => {
 
         const propInfo = createTransferProp(rando.address, TOKEN_PRICE);
 
+        await token.connect(user1).delegate(user1.address);
         const proposalId = await propose(user1, governor, propInfo);
         await advanceBlocks(VOTING_DELAY);
 
@@ -516,7 +517,6 @@ describe("End to end flows", () => {
     describe("Governance Params Enforcement", async () => {
       it("propose reverts when called from an account with insufficient tokens", async () => {
         expect(await token.balanceOf(user4.address)).to.equal(0);
-        expect(await token.getCurrentVotes(user4.address)).to.equal(0);
 
         const propInfo = createTransferProp(rando.address, 1);
 
@@ -550,7 +550,7 @@ describe("End to end flows", () => {
         const quorum = await governor.quorum(
           (await governor.provider.getBlockNumber()) - 1
         );
-        const voterVotes = await token.getCurrentVotes(user2.address);
+        const voterVotes = await token.getVotes(user2.address);
         expect(quorum.toNumber()).to.be.greaterThan(voterVotes.toNumber());
 
         const propInfo = createTransferProp(rando.address, 3);
@@ -799,42 +799,42 @@ describe("End to end flows", () => {
       });
 
       it("allows token holder to delegate votes to another account", async () => {
-        const user1Votes = await token.getCurrentVotes(user1.address);
+        await token.connect(user1).delegate(user1.address);
+        const user1Votes = await token.getVotes(user1.address);
         expect(await token.delegates(user1.address)).to.equal(user1.address);
-        expect(await token.getCurrentVotes(rando.address)).to.equal(0);
+        expect(await token.getVotes(rando.address)).to.equal(0);
 
         await token.connect(user1).delegate(rando.address);
 
         expect(await token.delegates(user1.address)).to.equal(rando.address);
-        expect(await token.getCurrentVotes(rando.address)).to.equal(user1Votes);
+        expect(await token.getVotes(rando.address)).to.equal(user1Votes);
       });
 
       it("allows delegator to take back their delegated votes", async () => {
         const user1Balance = await token.balanceOf(user1.address);
         expect(await token.delegates(user1.address)).to.equal(rando.address);
 
-        await token.connect(user1).delegate(ethers.constants.AddressZero);
+        await token.connect(user1).delegate(user1.address);
 
         expect(await token.delegates(user1.address)).to.equal(user1.address);
-        expect(await token.getCurrentVotes(rando.address)).to.equal(0);
-        expect(await token.getCurrentVotes(user1.address)).to.equal(
-          user1Balance
-        );
+        expect(await token.getVotes(rando.address)).to.equal(0);
+        expect(await token.getVotes(user1.address)).to.equal(user1Balance);
       });
 
       it("allows delegator to transfer a token, leaving the remaining delegated votes still delegated", async () => {
+        await token.connect(user3).delegate(user3.address);
         const user1OriginalBalance = await token.balanceOf(user1.address);
-        const user3OriginalVotes = await token.getCurrentVotes(user3.address);
+        const user3OriginalVotes = await token.getVotes(user3.address);
         await token.connect(user1).delegate(rando.address);
 
         await token
           .connect(user1)
           .transferFrom(user1.address, user3.address, 1);
 
-        expect(await token.getCurrentVotes(rando.address)).to.equal(
+        expect(await token.getVotes(rando.address)).to.equal(
           user1OriginalBalance.sub(1)
         );
-        expect(await token.getCurrentVotes(user3.address)).to.equal(
+        expect(await token.getVotes(user3.address)).to.equal(
           user3OriginalVotes.add(1)
         );
       });
@@ -843,7 +843,7 @@ describe("End to end flows", () => {
         const propInfo = createTransferProp(user2.address, TOKEN_PRICE);
         const proposalId = await propose(rando, governor, propInfo);
         await advanceBlocks(VOTING_DELAY);
-        const expectedWeight = await token.getCurrentVotes(rando.address);
+        const expectedWeight = await token.getVotes(rando.address);
 
         const tx = await governor.connect(rando).castVote(proposalId, 1);
         const receipt = await tx.wait();
@@ -872,6 +872,7 @@ describe("End to end flows", () => {
         await simpleMinter.connect(user2).mint(4, {
           value: TOKEN_PRICE.mul(4),
         });
+        await token.connect(user2).delegate(user2.address);
       });
 
       it("timelock can hold ERC20", async () => {
@@ -1368,6 +1369,7 @@ describe("End to end flows", () => {
         await simpleMinter.connect(user1).mint(4, {
           value: TOKEN_PRICE.mul(4),
         });
+        await token.connect(user1).delegate(user1.address);
 
         const calldata = governor.interface.encodeFunctionData("upgradeTo", [
           newGovContractLogic.address,
@@ -1457,6 +1459,7 @@ describe("End to end flows", () => {
         ).deploy();
 
         await simpleMinter.connect(creator).ownerMint(user1.address, 4);
+        await token.connect(user1).delegate(user1.address);
       });
 
       it("reverts when attempting to upgrade the governor clone", async () => {

@@ -47,31 +47,36 @@ describe("ERC721DAOToken", () => {
 
   describe("checkpoints", async () => {
     it("updates currentVotes on mint and transfer", async () => {
-      expect(await token.getCurrentVotes(user1Address)).to.be.equal(0);
-      expect(await token.getCurrentVotes(user2Address)).to.be.equal(0);
+      await token.connect(user).delegate(user1Address);
+      expect(await token.getVotes(user1Address)).to.be.equal(0);
+      await token.connect(user2).delegate(user2Address);
+      expect(await token.getVotes(user2Address)).to.be.equal(0);
 
       await token.mint(user1Address, 0);
-      expect(await token.getCurrentVotes(user1Address)).to.be.equal(1);
+      expect(await token.getVotes(user1Address)).to.be.equal(1);
 
       await token.connect(user).transferFrom(user1Address, user2Address, 0);
-      expect(await token.getCurrentVotes(user1Address)).to.be.equal(0);
-      expect(await token.getCurrentVotes(user2Address)).to.be.equal(1);
+      expect(await token.getVotes(user1Address)).to.be.equal(0);
+      expect(await token.getVotes(user2Address)).to.be.equal(1);
     });
 
     it("keeps track of past votes", async () => {
+      await token.connect(user).delegate(user1Address);
+      await token.connect(user2).delegate(user2Address);
+
       const txn1 = await (await token.mint(user1Address, 1)).wait();
       const txn2 = await (await token.mint(user1Address, 2)).wait();
       const txn3 = await (await token.mint(user1Address, 3)).wait();
       await mineBlock();
 
       expect(
-        await token.getPriorVotes(user1Address, txn1.blockNumber)
+        await token.getPastVotes(user1Address, txn1.blockNumber)
       ).to.be.equal(1);
       expect(
-        await token.getPriorVotes(user1Address, txn2.blockNumber)
+        await token.getPastVotes(user1Address, txn2.blockNumber)
       ).to.be.equal(2);
       expect(
-        await token.getPriorVotes(user1Address, txn3.blockNumber)
+        await token.getPastVotes(user1Address, txn3.blockNumber)
       ).to.be.equal(3);
 
       const txn4 = await (
@@ -80,10 +85,10 @@ describe("ERC721DAOToken", () => {
       await mineBlock();
 
       expect(
-        await token.getPriorVotes(user1Address, txn4.blockNumber)
+        await token.getPastVotes(user1Address, txn4.blockNumber)
       ).to.be.equal(2);
       expect(
-        await token.getPriorVotes(user2Address, txn4.blockNumber)
+        await token.getPastVotes(user2Address, txn4.blockNumber)
       ).to.be.equal(1);
     });
 

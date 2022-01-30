@@ -5,9 +5,9 @@
 pragma solidity ^0.8.6;
 
 import { ERC721DAOToken } from "../token/ERC721DAOToken.sol";
-import { GovernorVotesERC721QuorumFractionUpgradeable } from "./GovernorVotesERC721QuorumFractionUpgradeable.sol";
 import { GovernorCountingSimpleUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorCountingSimpleUpgradeable.sol";
 import { GovernorTimelockControlUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorTimelockControlUpgradeable.sol";
+import { GovernorVotesQuorumFractionUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorVotesQuorumFractionUpgradeable.sol";
 import { GovernorUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/GovernorUpgradeable.sol";
 import { TimelockControllerUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/TimelockControllerUpgradeable.sol";
 import { GovernorProposalThresholdUpgradeable } from "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorProposalThresholdUpgradeable.sol";
@@ -15,7 +15,7 @@ import { IGovernorUpgradeable } from "@openzeppelin/contracts-upgradeable/govern
 import { UUPSUpgradeable } from "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 
 contract ERC721Governor is
-    GovernorVotesERC721QuorumFractionUpgradeable,
+    GovernorVotesQuorumFractionUpgradeable,
     GovernorCountingSimpleUpgradeable,
     GovernorTimelockControlUpgradeable,
     GovernorProposalThresholdUpgradeable,
@@ -39,9 +39,9 @@ contract ERC721Governor is
         uint256 quorumNumerator_
     ) public initializer {
         __Governor_init(name_);
-        __GovernorVotesERC721Upgradeable_init(token_);
+        __GovernorVotes_init(token_);
         __GovernorTimelockControl_init(timelock_);
-        __GovernorVotesERC721QuorumFractionUpgradeable_init(quorumNumerator_);
+        __GovernorVotesQuorumFraction_init(quorumNumerator_);
 
         _proposalThreshold = proposalThreshold_;
         _votingDelay = votingDelay_;
@@ -68,7 +68,7 @@ contract ERC721Governor is
 
     function setProposalThreshold(uint256 proposalThreshold_) external onlyGovernance {
         require(
-            proposalThreshold_ <= token.totalSupply(),
+            proposalThreshold_ <= ERC721DAOToken(address(token)).totalSupply(),
             "ERC721Governor::setProposalThreshold: proposalThreshold cannot exceed total token supply"
         );
 

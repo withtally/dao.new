@@ -58,7 +58,7 @@ describe("FixedPriceSpecificIDMinter", () => {
   it("does not let init be called again", async () => {
     await expect(
       minter.connect(deployer).init(MAX_TOKENS, TOKEN_PRICE)
-    ).to.be.revertedWith("Initializable: contract is already initialized");
+    ).to.be.revertedWith("Initializable: contract is not initializing");
   });
 
   describe("Before sale is active", async () => {

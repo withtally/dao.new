@@ -2400,15 +2400,15 @@
     "@types/sinon-chai" "^3.2.3"
     "@types/web3" "1.0.19"
 
-"@openzeppelin/contracts-upgradeable@^4.3.2":
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts-upgradeable/-/contracts-upgradeable-4.3.2.tgz#92df481362e366c388fc02133cf793029c744cea"
-  integrity sha512-i/pOaOtcqDk4UqsrOv735uYyTbn6dvfiuVu5hstsgV6c4ZKUtu88/31zT2BzkCg+3JfcwOfgg2TtRKVKKZIGkQ==
+"@openzeppelin/contracts-upgradeable@^v4.5.0-rc.0":
+  version "4.5.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts-upgradeable/-/contracts-upgradeable-4.5.0-rc.0.tgz#f74114c3acf728db5d288fa859649f809dfbfb09"
+  integrity sha512-rplAyaAk5aAUCJLqh9GkV64gFsobPMGgPVSC9cWc+MIRoG3Q67+U1JoqGCTd3rUAJCTBpH4Hnf/QT0qe5rht9Q==
 
-"@openzeppelin/contracts@^4.3.2":
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.3.2.tgz#ff80affd6d352dbe1bbc5b4e1833c41afd6283b6"
-  integrity sha512-AybF1cesONZStg5kWf6ao9OlqTZuPqddvprc0ky7lrUVOjXeKpmQ2Y9FK+6ygxasb+4aic4O5pneFBfwVsRRRg==
+"@openzeppelin/contracts@^v4.5.0-rc.0":
+  version "4.5.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.5.0-rc.0.tgz#dbe4c4380ddf715230fd14da7818142e0c6ba020"
+  integrity sha512-B6mKfiivxytZLAVgPARXZ5Q/grRpplASm7VgY73PdO3u5ckF6ibMpNwZYT/16Ys3ORaDyylSgJI1PttLZiJ0Lw==
 
 "@popperjs/core@2.4.4":
   version "2.4.4"

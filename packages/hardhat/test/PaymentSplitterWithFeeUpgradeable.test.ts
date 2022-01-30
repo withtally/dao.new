@@ -10,7 +10,7 @@ import { BigNumber } from "ethers";
 chai.use(solidity);
 const { expect } = chai;
 
-describe("PaymentSplitterWithFeeUpradeable", async () => {
+describe("PaymentSplitterWithFeeUpgradeable", async () => {
   let snapshotId: number;
   let deployer: SignerWithAddress;
   let user1: SignerWithAddress;

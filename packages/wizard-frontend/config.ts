@@ -23,8 +23,8 @@ export const chainIdToContracts: Record<SupportedChains, ContractAddresses> = {
       process.env.NEXT_PUBLIC_LOCAL_SVG_PLACEHOLDER_CONTRACT,
   },
   [ChainId.Rinkeby]: {
-    deployerAddress: '0xC95d98da541FF990D773F9015996d34663dF0735',
-    svgPlaceholderAddress: '0xC3F5DC2E7cF6207273EA5363C7e78b71b3aD5280',
+    deployerAddress: '0x25979F892440e384dF1d11dc621c8f4179A5b55F',
+    svgPlaceholderAddress: '0x3295A99922A154eD6e221049fE1272483112026A',
   },
   [ChainId.OptimismKovan]: {
     deployerAddress: '0x8c49f49B3e5A2a469A09f4d8D11546Bc928c08Aa',

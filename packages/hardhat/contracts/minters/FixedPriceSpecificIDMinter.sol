@@ -8,7 +8,7 @@ import { FixedPriceFixedSupplyMinter } from "./FixedPriceFixedSupplyMinter.sol";
 
 contract FixedPriceSpecificIDMinter is FixedPriceFixedSupplyMinter {
     // this is expected to be called as part of ERC721Minter's initialize function extraInitCallData_
-    function init(uint256 maxTokens_, uint256 tokenPrice_) public initializer {
+    function init(uint256 maxTokens_, uint256 tokenPrice_) public onlyInitializing {
         __FixedPriceFixedSupplyMinter_init(maxTokens_, tokenPrice_);
     }
 

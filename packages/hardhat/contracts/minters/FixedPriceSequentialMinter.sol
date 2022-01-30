@@ -15,7 +15,7 @@ contract FixedPriceSequentialMinter is FixedPriceFixedSupplyMinter {
         uint256 maxTokens_,
         uint256 tokenPrice_,
         uint256 maxMintsPerTx_
-    ) public initializer {
+    ) public onlyInitializing {
         __FixedPriceFixedSupplyMinter_init(maxTokens_, tokenPrice_);
 
         maxMintsPerTx = maxMintsPerTx_;
