@@ -20,23 +20,23 @@ type SupportedChains =
   | ChainId.ArbitrumRinkeby
   | ChainId.Mumbai
 
-export const CHAIN_ID: SupportedChains = ChainId.Mumbai
+export const CHAIN_ID: SupportedChains = ChainId.Rinkeby
 
 const allConfigs: Record<SupportedChains, ContractsConfig> = {
   [ChainId.Localhost]: {
-    deployerAddress: '0x8A791620dd6260079BF849Dc5567aDC3F2FdC318',
-    tokenAddress: '0x88577731Cc84560fE297792ab784b600A54728E2',
-    minterAddress: '0x1910F44C232F040b63251E5B27970c254A74A1c7',
-    governorAddress: '0x5B8B621aB7f02Ef3DD5d06718dADcAeD59818257',
-    timelockAddress: '0xD605c48ae0C94D0A510Ae053F62042b7D467918E',
+    deployerAddress: '0x610178dA211FEF7D417bC0e6FeD39F05609AD788',
+    tokenAddress: '0x6F1216D1BFe15c98520CA1434FC1d9D57AC95321',
+    minterAddress: '0x40a87c555319e8bD334b209CA3fA22615b9c619e',
+    governorAddress: '0xCBd5431cC04031d089c90E7c83288183A6Fe545d',
+    timelockAddress: '0xdAD42D43ecE0f6e8da8c2BCbC6A25FF6b3922C58',
     minterType: MinterType.FixedPriceSequentialMinter,
   },
   [ChainId.Rinkeby]: {
-    deployerAddress: '0xC95d98da541FF990D773F9015996d34663dF0735',
-    tokenAddress: '0x6A675c307F9d7E461351d663a2e4D47720aD59ef',
-    minterAddress: '0x7601b5A6C09818F4E4C7d64925B5c5828471B119',
-    governorAddress: '0x04411dd13a3A65478F991Fa42256758405FD53C0',
-    timelockAddress: '0xF8E0A22Ec95F8B21B903Ca6b8f86D68CF72dd9d1',
+    deployerAddress: '0x25979F892440e384dF1d11dc621c8f4179A5b55F',
+    tokenAddress: '0x4D241905bB6348c31D23547D7c39921FBC51F9Ce',
+    minterAddress: '0x8C5b51aa7652A7755b902c7A220cB9FA92e4d73A',
+    governorAddress: '0xAc6545Dfd53a565c4969548FFc646385EC74bD02',
+    timelockAddress: '0x2a2b42e6C2E774eCD99f85D6792615Fb830db8d0',
     minterType: MinterType.FixedPriceSequentialMinter,
   },
   [ChainId.OptimismKovan]: {
