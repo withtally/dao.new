@@ -9,6 +9,6 @@
     "skipLibCheck": true,
     "declaration": true,
   },
-  "include": ["./scripts", "./test", "./typechain", "./src"],
+  "include": ["./tasks", "./test", "./typechain", "./src"],
   "files": ["./hardhat.config.ts"]
 }
