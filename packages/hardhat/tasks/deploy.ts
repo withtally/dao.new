@@ -20,12 +20,25 @@ task("deploy", "Deploy all contracts")
     "serviceFeeAddress",
     "Address of the Tally DAO receipient of minting fees (0x...)"
   )
+  .addOptionalParam(
+    "timelockContractAddress",
+    "Address of an existing timelock contract to use instead of deploying a new one",
+    undefined
+  )
   .setAction(async (args, { ethers }) => {
-    // Check that provided address is valid
+    // Verifying parameters
     const serviceFeeAddress = ethers.utils.getAddress(args.serviceFeeAddress);
     console.log(`Using serviceFeeAddress: ${serviceFeeAddress}`);
 
+    let timelockAddress = "";
+    if (args.timelockContractAddress) {
+      timelockAddress = ethers.utils.getAddress(args.timelockContractAddress);
+      console.log(`Using existing timelock contract at: ${timelockAddress}`);
+    }
+
     const [deployer] = await ethers.getSigners();
+    console.log(`Deployer: ${deployer.address}`);
+    console.log("");
 
     if ((await ethers.provider.getNetwork()).chainId == 1337) {
       // Deploy Multicall on localhost
@@ -36,10 +49,14 @@ task("deploy", "Deploy all contracts")
       new ERC721DAOToken__factory(deployer),
       "ERC721DAOToken"
     );
-    const timelockImpl = await deployContract(
-      new ERC721Timelock__factory(deployer),
-      "ERC721Timelock"
-    );
+
+    if (timelockAddress === "") {
+      const timelockImpl = await deployContract(
+        new ERC721Timelock__factory(deployer),
+        "ERC721Timelock"
+      );
+      timelockAddress = timelockImpl.address;
+    }
     const governorImpl = await deployContract(
       new ERC721Governor__factory(deployer),
       "ERC721Governor"
@@ -88,7 +105,7 @@ task("deploy", "Deploy all contracts")
 
     await deployerContract.initialize(
       tokenImpl.address,
-      timelockImpl.address,
+      timelockAddress,
       governorImpl.address,
       [simpleMinterImpl.address, idMinterImpl.address],
       [
