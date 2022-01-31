@@ -1,10 +1,5 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// When running the script with `hardhat run <script>` you'll find the Hardhat
-// Runtime Environment's members available in the global scope.
-import { ContractFactory } from "ethers";
-import { ethers } from "hardhat";
+import { task } from "hardhat/config";
+import { deployContract } from "./deploy-utils";
 import {
   ERC721DAOToken__factory,
   ERC721Governor__factory,
@@ -22,14 +17,7 @@ import {
 
 const SERVICE_FEE_ADDRESS = "0x4cce31b5E734934c62f0F411BaF53c2b3e14c3f4"; // TODO update this to DAO address
 
-async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
-
+task("deploy", "Deploy all contracts").setAction(async (args, { ethers }) => {
   const [deployer] = await ethers.getSigners();
 
   if ((await ethers.provider.getNetwork()).chainId == 1337) {
@@ -100,20 +88,4 @@ async function main() {
     ],
     SERVICE_FEE_ADDRESS
   );
-}
-
-async function deployContract(factory: ContractFactory, name: string) {
-  const contract = await factory.deploy();
-  await contract.deployed();
-  console.log("%s deployed to: %s", name, contract.address);
-  return contract;
-}
-
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+});
