@@ -5,8 +5,9 @@
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
-    "build": "yarn run compile && yarn run build:ts",
+    "build": "yarn typechain && yarn build:ts",
     "build:ts": "tsc -p tsconfig.json",
+    "typechain": "TS_NODE_TRANSPILE_ONLY=true yarn hardhat --config ./hardhat.base.config.ts typechain",
     "chain": "npx hardhat node --network hardhat",
     "clean": "npx hardhat clean",
     "compile": "npx hardhat compile",
