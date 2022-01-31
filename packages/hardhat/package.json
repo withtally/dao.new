@@ -14,6 +14,7 @@
     "deploy:rinkeby": "npx hardhat --network rinkeby run scripts/deploy.ts",
     "deploy:arbitrum-rinkeby": "npx hardhat --network arbitrum-rinkeby run scripts/deploy.ts",
     "deploy:mumbai": "npx hardhat --network mumbai run scripts/deploy.ts",
+    "deploy-svg-placeholder": "npx hardhat deploy-svg-placeholder",
     "test": "npx hardhat test --network hardhat",
     "test-gas": "REPORT_GAS=1 npx hardhat test --network hardhat",
     "console": "npx hardhat console --network localhost",
