@@ -24,7 +24,7 @@ export const chainIdToContracts: Record<SupportedChains, ContractAddresses> = {
   },
   [ChainId.Rinkeby]: {
     deployerAddress: '0x02CB117254a82E2401B8c341CE668eDfF2f268FD',
-    svgPlaceholderAddress: '0xc5A55aceB472472d3f7e0Ba9e7d975B31FE04c41',
+    svgPlaceholderAddress: '0x0c57B1b12831c20Be166b300aff4DE5d7F5A479a',
   },
   [ChainId.OptimismKovan]: {
     deployerAddress: '0x8c49f49B3e5A2a469A09f4d8D11546Bc928c08Aa',
