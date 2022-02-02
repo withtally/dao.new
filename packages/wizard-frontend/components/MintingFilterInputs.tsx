@@ -1,8 +1,10 @@
-import { Heading, VStack } from '@chakra-ui/react'
+import { Box, Heading, VStack } from '@chakra-ui/react'
 import { MintingFilterToggle } from '@create-nft-dao/shared'
 import { MintingFilterNFTsInputs } from '@create-nft-dao/shared'
+import { FormSectionContent } from '../layout/FormSectionContent'
+import { FormSectionHeader } from '../layout/FormSectionHeading'
 
-export const MintingFilterInputs = ({ values, onValuesChange }) => {
+export const MintingFilterInputs = ({ values, onValuesChange, ...props }) => {
   const onSwitchChange = (newValue) => {
     const newValues = Object.assign({}, values)
 
@@ -20,26 +22,26 @@ export const MintingFilterInputs = ({ values, onValuesChange }) => {
   }
 
   return (
-    <>
-      <Heading as="h3" size="lg" mb={6} mt={6}>
-        3.1 Buyer Filtering
-      </Heading>
-      <VStack spacing={6} alignItems="flex-start">
-        <MintingFilterToggle
-          value={values.useMintingFilter}
-          onValueChange={onSwitchChange}
-        />
-        {values.useMintingFilter ? (
-          <>
-            <MintingFilterNFTsInputs
-              values={values.tokens}
-              onValuesChange={onTokenInputsChange}
-            />
-          </>
-        ) : (
-          <></>
-        )}
-      </VStack>
-    </>
+    <Box {...props}>
+      <FormSectionHeader number="3.1" text="Buyer Filtering" />
+      <FormSectionContent>
+        <VStack spacing={6} alignItems="flex-start">
+          <MintingFilterToggle
+            value={values.useMintingFilter}
+            onValueChange={onSwitchChange}
+          />
+          {values.useMintingFilter ? (
+            <>
+              <MintingFilterNFTsInputs
+                values={values.tokens}
+                onValuesChange={onTokenInputsChange}
+              />
+            </>
+          ) : (
+            <></>
+          )}
+        </VStack>
+      </FormSectionContent>
+    </Box>
   )
 }

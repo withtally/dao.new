@@ -209,6 +209,7 @@ function HomeIndex(): JSX.Element {
                 defaultStartBlock={getDefaultStartBlock(library)}
               />
               <MintingFilterInputs
+                mt="26px"
                 values={state.mintingFilterConfig}
                 onValuesChange={onMintingFilterConfigChange}
               />
