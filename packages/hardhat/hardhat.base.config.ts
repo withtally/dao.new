@@ -59,7 +59,7 @@ const config: HardhatUserConfig = {
       accounts: { mnemonic: process.env.MNEMONIC || "dummy-value" },
     },
     mumbai: {
-      url: process.env.MUMBAI_RPC_URL,
+      url: "https://rpc-mumbai.maticvigil.com",
       accounts: { mnemonic: process.env.MNEMONIC || "dummy-value" },
     },
   },
