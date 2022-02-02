@@ -43,6 +43,7 @@ export const theme = extendTheme({
     },
     brandGray: {
       100: '#E5F1F9',
+      200: '#F7FAFC',
     },
   },
   fonts: {

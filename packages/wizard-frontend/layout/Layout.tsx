@@ -11,6 +11,8 @@ import { getErrorMessage } from '@create-nft-dao/shared'
 import { useEthers, useNotifications } from '@usedapp/core'
 import React from 'react'
 import { truncateHash } from '../lib/utils'
+import { Background } from './Background'
+import { Footer } from './Footer'
 import { Head } from './Head'
 import { Header } from './Header'
 
@@ -37,10 +39,10 @@ export const Layout = ({ children }: LayoutProps): JSX.Element => {
   return (
     <>
       <Head />
+      <Background />
       <Header />
       <main>
-        <Image src="./images/bg_shape01.svg" position="absolute" left="572px" />
-        <Container maxWidth="100%" ml="100px" top="-98px" position="relative">
+        <Container maxWidth="100%" ml="100px" position="relative">
           <Image
             src="./images/bg_shape07.svg"
             position="absolute"
@@ -84,9 +86,7 @@ export const Layout = ({ children }: LayoutProps): JSX.Element => {
           })}
         </Container>
       </main>
-      <footer>
-        <Container mt="8" py="8" maxWidth="container.xl"></Container>
-      </footer>
+      <Footer />
     </>
   )
 }
