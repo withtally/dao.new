@@ -22,7 +22,7 @@ task("deploy", "Deploy all contracts")
   )
   .addOptionalParam(
     "timelockContractAddress",
-    "Address of an existing timelock contract to use instead of deploying a new one",
+    "(Optional) Address of an existing timelock contract to use instead of deploying a new one",
     undefined
   )
   .setAction(async (args, { ethers }) => {
