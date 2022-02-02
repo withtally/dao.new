@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Text } from '@chakra-ui/react'
+import { Box, Button, Flex, Stack, Text } from '@chakra-ui/react'
 import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
 import { providers, utils } from 'ethers'
 import React, { useEffect, useReducer, useState } from 'react'
@@ -192,7 +192,7 @@ function HomeIndex(): JSX.Element {
 
   return (
     <Layout>
-      <Box>
+      <Box w="840px">
         <form onSubmit={deployClones}>
           <Stack spacing="25px">
             <ChainSelector />
@@ -219,11 +219,11 @@ function HomeIndex(): JSX.Element {
               onGovernorConfigChange={onGovernorConfigChange}
             />
           </Stack>
-          <Box>
+          <Flex>
             <Button
               name="submit"
               type="submit"
-              mt={8}
+              margin="40px auto"
               size="lg"
               colorScheme="teal"
               isLoading={state.isLoading}
@@ -231,7 +231,7 @@ function HomeIndex(): JSX.Element {
             >
               Deploy Clones
             </Button>
-          </Box>
+          </Flex>
         </form>
       </Box>
       {state.clones !== null ? (

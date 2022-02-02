@@ -6,7 +6,6 @@ export const FormSection = ({ children }): JSX.Element => {
       borderRadius="3px"
       boxShadow="0px 15px 30px rgba(42, 33, 163, 0.03)"
       p="40px"
-      w="840px"
       background="white"
     >
       {children}
