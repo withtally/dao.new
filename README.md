@@ -46,16 +46,6 @@ yarn chain
 yarn test
 ```
 
-## Deploy contracts
+## Deploying contracts
 
-Locally:
-
-```
-yarn deploy
-```
-
-To rinkeby:
-
-```
-yarn deploy:rinkeby
-```
+see [README under the hardhat package](https://github.com/withtally/dao.new/blob/main/packages/hardhat/README.md)
