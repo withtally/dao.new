@@ -1,4 +1,4 @@
-import { Box, Heading, VStack } from '@chakra-ui/react'
+import { Box, VStack } from '@chakra-ui/react'
 import { MintingFilterToggle } from '@create-nft-dao/shared'
 import { MintingFilterNFTsInputs } from '@create-nft-dao/shared'
 import { FormSectionContent } from '../layout/FormSectionContent'
