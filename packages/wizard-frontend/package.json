@@ -24,15 +24,17 @@
     ]
   },
   "dependencies": {
-    "@create-nft-dao/hardhat": "1.0.0",
-    "@create-nft-dao/shared": "1.0.0",
     "@apollo/client": "3.1.1",
     "@chakra-ui/icons": "^1.0.17",
     "@chakra-ui/react": "^1.6.3",
+    "@create-nft-dao/hardhat": "1.0.0",
+    "@create-nft-dao/shared": "1.0.0",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@fontsource/open-sans": "^4.5.3",
     "@usedapp/core": "^0.7.3",
     "@web3-react/walletconnect-connector": "^6.2.4",
+    "axios": "^0.24.0",
     "blockies-ts": "^1.0.0",
     "deepmerge": "^4.2.2",
     "ethers": "^5.5.1",
@@ -41,8 +43,7 @@
     "lodash": "4.17.20",
     "next": "^11.0.1",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "axios": "^0.24.0"
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
     "@testing-library/react": "^11.2.5",

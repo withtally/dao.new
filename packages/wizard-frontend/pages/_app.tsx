@@ -15,6 +15,9 @@ import type { AppProps } from 'next/app'
 import React from 'react'
 import { multicallOnLocalhost } from '../config'
 import Script from 'next/script'
+import '@fontsource/open-sans/400.css'
+import '@fontsource/open-sans/700.css'
+import { theme } from '../layout/theme'
 
 const config: Config = {
   readOnlyChainId: ChainId.Rinkeby,
@@ -42,7 +45,7 @@ const config: Config = {
 const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
   return (
     <DAppProvider config={config}>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         {/* Global Site Tag (gtag.js) - Google Analytics */}
         <Script
           strategy="afterInteractive"

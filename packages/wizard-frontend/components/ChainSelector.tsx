@@ -1,4 +1,5 @@
 import { Box } from '@chakra-ui/layout'
+import { Heading } from '@chakra-ui/react'
 import { Select } from '@chakra-ui/select'
 import { ConnectWallet } from '@create-nft-dao/shared'
 import {
@@ -11,6 +12,7 @@ import {
 } from '@usedapp/core'
 import React from 'react'
 import { chainIdToContracts } from '../config'
+import { FormSection } from '../layout/FormSection'
 
 export const ChainSelector = () => {
   const { chainId, library, account } = useEthers()
@@ -77,7 +79,10 @@ export const ChainSelector = () => {
   }
 
   return (
-    <Box>
+    <FormSection>
+      <Heading as="h2" mb={6} mt={6}>
+        1. Connect wallet & select chain
+      </Heading>
       {account ? (
         <>
           <Select
@@ -115,6 +120,6 @@ export const ChainSelector = () => {
           <ConnectWallet />
         </Box>
       )}
-    </Box>
+    </FormSection>
   )
 }

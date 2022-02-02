@@ -8,6 +8,7 @@ import {
   Link,
 } from '@chakra-ui/react'
 import { RoyaltiesForm } from '@create-nft-dao/shared'
+import { FormSection } from '../layout/FormSection'
 
 export const TokenInputs = ({
   tokenConfig,
@@ -40,7 +41,7 @@ export const TokenInputs = ({
   }
 
   return (
-    <>
+    <FormSection>
       <Heading as="h2" mb={6} mt={6}>
         2. Token
       </Heading>
@@ -112,6 +113,6 @@ export const TokenInputs = ({
           onValuesChange={onRoyaltiesConfigChange}
         />
       </VStack>
-    </>
+    </FormSection>
   )
 }

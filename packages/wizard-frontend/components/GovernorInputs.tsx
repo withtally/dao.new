@@ -14,6 +14,7 @@ import {
   RadioGroup,
   Radio,
 } from '@chakra-ui/react'
+import { FormSection } from '../layout/FormSection'
 
 export const GovernorInputs = ({ governorConfig, onGovernorConfigChange }) => {
   function onGovernorNameChange(e) {
@@ -59,7 +60,7 @@ export const GovernorInputs = ({ governorConfig, onGovernorConfigChange }) => {
   }
 
   return (
-    <>
+    <FormSection>
       <Heading as="h2" mb={6} mt={6}>
         4. Governor
       </Heading>
@@ -197,6 +198,6 @@ export const GovernorInputs = ({ governorConfig, onGovernorConfigChange }) => {
           </FormHelperText>
         </FormControl>
       </VStack>
-    </>
+    </FormSection>
   )
 }
