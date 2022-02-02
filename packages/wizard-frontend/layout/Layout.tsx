@@ -39,6 +39,7 @@ export const Layout = ({ children }: LayoutProps): JSX.Element => {
       <Head />
       <Header />
       <main>
+        <Image src="./images/bg_shape01.svg" position="absolute" left="572px" />
         <Container maxWidth="100%" ml="100px" top="-98px" position="relative">
           <Image
             src="./images/bg_shape07.svg"
