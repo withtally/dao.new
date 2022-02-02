@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Stack, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Stack, Text } from '@chakra-ui/react'
 import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
 import { providers, utils } from 'ethers'
 import React, { useEffect, useReducer, useState } from 'react'
