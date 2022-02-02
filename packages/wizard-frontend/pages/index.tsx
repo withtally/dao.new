@@ -192,7 +192,7 @@ function HomeIndex(): JSX.Element {
 
   return (
     <Layout>
-      <Box top="-98px" position="relative">
+      <Box>
         <form onSubmit={deployClones}>
           <Stack spacing="25px">
             <ChainSelector />

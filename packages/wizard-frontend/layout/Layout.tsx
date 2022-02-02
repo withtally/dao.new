@@ -5,6 +5,7 @@ import {
   AlertTitle,
   Box,
   Container,
+  Image,
 } from '@chakra-ui/react'
 import { getErrorMessage } from '@create-nft-dao/shared'
 import { useEthers, useNotifications } from '@usedapp/core'
@@ -38,7 +39,14 @@ export const Layout = ({ children }: LayoutProps): JSX.Element => {
       <Head />
       <Header />
       <main>
-        <Container maxWidth="100%" ml="100px">
+        <Container maxWidth="100%" ml="100px" top="-98px" position="relative">
+          <Image
+            src="./images/bg_shape07.svg"
+            position="absolute"
+            left="801px"
+            top="-50px"
+            zIndex={-1}
+          />
           {error && (
             <Alert status="error" mb="8">
               <AlertIcon />

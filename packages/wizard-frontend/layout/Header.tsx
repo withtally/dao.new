@@ -5,7 +5,7 @@ export const Header = (): JSX.Element => {
   return (
     <header>
       <Container maxW="100%" h="440px" p="0">
-        <Box bg="#F7FAFC" w="100%" h="100%" position="absolute" zIndex="-1">
+        <Box bg="#F7FAFC" h="440px" w="100%" zIndex="-1" position="absolute">
           <Image
             src="./images/bg_shape05.svg"
             w="242px"
@@ -19,6 +19,12 @@ export const Header = (): JSX.Element => {
             left="139px"
             top="185px"
           />
+          {/* <Image
+            src="./images/bg_shape07.svg"
+            position="absolute"
+            left="885px"
+            bottom="50px"
+          /> */}
         </Box>
 
         <Nav />
