@@ -39,6 +39,10 @@ export const theme = extendTheme({
       200: '#00E6CD',
       300: '#725BFF',
       400: '#5243d9',
+      500: '#937DFF',
+    },
+    brandGray: {
+      100: '#E5F1F9',
     },
   },
   fonts: {
@@ -57,6 +61,24 @@ export const theme = extendTheme({
         helperText: {
           fontSize: '10px',
         },
+      },
+    },
+    Switch: {
+      baseStyle: {
+        thumb: {
+          _checked: {
+            bg: 'brand.100',
+          },
+        },
+        track: {
+          bg: 'brandGray.100',
+          _checked: {
+            bg: 'brand.500',
+          },
+        },
+      },
+      defaultProps: {
+        size: 'lg',
       },
     },
   },
