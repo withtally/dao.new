@@ -47,5 +47,17 @@ export const theme = extendTheme({
   },
   components: {
     Button,
+    FormLabel: {
+      baseStyle: {
+        fontSize: '14px',
+      },
+    },
+    Form: {
+      baseStyle: {
+        helperText: {
+          fontSize: '10px',
+        },
+      },
+    },
   },
 })
