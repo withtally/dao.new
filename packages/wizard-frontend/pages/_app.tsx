@@ -16,6 +16,7 @@ import React from 'react'
 import { multicallOnLocalhost } from '../config'
 import Script from 'next/script'
 import '@fontsource/open-sans/400.css'
+import '@fontsource/open-sans/600.css'
 import '@fontsource/open-sans/700.css'
 import { theme } from '../layout/theme'
 

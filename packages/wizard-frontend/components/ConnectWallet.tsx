@@ -22,9 +22,7 @@ export function ConnectWallet(): JSX.Element {
   return (
     <>
       <Box>
-        <Button colorScheme="teal" variant="outline" onClick={onOpen}>
-          Connect wallet
-        </Button>
+        <Button onClick={onOpen}>Connect wallet</Button>
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

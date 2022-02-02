@@ -1,7 +1,6 @@
 import { Box } from '@chakra-ui/layout'
 import { Heading } from '@chakra-ui/react'
 import { Select } from '@chakra-ui/select'
-import { ConnectWallet } from '@create-nft-dao/shared'
 import {
   ArbitrumRinkeby,
   getChainById,
@@ -13,6 +12,7 @@ import {
 import React from 'react'
 import { chainIdToContracts } from '../config'
 import { FormSection } from '../layout/FormSection'
+import { ConnectWallet } from './ConnectWallet'
 
 export const ChainSelector = () => {
   const { chainId, library, account } = useEthers()
