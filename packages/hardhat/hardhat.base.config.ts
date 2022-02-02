@@ -43,7 +43,7 @@ const config: HardhatUserConfig = {
       loggingEnabled: false,
     },
     mainnet: {
-      url: process.env.MAINNET_RPC_URL,
+      url: process.env.MAINNET_RPC_URL || "",
       accounts: { mnemonic: process.env.MNEMONIC || "dummy-value" },
     },
     rinkeby: {
