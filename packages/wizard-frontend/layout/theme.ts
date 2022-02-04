@@ -44,6 +44,7 @@ export const theme = extendTheme({
     brandGray: {
       100: '#E5F1F9',
       200: '#F7FAFC',
+      300: '#718096',
     },
     darkText: {
       100: '#0E103C',

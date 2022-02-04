@@ -2,8 +2,15 @@ import { Box, Image } from '@chakra-ui/react'
 
 export const Background = () => {
   return (
-    <Box position="absolute" w="100%" id="background" zIndex="-1">
-      <Box h="440px" bg="brandGray.200" w="100%">
+    <Box
+      position="absolute"
+      w="100%"
+      h="100%"
+      id="background"
+      bg="brandGray.200"
+      zIndex="-1"
+    >
+      <Box h="440px" w="100%">
         <Image
           src="./images/bg_shape06.svg"
           position="absolute"
@@ -18,7 +25,7 @@ export const Background = () => {
         />
         <Image src="./images/bg_shape05.svg" position="absolute" right="0" />
       </Box>
-      <Box position="relative" h="2260px">
+      <Box position="relative" h="2260px" backgroundColor="#fff">
         <Image
           src="./images/bg_shape01.svg"
           position="absolute"
@@ -56,7 +63,7 @@ export const Background = () => {
       >
         <Image src="./images/bg_shape02.svg" position="relative" top="146px" />
       </Box>
-      <Box h="240px" bg="brandGray.200"></Box>
+      <Box h="240px"></Box>
     </Box>
   )
 }
