@@ -4,7 +4,6 @@ import {
   AlertIcon,
   AlertTitle,
   Box,
-  Container,
   Image,
 } from '@chakra-ui/react'
 import { getErrorMessage } from '@create-nft-dao/shared'
@@ -42,7 +41,7 @@ export const Layout = ({ children }: LayoutProps): JSX.Element => {
       <Background />
       <Header />
       <main>
-        <Container maxWidth="100%" ml="100px" position="relative">
+        <Box ml="100px" position="relative">
           <Image
             src="./images/bg_shape07.svg"
             position="absolute"
@@ -84,7 +83,7 @@ export const Layout = ({ children }: LayoutProps): JSX.Element => {
               </Alert>
             )
           })}
-        </Container>
+        </Box>
       </main>
       <Footer />
     </>
