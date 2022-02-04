@@ -37,12 +37,7 @@ export const Nav = (): JSX.Element => {
         </Text>
       </Flex>
       <Spacer />
-      <Flex
-        order={[-1, null, null, 2]}
-        alignItems={'center'}
-        justifyContent={['flex-start', null, null, 'flex-end']}
-        mr="90px"
-      >
+      <Flex alignItems={'center'} mr="90px" id="connect-wallet-container">
         {account ? (
           <>
             <Balance />
