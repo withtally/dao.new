@@ -3,20 +3,20 @@ import { Box, Image } from '@chakra-ui/react'
 export const Background = () => {
   return (
     <Box position="absolute" w="100%" id="background" zIndex="-1">
-      <Box bg="brandGray.200" h="440px" w="100%">
-        <Image
-          src="./images/bg_shape05.svg"
-          w="242px"
-          h="440px"
-          position="absolute"
-          right="0"
-        />
+      <Box h="440px" bg="brandGray.200" w="100%">
         <Image
           src="./images/bg_shape06.svg"
           position="absolute"
-          left="139px"
+          left="185px"
           top="185px"
         />
+        <Image
+          src="./images/bg_shape07.svg"
+          position="absolute"
+          right="447px"
+          top="281px"
+        />
+        <Image src="./images/bg_shape05.svg" position="absolute" right="0" />
       </Box>
       <Box position="relative" h="2260px">
         <Image

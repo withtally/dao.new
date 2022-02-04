@@ -42,13 +42,6 @@ export const Layout = ({ children }: LayoutProps): JSX.Element => {
       <Header />
       <main>
         <Box ml="100px" position="relative">
-          <Image
-            src="./images/bg_shape07.svg"
-            position="absolute"
-            left="801px"
-            top="-50px"
-            zIndex={-1}
-          />
           {error && (
             <Alert status="error" mb="8">
               <AlertIcon />
