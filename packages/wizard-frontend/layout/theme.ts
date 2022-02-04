@@ -45,6 +45,9 @@ export const theme = extendTheme({
       100: '#E5F1F9',
       200: '#F7FAFC',
     },
+    darkText: {
+      100: '#0E103C',
+    },
   },
   fonts: {
     body: 'Open Sans',

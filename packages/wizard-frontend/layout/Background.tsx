@@ -18,8 +18,12 @@ export const Background = () => {
           top="185px"
         />
       </Box>
-      <Box position="relative" h="2354px">
-        <Image src="./images/bg_shape01.svg" position="absolute" left="572px" />
+      <Box position="relative" h="2260px">
+        <Image
+          src="./images/bg_shape01.svg"
+          position="absolute"
+          right="132px"
+        />
         <Image
           src="./images/bg_shape04.svg"
           position="absolute"

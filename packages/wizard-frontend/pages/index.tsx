@@ -192,7 +192,7 @@ function HomeIndex(): JSX.Element {
 
   return (
     <Layout>
-      <Box w="840px">
+      <Box maxW="840px">
         <form onSubmit={deployClones}>
           <Stack spacing="25px">
             <ChainSelector />
