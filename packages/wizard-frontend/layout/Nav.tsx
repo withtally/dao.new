@@ -11,6 +11,7 @@ import {
   HStack,
   Spacer,
   Box,
+  Img,
 } from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
 import { Balance } from '../components/Balance'
@@ -27,17 +28,10 @@ export const Nav = (): JSX.Element => {
   }
 
   return (
-    <Flex>
-      <Flex alignItems="baseline">
-        <Text color="brand.100" fontWeight="bold" fontSize="2.8em" ml="100px">
-          DAO
-        </Text>
-        <Text color="brand.200" fontWeight="bold" fontSize="1.5em">
-          .new
-        </Text>
-      </Flex>
+    <Flex m={{ base: '0', md: '0 50px', lg: '0 100px' }} flexWrap="wrap">
+      <Img src="./images/dao.new_logo.svg" position="relative" top="7px" />
       <Spacer />
-      <Flex alignItems={'center'} mr="90px" id="connect-wallet-container">
+      <Flex alignItems={'center'} id="connect-wallet-container">
         {account ? (
           <>
             <Balance />
