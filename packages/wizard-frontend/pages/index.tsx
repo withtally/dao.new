@@ -68,7 +68,7 @@ const initialState: StateType = {
     votingPeriod: DEFAULT_VOTING_PERIOD,
     quorumNumerator: DEFAULT_QUORUM_NUMERATOR,
     timelockDelay: DEFAULT_TIMELOCK_DELAY,
-    upgradable: true,
+    upgradable: false,
   },
   mintingFilterConfig: {
     useMintingFilter: false,

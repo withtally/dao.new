@@ -54,12 +54,6 @@ export const GovernorInputs = ({ governorConfig, onGovernorConfigChange }) => {
     onGovernorConfigChange(newValues)
   }
 
-  function onGovernorTimelockUpgradableChange(v) {
-    const newValues = Object.assign({}, governorConfig)
-    newValues.upgradable = v === '1'
-    onGovernorConfigChange(newValues)
-  }
-
   return (
     <FormSection>
       <FormSectionHeader number="4" text="Governor" />
@@ -177,24 +171,6 @@ export const GovernorInputs = ({ governorConfig, onGovernorConfigChange }) => {
             <FormHelperText>
               The delay between a proposal's success and when its transactions
               can be executed.
-            </FormHelperText>
-          </FormControl>
-          <FormControl id="governon-upgradable" isRequired>
-            <FormLabel>Make Governor upgradable?</FormLabel>
-            <RadioGroup
-              defaultValue="1"
-              value={governorConfig.upgradable ? '1' : '0'}
-              onChange={onGovernorTimelockUpgradableChange}
-            >
-              <HStack spacing={8}>
-                <Radio value="1">Yes</Radio>
-                <Radio value="0">No</Radio>
-              </HStack>
-            </RadioGroup>
-            <FormHelperText>
-              This is a tradeoff; choosing Yes makes your DAO more future-proof,
-              while choosing No saves gas costs in deploying your Governor
-              contracts.
             </FormHelperText>
           </FormControl>
         </VStack>
