@@ -41,7 +41,11 @@ export const Layout = ({ children }: LayoutProps): JSX.Element => {
       <Background />
       <Header />
       <main>
-        <Box ml="100px" position="relative">
+        <Box
+          m={{ base: '0', md: '0 auto', lg: '0 0 0 100px' }}
+          position="relative"
+          maxW="840px"
+        >
           {error && (
             <Alert status="error" mb="8">
               <AlertIcon />

@@ -8,8 +8,8 @@ export const Header = (): JSX.Element => {
         <Nav />
 
         <Heading
-          color="brand.100"
-          fontSize="4.5em"
+          color="brand.300"
+          fontSize={{ base: '2.5em', md: '4.5em' }}
           textAlign="center"
           mt="79px"
         >

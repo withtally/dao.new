@@ -23,7 +23,12 @@ export const Background = () => {
           right="447px"
           top="281px"
         />
-        <Image src="./images/bg_shape05.svg" position="absolute" right="0" />
+        <Image
+          src="./images/bg_shape05.svg"
+          position="absolute"
+          right="0"
+          display={{ base: 'none', md: 'inline' }}
+        />
       </Box>
       <Box position="relative" h="2260px" backgroundColor="#fff">
         <Image
