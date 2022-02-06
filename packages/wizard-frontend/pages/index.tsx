@@ -1,8 +1,7 @@
-import { Box, Button, Heading, Text } from '@chakra-ui/react'
+import { Box, Button, Flex, Stack, Text } from '@chakra-ui/react'
 import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
 import { providers, utils } from 'ethers'
 import React, { useEffect, useReducer, useState } from 'react'
-import { Layout } from '@create-nft-dao/shared'
 import {
   DEFAULT_TOKEN_SUPPLY,
   DEFAULT_TOKEN_PRICE,
@@ -26,6 +25,8 @@ import { GovernorInputs } from '../components/GovernorInputs'
 import { ClonesView } from '../components/ClonesView'
 import { Web3Provider } from '@ethersproject/providers'
 import { ChainSelector } from '../components/ChainSelector'
+import { Layout } from '../layout/Layout'
+import { FormSection } from '../layout/FormSection'
 
 /**
  * Constants & Helpers
@@ -189,52 +190,40 @@ function HomeIndex(): JSX.Element {
     })
   }
 
-  const layoutProps = {
-    title: 'Create NFT DAO: Wizard',
-  }
-  const navbarLinks = [
-    {
-      href: '/',
-      label: 'Home',
-    },
-  ]
-
   return (
-    <Layout customMeta={layoutProps} navbarLinks={navbarLinks}>
-      <Heading as="h1" mb="8" px={4}>
-        Create NFT DAO 🧙‍♀️
-      </Heading>
-      <Box maxWidth="container.sm" px={4}>
-        <Heading as="h2" mb={6} mt={6}>
-          1. Connect wallet & select chain
-        </Heading>
-        <ChainSelector />
+    <Layout>
+      <Box maxW="840px">
         <form onSubmit={deployClones}>
-          <TokenInputs
-            tokenConfig={state.tokenConfig}
-            onTokenConfigChange={onTokenConfigChange}
-            royaltiesConfig={state.royaltiesConfig}
-            onRoyaltiesConfigChange={onRoyaltiesConfigChange}
-          />
-          <MinterInputs
-            minterConfig={state.minterConfig}
-            onMinterConfigChange={onMinterConfigChange}
-            defaultStartBlock={getDefaultStartBlock(library)}
-          />
-
-          <MintingFilterInputs
-            values={state.mintingFilterConfig}
-            onValuesChange={onMintingFilterConfigChange}
-          />
-          <GovernorInputs
-            governorConfig={state.governorConfig}
-            onGovernorConfigChange={onGovernorConfigChange}
-          />
-          <Box>
+          <Stack spacing="25px">
+            <ChainSelector />
+            <TokenInputs
+              tokenConfig={state.tokenConfig}
+              onTokenConfigChange={onTokenConfigChange}
+              royaltiesConfig={state.royaltiesConfig}
+              onRoyaltiesConfigChange={onRoyaltiesConfigChange}
+            />
+            <FormSection>
+              <MinterInputs
+                minterConfig={state.minterConfig}
+                onMinterConfigChange={onMinterConfigChange}
+                defaultStartBlock={getDefaultStartBlock(library)}
+              />
+              <MintingFilterInputs
+                mt="26px"
+                values={state.mintingFilterConfig}
+                onValuesChange={onMintingFilterConfigChange}
+              />
+            </FormSection>
+            <GovernorInputs
+              governorConfig={state.governorConfig}
+              onGovernorConfigChange={onGovernorConfigChange}
+            />
+          </Stack>
+          <Flex>
             <Button
               name="submit"
               type="submit"
-              mt={8}
+              margin="40px auto"
               size="lg"
               colorScheme="teal"
               isLoading={state.isLoading}
@@ -242,7 +231,7 @@ function HomeIndex(): JSX.Element {
             >
               Deploy Clones
             </Button>
-          </Box>
+          </Flex>
         </form>
       </Box>
       {state.clones !== null ? (

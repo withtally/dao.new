@@ -1,6 +1,5 @@
 import { Box } from '@chakra-ui/layout'
 import { Select } from '@chakra-ui/select'
-import { ConnectWallet } from '@create-nft-dao/shared'
 import {
   ArbitrumRinkeby,
   getChainById,
@@ -11,6 +10,10 @@ import {
 } from '@usedapp/core'
 import React from 'react'
 import { chainIdToContracts } from '../config'
+import { FormSection } from '../layout/FormSection'
+import { FormSectionContent } from '../layout/FormSectionContent'
+import { FormSectionHeader } from '../layout/FormSectionHeading'
+import { ConnectWallet } from './ConnectWallet'
 
 export const ChainSelector = () => {
   const { chainId, library, account } = useEthers()
@@ -77,44 +80,48 @@ export const ChainSelector = () => {
   }
 
   return (
-    <Box>
-      {account ? (
-        <>
-          <Select
-            value={chainId}
-            onChange={(e) => {
-              e.preventDefault()
+    <FormSection>
+      <FormSectionHeader number="1" text="Connect wallet & select chain" />
+      <FormSectionContent>
+        {account ? (
+          <>
+            <Select
+              value={chainId}
+              onChange={(e) => {
+                e.preventDefault()
 
-              const desiredChainId = Number.parseInt(e.target.value)
-              handleChangeNetwork(desiredChainId)
-            }}
-          >
-            <option value={Rinkeby.chainId}>Rinkeby</option>
-            <option value={OptimismKovan.chainId}>Optimistic Kovan</option>
-            <option value={ArbitrumRinkeby.chainId}>Arbitrum Rinkeby</option>
-            <option value={Mumbai.chainId}>Mumbai (Polygon testnet)</option>
-            <option disabled>Ethereum mainnet (coming soon)</option>
-            <option disabled>Optimism (coming soon)</option>
-            <option disabled>Arbitrum (coming soon)</option>
-            <option disabled>Polygon MATIC (coming soon)</option>
-          </Select>
+                const desiredChainId = Number.parseInt(e.target.value)
+                handleChangeNetwork(desiredChainId)
+              }}
+            >
+              <option value={Rinkeby.chainId}>Rinkeby</option>
+              <option value={OptimismKovan.chainId}>Optimistic Kovan</option>
+              <option value={ArbitrumRinkeby.chainId}>Arbitrum Rinkeby</option>
+              <option value={Mumbai.chainId}>Mumbai (Polygon testnet)</option>
+              <option disabled>Ethereum mainnet (coming soon)</option>
+              <option disabled>Optimism (coming soon)</option>
+              <option disabled>Arbitrum (coming soon)</option>
+              <option disabled>Polygon MATIC (coming soon)</option>
+            </Select>
 
-          <Box fontSize={10} mt={4}>
-            <Box>Chain: {getChainById(chainId).chainName}</Box>
-            <Box>
-              Deployer contract: {chainIdToContracts[chainId]?.deployerAddress}
+            <Box fontSize={10} mt={4}>
+              <Box>Chain: {getChainById(chainId).chainName}</Box>
+              <Box>
+                Deployer contract:{' '}
+                {chainIdToContracts[chainId]?.deployerAddress}
+              </Box>
+              <Box>
+                SVGPlaceholder contract:{' '}
+                {chainIdToContracts[chainId]?.svgPlaceholderAddress}
+              </Box>
             </Box>
-            <Box>
-              SVGPlaceholder contract:{' '}
-              {chainIdToContracts[chainId]?.svgPlaceholderAddress}
-            </Box>
+          </>
+        ) : (
+          <Box>
+            <ConnectWallet />
           </Box>
-        </>
-      ) : (
-        <Box>
-          <ConnectWallet />
-        </Box>
-      )}
-    </Box>
+        )}
+      </FormSectionContent>
+    </FormSection>
   )
 }
