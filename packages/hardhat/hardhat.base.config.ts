@@ -64,7 +64,11 @@ const config: HardhatUserConfig = {
     },
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: {
+      mainnet: process.env.ETHERSCAN_API_KEY,
+      rinkeby: process.env.ETHERSCAN_API_KEY,
+      optimisticKovan: process.env.ETHERSCAN_OPTIMISM_API_KEY,
+    },
     // apiKey: process.env.POLYGONSCAN_API_KEY,
   },
   typechain: {

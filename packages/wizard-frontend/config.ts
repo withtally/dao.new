@@ -27,8 +27,8 @@ export const chainIdToContracts: Record<SupportedChains, ContractAddresses> = {
     svgPlaceholderAddress: '0x0c57B1b12831c20Be166b300aff4DE5d7F5A479a',
   },
   [ChainId.OptimismKovan]: {
-    deployerAddress: '0x8c49f49B3e5A2a469A09f4d8D11546Bc928c08Aa',
-    svgPlaceholderAddress: '0xC906182EA723D6d9e7BA4aF7b3454A1a1772bE4A',
+    deployerAddress: '0xee48904C8Ad275993779E079142C964395d6aF01',
+    svgPlaceholderAddress: '0x34ceC65033aA345Ee2BAbe13529a5648cA7B3F4C',
   },
   [ChainId.ArbitrumRinkeby]: {
     deployerAddress: '0x660fC5AbA193Ed6eE7ECD73E8A120F5e1a0B036F',
@@ -43,9 +43,9 @@ export const chainIdToContracts: Record<SupportedChains, ContractAddresses> = {
 export const chainIdToTallyApiURIConfig: Record<SupportedChains, string> = {
   [ChainId.Localhost]: 'http://localhost:5000/query',
   [ChainId.Rinkeby]: 'https://api.withtally.com/query',
-  [ChainId.OptimismKovan]: '',
-  [ChainId.ArbitrumRinkeby]: '',
-  [ChainId.Mumbai]: '',
+  [ChainId.OptimismKovan]: 'https://api.withtally.com/query',
+  [ChainId.ArbitrumRinkeby]: 'https://api.withtally.com/query',
+  [ChainId.Mumbai]: 'https://api.withtally.com/query',
 }
 
 export const tallyWebBaseURI = 'https://alpha.withtally.com/governance/'

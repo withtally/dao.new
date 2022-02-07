@@ -21,6 +21,7 @@
     "test-gas": "REPORT_GAS=1 npx hardhat test --network hardhat",
     "console": "npx hardhat console --network localhost",
     "console:rinkeby": "npx hardhat console --network rinkeby",
+    "verify": "npx hardhat verify",
     "verify:rinkeby": "npx hardhat verify --network rinkeby",
     "verify:mainnet": "npx hardhat verify --network mainnet",
     "verify:optimistic-kovan": "npx hardhat verify --network optimistic-kovan",
@@ -29,7 +30,7 @@
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
-    "@nomiclabs/hardhat-etherscan": "^2.1.7",
+    "@nomiclabs/hardhat-etherscan": "^3.0.0",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
     "@typechain/ethers-v5": "^8.0.1",
     "@typechain/hardhat": "^3.0.0",
