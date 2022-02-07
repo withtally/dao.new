@@ -10,14 +10,6 @@ import '@fontsource/open-sans/700.css'
 import { theme } from '../layout/theme'
 
 const config: Config = {
-  readOnlyChainId: ChainId.Rinkeby,
-  readOnlyUrls: {
-    [ChainId.Mainnet]: process.env.NEXT_PUBLIC_MAINNET_JSON_RPC,
-    [ChainId.Rinkeby]: process.env.NEXT_PUBLIC_RINKEBY_JSON_RPC,
-    [ChainId.OptimismKovan]: 'https://kovan.optimism.io',
-    [ChainId.Hardhat]: 'http://localhost:8545',
-    [ChainId.Localhost]: 'http://localhost:8545',
-  },
   multicallAddresses: {
     [ChainId.Localhost]: multicallOnLocalhost,
   },
