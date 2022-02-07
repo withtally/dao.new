@@ -10,9 +10,7 @@ import { Select } from '@chakra-ui/select'
 import {
   Arbitrum,
   ArbitrumRinkeby,
-  Chain,
   getChainById,
-  Localhost,
   Mainnet,
   Mumbai,
   Optimism,
@@ -195,7 +193,11 @@ export const ChainSelector = () => {
               <option disabled={!error}>Select a network</option>
 
               {supportedNetworks.map((n) => (
-                <option value={n.chainId} disabled={!n.isDeployed}>
+                <option
+                  value={n.chainId}
+                  disabled={!n.isDeployed}
+                  key={n.chainId}
+                >
                   {n.displayName}
                   {n.isDeployed ? '' : ' (coming soon)'}
                   {n.isTallySupported ? '' : ' (not yet supported on Tally)'}
