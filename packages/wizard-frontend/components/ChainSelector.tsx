@@ -168,8 +168,6 @@ export const ChainSelector = () => {
       })
   }
 
-  console.log(supportedNetworks)
-
   return (
     <FormSection>
       <FormSectionHeader number="1" text="Connect wallet & select chain" />
