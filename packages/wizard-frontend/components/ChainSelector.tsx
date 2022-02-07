@@ -136,7 +136,6 @@ export const ChainSelector = () => {
                 e.preventDefault()
 
                 const desiredChainId = Number.parseInt(e.target.value)
-                console.log('>>>>>', desiredChainId)
                 handleChangeNetwork(desiredChainId)
               }}
             >

@@ -1,16 +1,5 @@
 import { ChakraProvider } from '@chakra-ui/react'
-import {
-  ArbitrumRinkeby,
-  ChainId,
-  Config,
-  DAppProvider,
-  Hardhat,
-  Localhost,
-  Mainnet,
-  Mumbai,
-  OptimismKovan,
-  Rinkeby,
-} from '@usedapp/core'
+import { ChainId, Config, DAppProvider } from '@usedapp/core'
 import type { AppProps } from 'next/app'
 import React from 'react'
 import { multicallOnLocalhost } from '../config'
