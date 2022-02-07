@@ -28,8 +28,12 @@ export const Nav = (): JSX.Element => {
   }
 
   return (
-    <Flex m={{ base: '0', md: '0 50px', lg: '0 100px' }} flexWrap="wrap">
-      <Img src="./images/dao.new_logo.svg" position="relative" top="7px" />
+    <Flex
+      m={{ base: '0', md: '0 50px', lg: '0 100px' }}
+      pt="10px"
+      flexWrap="wrap"
+    >
+      <Img src="./images/dao.new_logo.svg" />
       <Spacer />
       <Flex alignItems={'center'} id="connect-wallet-container">
         {account ? (
