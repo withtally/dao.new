@@ -29,15 +29,6 @@ const config: Config = {
     [ChainId.Hardhat]: 'http://localhost:8545',
     [ChainId.Localhost]: 'http://localhost:8545',
   },
-  networks: [
-    Mainnet,
-    Rinkeby,
-    Localhost,
-    Hardhat,
-    OptimismKovan,
-    ArbitrumRinkeby,
-    Mumbai,
-  ],
   multicallAddresses: {
     [ChainId.Localhost]: multicallOnLocalhost,
   },

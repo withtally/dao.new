@@ -1,22 +1,58 @@
 import { Box } from '@chakra-ui/layout'
+import {
+  Accordion,
+  AccordionButton,
+  Text,
+  AccordionItem,
+  AccordionPanel,
+} from '@chakra-ui/react'
 import { Select } from '@chakra-ui/select'
 import {
   ArbitrumRinkeby,
   getChainById,
+  Localhost,
+  Mainnet,
   Mumbai,
   OptimismKovan,
   Rinkeby,
   useEthers,
 } from '@usedapp/core'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { chainIdToContracts } from '../config'
 import { FormSection } from '../layout/FormSection'
 import { FormSectionContent } from '../layout/FormSectionContent'
 import { FormSectionHeader } from '../layout/FormSectionHeading'
 import { ConnectWallet } from './ConnectWallet'
+import { ErrorMessage } from './ErrorMessage'
 
 export const ChainSelector = () => {
+  const supportedNetworks = [
+    Mainnet,
+    Rinkeby,
+    Localhost,
+    OptimismKovan,
+    ArbitrumRinkeby,
+    Mumbai,
+  ]
+
+  interface Error {
+    title: string
+    description: string
+  }
+
   const { chainId, library, account } = useEthers()
+  const [error, setError] = useState<Error>()
+
+  useEffect(() => {
+    if (supportedNetworks.find((n) => n.chainId === chainId)) {
+      setError(null)
+    } else {
+      setError({
+        title: 'Network not supported',
+        description: 'Please switch to one of the networks supported below',
+      })
+    }
+  }, [chainId])
 
   const getAddChainParams = (chainId: number) => {
     const ETHER = {
@@ -85,15 +121,26 @@ export const ChainSelector = () => {
       <FormSectionContent>
         {account ? (
           <>
+            {error ? (
+              <ErrorMessage
+                title={error.title}
+                description={error.description}
+                mb="20px"
+              />
+            ) : (
+              ''
+            )}
             <Select
               value={chainId}
               onChange={(e) => {
                 e.preventDefault()
 
                 const desiredChainId = Number.parseInt(e.target.value)
+                console.log('>>>>>', desiredChainId)
                 handleChangeNetwork(desiredChainId)
               }}
             >
+              <option disabled={!error}>Select a network</option>
               <option value={Rinkeby.chainId}>Rinkeby</option>
               <option value={OptimismKovan.chainId}>Optimistic Kovan</option>
               <option value={ArbitrumRinkeby.chainId}>Arbitrum Rinkeby</option>
@@ -104,17 +151,28 @@ export const ChainSelector = () => {
               <option disabled>Polygon MATIC (coming soon)</option>
             </Select>
 
-            <Box fontSize={10} mt={4}>
-              <Box>Chain: {getChainById(chainId).chainName}</Box>
-              <Box>
-                Deployer contract:{' '}
-                {chainIdToContracts[chainId]?.deployerAddress}
-              </Box>
-              <Box>
-                SVGPlaceholder contract:{' '}
-                {chainIdToContracts[chainId]?.svgPlaceholderAddress}
-              </Box>
-            </Box>
+            {/* <Links */}
+
+            <Accordion mt="10px" allowToggle>
+              <AccordionItem border="none">
+                <AccordionButton w="auto" p="0">
+                  <Text fontSize="10px">Contracts info</Text>
+                </AccordionButton>
+                <AccordionPanel p="0">
+                  <Box fontSize={10} mt={4}>
+                    <Box>Chain: {getChainById(chainId).chainName}</Box>
+                    <Box>
+                      Deployer contract:{' '}
+                      {chainIdToContracts[chainId]?.deployerAddress}
+                    </Box>
+                    <Box>
+                      SVGPlaceholder contract:{' '}
+                      {chainIdToContracts[chainId]?.svgPlaceholderAddress}
+                    </Box>
+                  </Box>
+                </AccordionPanel>
+              </AccordionItem>
+            </Accordion>
           </>
         ) : (
           <Box>
