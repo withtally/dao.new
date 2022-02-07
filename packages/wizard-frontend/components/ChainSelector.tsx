@@ -8,12 +8,16 @@ import {
 } from '@chakra-ui/react'
 import { Select } from '@chakra-ui/select'
 import {
+  Arbitrum,
   ArbitrumRinkeby,
+  Chain,
   getChainById,
   Localhost,
   Mainnet,
   Mumbai,
+  Optimism,
   OptimismKovan,
+  Polygon,
   Rinkeby,
   useEthers,
 } from '@usedapp/core'
@@ -26,13 +30,62 @@ import { ConnectWallet } from './ConnectWallet'
 import { ErrorMessage } from './ErrorMessage'
 
 export const ChainSelector = () => {
-  const supportedNetworks = [
-    Mainnet,
-    Rinkeby,
-    Localhost,
-    OptimismKovan,
-    ArbitrumRinkeby,
-    Mumbai,
+  interface SupportedNetwork {
+    chainId: number
+    isDeployed: boolean
+    isTallySupported: boolean
+    displayName: string
+  }
+
+  const supportedNetworks: SupportedNetwork[] = [
+    {
+      chainId: Rinkeby.chainId,
+      isDeployed: true,
+      isTallySupported: true,
+      displayName: 'Rinkeby',
+    },
+    {
+      chainId: OptimismKovan.chainId,
+      isDeployed: true,
+      isTallySupported: true,
+      displayName: 'Optimism Kovan',
+    },
+    {
+      chainId: ArbitrumRinkeby.chainId,
+      isDeployed: true,
+      isTallySupported: false,
+      displayName: 'Arbitrum Rinkeby',
+    },
+    {
+      chainId: Mumbai.chainId,
+      isDeployed: true,
+      isTallySupported: true,
+      displayName: 'Mumbai (polygon testnet)',
+    },
+    {
+      chainId: Mainnet.chainId,
+      isDeployed: false,
+      isTallySupported: true,
+      displayName: 'Ethereum mainnet',
+    },
+    {
+      chainId: Optimism.chainId,
+      isDeployed: false,
+      isTallySupported: true,
+      displayName: 'Optimism',
+    },
+    {
+      chainId: Arbitrum.chainId,
+      isDeployed: false,
+      isTallySupported: false,
+      displayName: 'Arbitrum',
+    },
+    {
+      chainId: Polygon.chainId,
+      isDeployed: false,
+      isTallySupported: true,
+      displayName: 'Polygon',
+    },
   ]
 
   interface Error {
@@ -115,6 +168,8 @@ export const ChainSelector = () => {
       })
   }
 
+  console.log(supportedNetworks)
+
   return (
     <FormSection>
       <FormSectionHeader number="1" text="Connect wallet & select chain" />
@@ -140,17 +195,15 @@ export const ChainSelector = () => {
               }}
             >
               <option disabled={!error}>Select a network</option>
-              <option value={Rinkeby.chainId}>Rinkeby</option>
-              <option value={OptimismKovan.chainId}>Optimistic Kovan</option>
-              <option value={ArbitrumRinkeby.chainId}>Arbitrum Rinkeby</option>
-              <option value={Mumbai.chainId}>Mumbai (Polygon testnet)</option>
-              <option disabled>Ethereum mainnet (coming soon)</option>
-              <option disabled>Optimism (coming soon)</option>
-              <option disabled>Arbitrum (coming soon)</option>
-              <option disabled>Polygon MATIC (coming soon)</option>
-            </Select>
 
-            {/* <Links */}
+              {supportedNetworks.map((n) => (
+                <option value={n.chainId} disabled={!n.isDeployed}>
+                  {n.displayName}
+                  {n.isDeployed ? '' : ' (coming soon)'}
+                  {n.isTallySupported ? '' : ' (not yet supported on Tally)'}
+                </option>
+              ))}
+            </Select>
 
             <Accordion mt="10px" allowToggle>
               <AccordionItem border="none">
