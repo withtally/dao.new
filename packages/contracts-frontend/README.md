@@ -16,7 +16,7 @@ These pages are meant as an example. Feel free to fork & extend.
 
 1. Clone the repo (or fork & clone)
 
-   `$ git clone git@github.com:daocity/create-nft-dao.git`
+   `$ git clone git@github.com:withtally/dao.new.git`
 
 2. Install dependencies
 
