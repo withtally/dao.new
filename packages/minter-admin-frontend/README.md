@@ -24,7 +24,7 @@ These pages are meant as an example. Feel free to fork & extend.
 
 3. Update config file
 
-   Open `packages/contracts-frontend/config.ts` for editing.
+   Open `packages/minter-admin-frontend/config.ts` for editing.
 
    3.1 Set `CHAIN_ID` to the chain you are working on (e.g `ChainId.Rinkeby` or `ChainId.Mainnet`)
 
@@ -32,7 +32,7 @@ These pages are meant as an example. Feel free to fork & extend.
 
    3.3 Update `minterType` to the type of minter you have chosed. Options are: `MinterType.FixedPriceSequentialMinter` or `MinterType.FixedPriceSpecificIDMinter`
 
-4. Create `packages/contracts-frontend/.env` file similar to the `.env.example` file in the same folder.
+4. Create `packages/minter-admin-frontend/.env` file similar to the `.env.example` file in the same folder.
    The JSON RPC urls should look something like: `https://eth-rinkeby.alchemyapi.io/v2/dkgAjugSdf`. You can get an Alchemy api key by [signing up](https://www.alchemy.com/).
 
 5. Run the webapp in development mode
@@ -41,7 +41,7 @@ These pages are meant as an example. Feel free to fork & extend.
 
    ```
    $ yarn prebuild
-   $ cd packages/contracts-frontend/
+   $ cd packages/minter-admin-frontend/
    $ yarn dev
    ```
 
@@ -58,7 +58,7 @@ This is assuming you followed the steps to run locally and successfully ran in d
 
 3. Under "Framework Preset" choose "Next.js"
 
-4. Edit the root directory to be `packages/contracts-frontend`
+4. Edit the root directory to be `packages/minter-admin-frontend`
 
 5. Change the build command to: `./build.sh`
 

@@ -8,9 +8,9 @@ Easily deploy your own NFT DAO
 
 The project is organized as a monorepo with the following packages:
 
-## contracts-frontend
+## minter-admin-frontend
 
-The contracts-frontend package is a webapp for running an admin and mint page.
+The minter-admin-frontend package is a webapp for running an admin and mint page.
 
 ## hardhat
 
@@ -18,7 +18,7 @@ The hardhat package is the suite of solidity contracts used for deploying new NF
 
 ## shared-frontend
 
-The shared-frontend package holds some webapp components used by both the contracts-frontend and wizard-frontend packages.
+The shared-frontend package holds some webapp components used by both the minter-admin-frontend and wizard-frontend packages.
 
 ## wizard-frontend
 
