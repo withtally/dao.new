@@ -1,3 +1,4 @@
 dist/
 typechain/
 .env
+deployed_contracts.json

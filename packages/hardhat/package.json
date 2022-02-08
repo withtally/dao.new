@@ -26,7 +26,8 @@
     "verify:mainnet": "npx hardhat verify --network mainnet",
     "verify:optimistic-kovan": "npx hardhat verify --network optimistic-kovan",
     "verify:arbitrum-rinkeby": "npx hardhat verify --network arbitrum-rinkeby",
-    "verify:mumbai": "npx hardhat verify --network mumbai"
+    "verify:mumbai": "npx hardhat verify --network mumbai",
+    "verify-contracts": "npx hardhat verify-contracts --contract-file deployed_contracts.json"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
