@@ -32,7 +32,7 @@ const allConfigs: Record<SupportedChains, ContractsConfig> = {
     minterType: MinterType.FixedPriceSequentialMinter,
   },
   [ChainId.Rinkeby]: {
-    deployerAddress: '0x02CB117254a82E2401B8c341CE668eDfF2f268FD',
+    deployerAddress: '0x3D0830242D42952ac873F7e698eA200eAAB44a28',
     tokenAddress: '0xaa507B6082C753d962f6A9f01c575Ba8D1739b82',
     minterAddress: '0x2C57c1530df4807804395f5A8D53fc98A3F880D2',
     governorAddress: '0x34E804E07CB973A689dc8Da5B098e0711aCA2374',
@@ -40,7 +40,7 @@ const allConfigs: Record<SupportedChains, ContractsConfig> = {
     minterType: MinterType.FixedPriceSequentialMinter,
   },
   [ChainId.OptimismKovan]: {
-    deployerAddress: '0x8c49f49B3e5A2a469A09f4d8D11546Bc928c08Aa',
+    deployerAddress: '0xee48904C8Ad275993779E079142C964395d6aF01',
     tokenAddress: '0xf2fc15153d69688cb4Ce4869Afc49bcCcB9AFd3E',
     minterAddress: '0x9A179CC9cB50265cf7655eE11DEba68caC91FAa2',
     governorAddress: '0x35509a349A4871A574D67f148AfC5C7ed9350bAC',
