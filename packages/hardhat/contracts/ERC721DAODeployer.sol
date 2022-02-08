@@ -192,13 +192,11 @@ contract ERC721DAODeployer is OwnableUpgradeable {
         address creatorAddress,
         MintingFilter mintingFilter
     ) private {
-        address[] memory payees = new address[](2);
-        payees[0] = creatorAddress;
-        payees[1] = address(timelockClone);
-
-        uint256[] memory shares = new uint256[](2);
-        shares[0] = minterParams.creatorShares;
-        shares[1] = minterParams.daoShares;
+        (address[] memory payees, uint256[] memory shares) = createPayeesArrays(
+            minterParams,
+            creatorAddress,
+            timelockClone
+        );
 
         minterClone.initialize(
             creatorAddress,
@@ -212,6 +210,31 @@ contract ERC721DAODeployer is OwnableUpgradeable {
             serviceFeeBasisPoints,
             owner()
         );
+    }
+
+    function createPayeesArrays(
+        MinterParams calldata minterParams,
+        address creatorAddress,
+        ERC721Timelock timelockClone
+    ) private pure returns (address[] memory payees, uint256[] memory shares) {
+        if (minterParams.creatorShares == 0) {
+            payees = new address[](1);
+            shares = new uint256[](1);
+            payees[0] = address(timelockClone);
+            shares[0] = minterParams.daoShares;
+        } else if (minterParams.daoShares == 0) {
+            payees = new address[](1);
+            shares = new uint256[](1);
+            payees[0] = address(creatorAddress);
+            shares[0] = minterParams.creatorShares;
+        } else {
+            payees = new address[](2);
+            shares = new uint256[](2);
+            payees[0] = creatorAddress;
+            payees[1] = address(timelockClone);
+            shares[0] = minterParams.creatorShares;
+            shares[1] = minterParams.daoShares;
+        }
     }
 
     function cloneAndInitMintingFilter(MintingFilterParams calldata mintingFilterParams)

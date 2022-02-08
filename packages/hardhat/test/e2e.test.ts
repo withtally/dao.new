@@ -144,11 +144,21 @@ const deploy = async () => {
   );
 };
 
-const cloneWithFixedPriceSequentialMinter = async (
-  royaltiesRecipientOverride?: string,
-  royaltiesBPs?: number,
-  govUpgradable?: boolean
-) => {
+interface CloneWithFixedPriceSequentialMinterParams {
+  royaltiesRecipientOverride?: string;
+  royaltiesBPs?: number;
+  govUpgradable?: boolean;
+  daoShares?: number;
+  creatorShares?: number;
+}
+
+const cloneWithFixedPriceSequentialMinter = async ({
+  royaltiesRecipientOverride,
+  royaltiesBPs,
+  govUpgradable,
+  daoShares = DAO_SHARES,
+  creatorShares = FOUNDER_SHARES,
+}: CloneWithFixedPriceSequentialMinterParams) => {
   const tx = await deployer.clone(
     creator.address,
     {
@@ -175,8 +185,8 @@ const cloneWithFixedPriceSequentialMinter = async (
     {
       implementationIndex: 0,
       startingBlock: STARTING_BLOCK,
-      creatorShares: FOUNDER_SHARES,
-      daoShares: DAO_SHARES,
+      creatorShares: creatorShares,
+      daoShares: daoShares,
       extraInitCallData: simpleMinterImpl.interface.encodeFunctionData("init", [
         MAX_TOKENS,
         TOKEN_PRICE,
@@ -326,7 +336,7 @@ describe("End to end flows", () => {
   before(deploy);
 
   describe("Using FixedPriceSequentialMinter", async () => {
-    before(() => cloneWithFixedPriceSequentialMinter());
+    before(() => cloneWithFixedPriceSequentialMinter({}));
 
     describe("minting and spending funds", async () => {
       it("lets users mint", async () => {
@@ -633,7 +643,10 @@ describe("End to end flows", () => {
       // TODO make sure royalties from init also work
 
       it("sets royalty info in deployer with recipient override", async () => {
-        await cloneWithFixedPriceSequentialMinter(user2.address, 500);
+        await cloneWithFixedPriceSequentialMinter({
+          royaltiesRecipientOverride: user2.address,
+          royaltiesBPs: 500,
+        });
 
         const [recipient, royaltyAmount] = await token.royaltyInfo(0, 100);
 
@@ -642,7 +655,7 @@ describe("End to end flows", () => {
       });
 
       it("sets royalty info in deployer with timelock as the default recipient", async () => {
-        await cloneWithFixedPriceSequentialMinter(undefined, 500);
+        await cloneWithFixedPriceSequentialMinter({ royaltiesBPs: 500 });
 
         const [recipient, royaltyAmount] = await token.royaltyInfo(0, 100);
 
@@ -896,6 +909,42 @@ describe("End to end flows", () => {
 
         expect(await erc20.balanceOf(rando.address)).to.equal(100);
       });
+    });
+  });
+
+  describe("Creator / DAO shares", async () => {
+    it("allows creator shares to be zero", async () => {
+      await cloneWithFixedPriceSequentialMinter({
+        daoShares: TOTAL_SHARES,
+        creatorShares: 0,
+      });
+
+      await simpleMinter.connect(signer).setServiceFeeBasisPoints(0);
+      await simpleMinter.connect(user1).mint(8, { value: TOKEN_PRICE.mul(8) });
+
+      await expect(
+        await simpleMinter.release(timelock.address)
+      ).to.changeEtherBalance(timelock, TOKEN_PRICE.mul(8));
+      await expect(simpleMinter.release(creator.address)).to.be.revertedWith(
+        "PaymentSplitter: account has no shares"
+      );
+    });
+
+    it("allows dao shares to be zero", async () => {
+      await cloneWithFixedPriceSequentialMinter({
+        daoShares: 0,
+        creatorShares: TOTAL_SHARES,
+      });
+
+      await simpleMinter.connect(signer).setServiceFeeBasisPoints(0);
+      await simpleMinter.connect(user1).mint(8, { value: TOKEN_PRICE.mul(8) });
+
+      await expect(
+        await simpleMinter.release(creator.address)
+      ).to.changeEtherBalance(creator, TOKEN_PRICE.mul(8));
+      await expect(simpleMinter.release(timelock.address)).to.be.revertedWith(
+        "PaymentSplitter: account has no shares"
+      );
     });
   });
 
@@ -1304,7 +1353,7 @@ describe("End to end flows", () => {
     });
 
     describe("Disable Transfers", async () => {
-      before(() => cloneWithFixedPriceSequentialMinter());
+      before(() => cloneWithFixedPriceSequentialMinter({}));
 
       it("allows transfers by default", async () => {
         expect(await token.transfersDisabled()).to.be.false;
@@ -1349,7 +1398,7 @@ describe("End to end flows", () => {
     let newGovContractLogic: GovernorUpgradeMock;
     let newTimelockContractLogic: TimelockUpgradeMock;
 
-    before(() => cloneWithFixedPriceSequentialMinter());
+    before(() => cloneWithFixedPriceSequentialMinter({}));
 
     describe("Governor contract upgrades", async () => {
       before(async () => {
@@ -1450,7 +1499,7 @@ describe("End to end flows", () => {
 
     describe("Non-upgradable Governance Clones", async () => {
       before(async () => {
-        await cloneWithFixedPriceSequentialMinter(undefined, undefined, false);
+        await cloneWithFixedPriceSequentialMinter({ govUpgradable: false });
         newGovContractLogic = await new GovernorUpgradeMock__factory(
           signer
         ).deploy();
@@ -1567,7 +1616,7 @@ describe("End to end flows", () => {
     });
 
     it("doesn't allow non deployer owner to change the fee params of a cloned project", async () => {
-      await cloneWithFixedPriceSequentialMinter();
+      await cloneWithFixedPriceSequentialMinter({});
 
       await expect(
         simpleMinter.connect(creator).setServiceFeeBasisPoints(0)
@@ -1583,7 +1632,7 @@ describe("End to end flows", () => {
     });
 
     it("allows deployer owner to change fee params", async () => {
-      await cloneWithFixedPriceSequentialMinter();
+      await cloneWithFixedPriceSequentialMinter({});
 
       await simpleMinter.connect(signer).setServiceFeeBasisPoints(5000);
       await simpleMinter
@@ -1602,7 +1651,7 @@ describe("End to end flows", () => {
     });
 
     it("allows deployer owner to set fees to zero", async () => {
-      await cloneWithFixedPriceSequentialMinter();
+      await cloneWithFixedPriceSequentialMinter({});
 
       await simpleMinter.connect(signer).setServiceFeeBasisPoints(0);
       await simpleMinter.connect(user1).mint(8, { value: TOKEN_PRICE.mul(8) });
@@ -1629,7 +1678,7 @@ describe("End to end flows", () => {
         .to.emit(deployer, "ServiceFeeBasisPointsUpdated")
         .withArgs(1234);
 
-      await cloneWithFixedPriceSequentialMinter();
+      await cloneWithFixedPriceSequentialMinter({});
 
       expect(await simpleMinter.getServiceFeeAddress()).to.equal(user3.address);
       expect(await simpleMinter.getServiceFeeBasisPoints()).to.equal(1234);
