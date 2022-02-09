@@ -64,6 +64,9 @@ This is assuming you followed the steps to run locally and successfully ran in d
 
 5. Change the build command to: `./build.sh`
 
-6. Set environment variables: `NEXT_PUBLIC_ALCHEMY_API_KEY` with your alchemy api key
+    The settings should look like this:
 
-7. Deploy 🚀
+![vercel-settings](https://user-images.githubusercontent.com/351026/153179467-f630113d-8d33-49c0-ab39-0d967c6b9ad4.png)
+
+
+6. Deploy 🚀
