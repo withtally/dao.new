@@ -60,7 +60,7 @@ This is assuming you followed the steps to run locally and successfully ran in d
 
 3. Under "Framework Preset" choose "Next.js"
 
-4. Edit the root directory to be `packages/minter-admin-frontend`
+4. Set the root directory to be `packages/minter-admin-frontend`
 
 5. Change the build command to: `./build.sh`
 
