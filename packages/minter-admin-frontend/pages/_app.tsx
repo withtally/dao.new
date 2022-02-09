@@ -18,8 +18,12 @@ import { CHAIN_ID, multicallOnLocalhost } from '../config'
 const config: Config = {
   readOnlyChainId: CHAIN_ID,
   readOnlyUrls: {
-    [ChainId.Mainnet]: process.env.NEXT_PUBLIC_MAINNET_JSON_RPC,
-    [ChainId.Rinkeby]: process.env.NEXT_PUBLIC_RINKEBY_JSON_RPC,
+    [ChainId.Mainnet]:
+      process.env.NEXT_PUBLIC_MAINNET_JSON_RPC ||
+      'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+    [ChainId.Rinkeby]:
+      process.env.NEXT_PUBLIC_RINKEBY_JSON_RPC ||
+      'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
     [ChainId.OptimismKovan]: 'https://kovan.optimism.io',
     [ChainId.ArbitrumRinkeby]: 'https://rinkeby.arbitrum.io/rpc',
     [ChainId.Hardhat]: 'http://localhost:8545',

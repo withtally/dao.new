@@ -20,19 +20,21 @@ These pages are meant as an example. Feel free to fork & extend.
 
 2. Install dependencies
 
+   `$ cd dao.new`
+
    `$ yarn`
 
 3. Update config file
 
    Open `packages/minter-admin-frontend/config.ts` for editing.
 
-   3.1 Set `CHAIN_ID` to the chain you are working on (e.g `ChainId.Rinkeby` or `ChainId.Mainnet`)
+   3.1. Set `CHAIN_ID` to the chain you are working on (e.g `ChainId.Rinkeby` or `ChainId.Mainnet`)
 
-   3.2 Update contracts address for the chain you are working on. You need to update `tokenAddress`, `minterAddress`, `governorAddress` & `timelockAddress`.
+   3.2. Update contracts address for the chain you are working on. You need to update `tokenAddress`, `minterAddress`, `governorAddress` & `timelockAddress`.
 
-   3.3 Update `minterType` to the type of minter you have chosed. Options are: `MinterType.FixedPriceSequentialMinter` or `MinterType.FixedPriceSpecificIDMinter`
+   3.3. Update `minterType` to the type of minter you have chosed. Options are: `MinterType.FixedPriceSequentialMinter` or `MinterType.FixedPriceSpecificIDMinter`
 
-4. Create `packages/minter-admin-frontend/.env` file similar to the `.env.example` file in the same folder.
+4. (Optional) Set RPC endpoints: create `packages/minter-admin-frontend/.env` file similar to the `.env.example` file in the same folder.
    The JSON RPC urls should look something like: `https://eth-rinkeby.alchemyapi.io/v2/dkgAjugSdf`. You can get an Alchemy api key by [signing up](https://www.alchemy.com/).
 
 5. Run the webapp in development mode
