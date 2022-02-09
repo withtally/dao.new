@@ -27,16 +27,16 @@ export const chainIdToContracts: Record<SupportedChains, ContractAddresses> = {
     svgPlaceholderAddress: '0x3f32c41c58e91f38bD0F199174e8e8E8fd44b8b3',
   },
   [ChainId.OptimismKovan]: {
-    deployerAddress: '0xee48904C8Ad275993779E079142C964395d6aF01',
-    svgPlaceholderAddress: '0x34ceC65033aA345Ee2BAbe13529a5648cA7B3F4C',
+    deployerAddress: '0xD8aaf7d29F0EbDaeBC08774c9f7F639245C21735',
+    svgPlaceholderAddress: '0x3E99ED4C79d8Ba58C88B116619E425486B39b37A',
   },
   [ChainId.ArbitrumRinkeby]: {
     deployerAddress: '0x660fC5AbA193Ed6eE7ECD73E8A120F5e1a0B036F',
     svgPlaceholderAddress: '0x3dA476C416d2eAA61e38EdD54c399C12C3a70548',
   },
   [ChainId.Mumbai]: {
-    deployerAddress: '0x34ceC65033aA345Ee2BAbe13529a5648cA7B3F4C',
-    svgPlaceholderAddress: '0xcF838d105700F7AF3D5FfeF0D310EDcAC6d5EbdD',
+    deployerAddress: '0x06e80B9A26237b51A7DBf284ec8d0988c345E0F7',
+    svgPlaceholderAddress: '0x3CA8A5f8024FF330D0A6CEF6dFfF152d18dB316b',
   },
 }
 
