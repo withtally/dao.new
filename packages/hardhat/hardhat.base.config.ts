@@ -59,7 +59,7 @@ const config: HardhatUserConfig = {
       accounts: { mnemonic: process.env.MNEMONIC || "dummy-value" },
     },
     mumbai: {
-      url: "https://rpc-mumbai.maticvigil.com",
+      url: "https://rpc-mumbai.matic.today",
       accounts: { mnemonic: process.env.MNEMONIC || "dummy-value" },
     },
   },
@@ -68,8 +68,8 @@ const config: HardhatUserConfig = {
       mainnet: process.env.ETHERSCAN_API_KEY,
       rinkeby: process.env.ETHERSCAN_API_KEY,
       optimisticKovan: process.env.ETHERSCAN_OPTIMISM_API_KEY,
+      polygonMumbai: process.env.POLYGONSCAN_API_KEY,
     },
-    // apiKey: process.env.POLYGONSCAN_API_KEY,
   },
   typechain: {
     outDir: "./typechain",
