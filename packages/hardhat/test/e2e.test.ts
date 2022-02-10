@@ -150,6 +150,7 @@ interface CloneWithFixedPriceSequentialMinterParams {
   govUpgradable?: boolean;
   daoShares?: number;
   creatorShares?: number;
+  creatorShareAddress?: string;
 }
 
 const cloneWithFixedPriceSequentialMinter = async ({
@@ -158,6 +159,7 @@ const cloneWithFixedPriceSequentialMinter = async ({
   govUpgradable,
   daoShares = DAO_SHARES,
   creatorShares = FOUNDER_SHARES,
+  creatorShareAddress = creator.address,
 }: CloneWithFixedPriceSequentialMinterParams) => {
   const tx = await deployer.clone(
     creator.address,
@@ -187,6 +189,7 @@ const cloneWithFixedPriceSequentialMinter = async ({
       startingBlock: STARTING_BLOCK,
       creatorShares: creatorShares,
       daoShares: daoShares,
+      creatorShareAddress: creatorShareAddress,
       extraInitCallData: simpleMinterImpl.interface.encodeFunctionData("init", [
         MAX_TOKENS,
         TOKEN_PRICE,
@@ -238,6 +241,7 @@ const cloneWithIDMinter = async () => {
       startingBlock: STARTING_BLOCK,
       creatorShares: FOUNDER_SHARES,
       daoShares: DAO_SHARES,
+      creatorShareAddress: creator.address,
       extraInitCallData: idMinterImpl.interface.encodeFunctionData("init", [
         MAX_TOKENS,
         TOKEN_PRICE,
@@ -304,6 +308,7 @@ const cloneWithSequentialMinterAndRequiredNFTFilter = async () => {
       startingBlock: STARTING_BLOCK,
       creatorShares: FOUNDER_SHARES,
       daoShares: DAO_SHARES,
+      creatorShareAddress: creator.address,
       extraInitCallData: simpleMinterImpl.interface.encodeFunctionData("init", [
         MAX_TOKENS,
         TOKEN_PRICE,
@@ -945,6 +950,21 @@ describe("End to end flows", () => {
       await expect(simpleMinter.release(timelock.address)).to.be.revertedWith(
         "PaymentSplitter: account has no shares"
       );
+    });
+
+    it("allows setting creator share to any address", async () => {
+      await cloneWithFixedPriceSequentialMinter({
+        daoShares: 5,
+        creatorShares: 5,
+        creatorShareAddress: rando.address,
+      });
+
+      await simpleMinter.connect(signer).setServiceFeeBasisPoints(0);
+      await simpleMinter.connect(user1).mint(8, { value: TOKEN_PRICE.mul(8) });
+
+      await expect(
+        await simpleMinter.release(rando.address)
+      ).to.changeEtherBalance(rando, TOKEN_PRICE.mul(8).div(2));
     });
   });
 

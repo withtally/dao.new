@@ -11,6 +11,7 @@ import {
   NumberDecrementStepper,
   RadioGroup,
   Radio,
+  Input,
 } from '@chakra-ui/react'
 import { FormSectionContent } from '../layout/FormSectionContent'
 import { FormSectionHeader } from '../layout/FormSectionHeading'
@@ -41,6 +42,12 @@ export const MinterInputs = ({
   function onMinterCreatorSharesChange(e) {
     const newValues = Object.assign({}, minterConfig)
     newValues.creatorPercentage = e
+    onMinterConfigChange(newValues)
+  }
+
+  function onMinterCreatorShareAddressChange(e) {
+    const newValues = Object.assign({}, minterConfig)
+    newValues.creatorShareAddress = e.target.value
     onMinterConfigChange(newValues)
   }
 
@@ -120,6 +127,18 @@ export const MinterInputs = ({
             <FormHelperText>
               How to split the ETH revenue pie? Enter how much you'd like to
               receive in percents, and the rest will go to the DAO treasury.
+            </FormHelperText>
+          </FormControl>
+          <FormControl isRequired>
+            <FormLabel>Creator shares address</FormLabel>
+            <Input
+              type="text"
+              value={minterConfig.creatorShareAddress}
+              onChange={onMinterCreatorShareAddressChange}
+            />
+            <FormHelperText>
+              Which address will be able to receive the creator shares. By
+              default this is your currently connected address.
             </FormHelperText>
           </FormControl>
           <FormControl id="minter-startblock" isRequired>

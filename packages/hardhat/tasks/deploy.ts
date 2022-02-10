@@ -26,7 +26,7 @@ task("deploy", "Deploy all contracts")
     "(Optional) Address of an existing timelock contract to use instead of deploying a new one",
     undefined
   )
-  .setAction(async (args, { ethers }) => {
+  .setAction(async (args, { ethers, network }) => {
     const deployedContracts: DeployedContract[] = [];
 
     // Verifying parameters
@@ -134,7 +134,7 @@ task("deploy", "Deploy all contracts")
     );
 
     fs.writeFileSync(
-      "deployed_contracts.json",
+      `./deployed_contracts/deployed_contracts.${network.name}.json`,
       JSON.stringify(deployedContracts, null, 2)
     );
   });

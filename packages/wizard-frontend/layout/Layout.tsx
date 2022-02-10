@@ -4,7 +4,6 @@ import {
   AlertIcon,
   AlertTitle,
   Box,
-  Image,
 } from '@chakra-ui/react'
 import { getErrorMessage } from '@create-nft-dao/shared'
 import { useEthers, useNotifications } from '@usedapp/core'

@@ -33,6 +33,7 @@ export type MinterParams = {
   maxMintsPerTx: number
   creatorPercentage: number
   startingBlock: BigNumberish
+  creatorShareAddress: string
   extraInitCallData: BytesLike
 }
 

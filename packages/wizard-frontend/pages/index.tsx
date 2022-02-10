@@ -59,6 +59,7 @@ const initialState: StateType = {
     maxMintsPerTx: DEFAULT_MAX_MINTS,
     creatorPercentage: DEFAULT_CREATOR_PERCENTAGE,
     startingBlock: 0,
+    creatorShareAddress: '',
     extraInitCallData: '',
   },
   governorConfig: {
@@ -101,6 +102,15 @@ function HomeIndex(): JSX.Element {
     }
   }, [getDefaultStartBlock(library)])
 
+  useEffect(() => {
+    if (!state.minterConfig.creatorShareAddress && account) {
+      onMinterConfigChange({
+        ...state.minterConfig,
+        creatorShareAddress: account,
+      })
+    }
+  }, [account])
+
   const isLocalChain =
     chainId === ChainId.Localhost || chainId === ChainId.Hardhat
 
@@ -129,7 +139,7 @@ function HomeIndex(): JSX.Element {
         clones: cloneResult.clones,
       })
     } catch (e) {
-      // TODO
+      window.alert(`Got an error: ${e.message}`)
     }
 
     dispatch({
