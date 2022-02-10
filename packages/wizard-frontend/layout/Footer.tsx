@@ -25,7 +25,7 @@ export const Footer = () => (
             <Link isExternal href="https://careers.withtally.com/">
               Jobs
             </Link>
-            <Link isExternal href="https://docs.withtally.com/">
+            <Link isExternal href="https://docs.dao.new/">
               Documentation
             </Link>
             <Link isExternal href="https://wiki.withtally.com/docs">
