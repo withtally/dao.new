@@ -8,15 +8,10 @@ import {
 } from '@chakra-ui/react'
 import { Select } from '@chakra-ui/select'
 import {
-  Arbitrum,
   ArbitrumRinkeby,
   getChainById,
-  Mainnet,
   Mumbai,
-  Optimism,
   OptimismKovan,
-  Polygon,
-  Rinkeby,
   useEthers,
 } from '@usedapp/core'
 import React, { useEffect, useState } from 'react'
@@ -24,68 +19,11 @@ import { chainIdToContracts } from '../config'
 import { FormSection } from '../layout/FormSection'
 import { FormSectionContent } from '../layout/FormSectionContent'
 import { FormSectionHeader } from '../layout/FormSectionHeading'
+import { supportedNetworks } from '../lib/networks'
 import { ConnectWallet } from './ConnectWallet'
 import { ErrorMessage } from './ErrorMessage'
 
 export const ChainSelector = () => {
-  interface SupportedNetwork {
-    chainId: number
-    isDeployed: boolean
-    isTallySupported: boolean
-    displayName: string
-  }
-
-  const supportedNetworks: SupportedNetwork[] = [
-    {
-      chainId: Rinkeby.chainId,
-      isDeployed: true,
-      isTallySupported: true,
-      displayName: 'Rinkeby',
-    },
-    {
-      chainId: OptimismKovan.chainId,
-      isDeployed: true,
-      isTallySupported: true,
-      displayName: 'Optimism Kovan',
-    },
-    {
-      chainId: ArbitrumRinkeby.chainId,
-      isDeployed: true,
-      isTallySupported: false,
-      displayName: 'Arbitrum Rinkeby',
-    },
-    {
-      chainId: Mumbai.chainId,
-      isDeployed: true,
-      isTallySupported: true,
-      displayName: 'Mumbai (polygon testnet)',
-    },
-    {
-      chainId: Mainnet.chainId,
-      isDeployed: false,
-      isTallySupported: true,
-      displayName: 'Ethereum mainnet',
-    },
-    {
-      chainId: Optimism.chainId,
-      isDeployed: false,
-      isTallySupported: true,
-      displayName: 'Optimism',
-    },
-    {
-      chainId: Arbitrum.chainId,
-      isDeployed: false,
-      isTallySupported: false,
-      displayName: 'Arbitrum',
-    },
-    {
-      chainId: Polygon.chainId,
-      isDeployed: false,
-      isTallySupported: true,
-      displayName: 'Polygon',
-    },
-  ]
-
   interface Error {
     title: string
     description: string

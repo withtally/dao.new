@@ -2,6 +2,7 @@ import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { VStack, Heading, Text, Box, Link } from '@chakra-ui/react'
 import { Table, Thead, Tbody, Tr, Td, Th } from '@chakra-ui/react'
 import { getChainById, useEthers } from '@usedapp/core'
+import { isChainSupportedByTally } from '../lib/networks'
 import { ConnectToTally } from './ConnectToTally'
 import { EtherscanVerifyProxies } from './EtherscanVerifyProxies'
 import { FirstTd } from './FirstTd'
@@ -28,7 +29,7 @@ export const ClonesView = ({
       >
         Your NFT DAO is deployed!
       </Heading>
-      <Text mb="10px">
+      <Text mb="10px" fontSize="14px">
         Your contracts were successfully deployed to the{' '}
         {getChainById(chainId).chainName} network.
       </Text>
@@ -81,18 +82,29 @@ export const ClonesView = ({
       ) : (
         <></>
       )}
+
       <VStack spacing={4} alignItems="flex-start">
         <ModalHeading
           number={tallyHeadingIndex}
           text="Manage your DAO on Tally"
         />
-        <ConnectToTally
-          orgName={governorName}
-          tokenAddress={clones.token}
-          chainId={chainId}
-          startBlock={clonesBlockNumber}
-          governanceAddress={clones.governor}
-        />
+        {isChainSupportedByTally(chainId) ? (
+          <ConnectToTally
+            orgName={governorName}
+            tokenAddress={clones.token}
+            chainId={chainId}
+            startBlock={clonesBlockNumber}
+            governanceAddress={clones.governor}
+          />
+        ) : (
+          <Text fontSize="14px">
+            This network not yet supported by Tally, please send an email to{' '}
+            <Link isExternal href="mailto:hello@withTally.com">
+              hello@withTally.com
+            </Link>{' '}
+            to request support
+          </Text>
+        )}
       </VStack>
     </Box>
   )
