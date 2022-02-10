@@ -53,7 +53,7 @@ export const ClonesView = ({
               ['Governor', clones.governor],
               ['Timelock', clones.timelock],
             ].map((x) => (
-              <Tr>
+              <Tr key={x[0]}>
                 <FirstTd>{x[0]}</FirstTd>
                 <Td>
                   <Link
