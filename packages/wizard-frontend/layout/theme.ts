@@ -1,5 +1,4 @@
 import { extendTheme } from '@chakra-ui/react'
-import { createBreakpoints } from '@chakra-ui/theme-tools'
 
 const Button = {
   baseStyle: {
@@ -49,6 +48,7 @@ const Table = {
           bg: 'brandGray.500',
           fontSize: '14px',
           py: '8px',
+          overflowWrap: 'anywhere',
         },
       },
     },

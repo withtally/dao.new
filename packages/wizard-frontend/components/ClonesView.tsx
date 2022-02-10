@@ -1,6 +1,7 @@
-import { VStack, Heading, Text, Box } from '@chakra-ui/react'
+import { ExternalLinkIcon } from '@chakra-ui/icons'
+import { VStack, Heading, Text, Box, Link } from '@chakra-ui/react'
 import { Table, Thead, Tbody, Tr, Td, Th } from '@chakra-ui/react'
-import { useEthers } from '@usedapp/core'
+import { getChainById, useEthers } from '@usedapp/core'
 import { ConnectToTally } from './ConnectToTally'
 import { EtherscanVerifyProxies } from './EtherscanVerifyProxies'
 import { FirstTd } from './FirstTd'
@@ -20,13 +21,17 @@ export const ClonesView = ({
       <Heading
         as="h1"
         size="xl"
-        mb={4}
         textAlign="center"
         fontSize="36px"
-        my="38px"
+        mt="38px"
+        mb="28px"
       >
         Your NFT DAO is deployed!
       </Heading>
+      <Text mb="10px">
+        Your contracts were successfully deployed to the{' '}
+        {getChainById(chainId).chainName} network.
+      </Text>
       <Box mb="35px">
         <ModalHeading number="1." text="Save your contract addresses" />
         <Text color="brandGray.400" fontSize="12px" mt="3px">
@@ -41,22 +46,25 @@ export const ClonesView = ({
             </Tr>
           </Thead>
           <Tbody>
-            <Tr>
-              <FirstTd>NFT</FirstTd>
-              <Td>{clones.token}</Td>
-            </Tr>
-            <Tr>
-              <FirstTd>Minter</FirstTd>
-              <Td>{clones.minter}</Td>
-            </Tr>
-            <Tr>
-              <FirstTd>Governor</FirstTd>
-              <Td>{clones.governor}</Td>
-            </Tr>
-            <Tr>
-              <FirstTd>Timelock</FirstTd>
-              <Td>{clones.timelock}</Td>
-            </Tr>
+            {[
+              ['NFT', clones.token],
+              ['Minter', clones.minter],
+              ['Governor', clones.governor],
+              ['Timelock', clones.timelock],
+            ].map((x) => (
+              <Tr>
+                <FirstTd>{x[0]}</FirstTd>
+                <Td>
+                  <Link
+                    isExternal
+                    href={getChainById(chainId).getExplorerAddressLink(x[1])}
+                  >
+                    {x[1]}
+                    <ExternalLinkIcon mx="2px" />
+                  </Link>
+                </Td>
+              </Tr>
+            ))}
           </Tbody>
         </Table>
       </Box>

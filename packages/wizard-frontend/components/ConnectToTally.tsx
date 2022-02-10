@@ -1,5 +1,5 @@
 import { ApolloClient, gql, InMemoryCache } from '@apollo/client'
-import { Box, Button, Link } from '@chakra-ui/react'
+import { Box, Button, Link, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { chainIdToTallyApiURIConfig, tallyWebBaseURI } from '../config'
 
@@ -104,18 +104,30 @@ export const ConnectToTally = ({
 
   return (
     <Box>
-      <Button colorScheme="teal" onClick={onClick} isLoading={isLoading}>
-        Connect to Tally
-      </Button>
       {isCreated ? (
         <Box>
-          Manage your DAO here:{' '}
-          <Link href={tallyUrl} isExternal>
+          <Text
+            fontSize="10px"
+            textTransform="uppercase"
+            fontWeight="800"
+            color="brandGray.400"
+          >
+            Manage your DAO here:
+          </Text>{' '}
+          <Link
+            href={tallyUrl}
+            isExternal
+            fontSize="14px"
+            color="brand.300"
+            overflowWrap="anywhere"
+          >
             {tallyUrl}
           </Link>
         </Box>
       ) : (
-        <></>
+        <Button colorScheme="teal" onClick={onClick} isLoading={isLoading}>
+          Connect to Tally
+        </Button>
       )}
     </Box>
   )

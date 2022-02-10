@@ -48,7 +48,7 @@ export const chainIdToTallyApiURIConfig: Record<SupportedChains, string> = {
   [ChainId.Mumbai]: 'https://api.withtally.com/query',
 }
 
-export const tallyWebBaseURI = 'https://alpha.withtally.com/governance/'
+export const tallyWebBaseURI = 'https://withtally.com/governance/'
 
 // Multicall needs to be configured only for Localhost
 export const multicallOnLocalhost = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
