@@ -1,8 +1,10 @@
-import { VStack, Heading, Text } from '@chakra-ui/react'
+import { VStack, Heading, Text, Box } from '@chakra-ui/react'
 import { Table, Thead, Tbody, Tr, Td, Th } from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
 import { ConnectToTally } from './ConnectToTally'
 import { EtherscanVerifyProxies } from './EtherscanVerifyProxies'
+import { FirstTd } from './FirstTd'
+import { ModalHeading } from './ModalHeading'
 
 export const ClonesView = ({
   clones,
@@ -12,29 +14,26 @@ export const ClonesView = ({
 }) => {
   const { chainId } = useEthers()
 
-  const tallyHeadingIndex = needsVerification ? '3' : '2'
+  const tallyHeadingIndex = needsVerification ? '3.' : '2.'
   return (
-    <VStack
-      alignItems="flex-start"
-      spacing={6}
-      maxWidth="container.sm"
-      p={4}
-      ms={4}
-      mt={8}
-      bg="gray.100"
-    >
-      <Heading as="h2" size="lg" mb={4}>
+    <Box mx={{ base: 0, md: '80px' }} mb="58px">
+      <Heading
+        as="h1"
+        size="xl"
+        mb={4}
+        textAlign="center"
+        fontSize="36px"
+        my="38px"
+      >
         Your NFT DAO is deployed!
       </Heading>
-      <VStack spacing={2} alignItems="flex-start">
-        <Heading as="h3" size="md">
-          1. Save your contract addresses
-        </Heading>
-        <Text color="gray.600" fontSize="sm">
+      <Box mb="35px">
+        <ModalHeading number="1." text="Save your contract addresses" />
+        <Text color="brandGray.400" fontSize="12px" mt="3px">
           So you can easily find contracts later. You can always find them again
           on Etherscan, in the transaction you just sent.
         </Text>
-        <Table variant="unstyled" mt={8}>
+        <Table variant="modalTable" mt={8}>
           <Thead>
             <Tr>
               <Th>Contract</Th>
@@ -43,24 +42,24 @@ export const ClonesView = ({
           </Thead>
           <Tbody>
             <Tr>
-              <Td>NFT</Td>
+              <FirstTd>NFT</FirstTd>
               <Td>{clones.token}</Td>
             </Tr>
             <Tr>
-              <Td>Minter</Td>
+              <FirstTd>Minter</FirstTd>
               <Td>{clones.minter}</Td>
             </Tr>
             <Tr>
-              <Td>Governor</Td>
+              <FirstTd>Governor</FirstTd>
               <Td>{clones.governor}</Td>
             </Tr>
             <Tr>
-              <Td>Timelock</Td>
+              <FirstTd>Timelock</FirstTd>
               <Td>{clones.timelock}</Td>
             </Tr>
           </Tbody>
         </Table>
-      </VStack>
+      </Box>
       {needsVerification ? (
         <VStack spacing={4} alignItems="flex-start" width="100%">
           <Heading as="h3" size="md">
@@ -75,9 +74,10 @@ export const ClonesView = ({
         <></>
       )}
       <VStack spacing={4} alignItems="flex-start">
-        <Heading as="h3" size="md">
-          {tallyHeadingIndex}. Manage your DAO on Tally
-        </Heading>
+        <ModalHeading
+          number={tallyHeadingIndex}
+          text="Manage your DAO on Tally"
+        />
         <ConnectToTally
           orgName={governorName}
           tokenAddress={clones.token}
@@ -86,6 +86,6 @@ export const ClonesView = ({
           governanceAddress={clones.governor}
         />
       </VStack>
-    </VStack>
+    </Box>
   )
 }

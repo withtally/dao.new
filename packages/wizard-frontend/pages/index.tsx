@@ -1,4 +1,16 @@
-import { Box, Button, Flex, Stack, Text } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Flex,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalOverlay,
+  Stack,
+  Text,
+  useDisclosure,
+} from '@chakra-ui/react'
 import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
 import { providers, utils } from 'ethers'
 import React, { useEffect, useReducer, useState } from 'react'
@@ -87,6 +99,11 @@ function HomeIndex(): JSX.Element {
   const [state, dispatch] = useReducer(wizardReducer, initialState)
   const { account, chainId, library } = useEthers()
   const [clonesBlockNumber, setClonesBlockNumber] = useState(0)
+  const {
+    isOpen: isModalOpen,
+    onOpen: onModalOpen,
+    onClose: onModalClose,
+  } = useDisclosure()
   const [
     didSetStartBlockWithLatestChainValue,
     setDidSetStartBlockWithLatestChainValue,
@@ -138,6 +155,7 @@ function HomeIndex(): JSX.Element {
         type: 'SET_CLONES',
         clones: cloneResult.clones,
       })
+      onModalOpen()
     } catch (e) {
       window.alert(`Got an error: ${e.message}`)
     }
@@ -244,16 +262,24 @@ function HomeIndex(): JSX.Element {
           </Flex>
         </form>
       </Box>
-      {state.clones !== null ? (
-        <ClonesView
-          clones={state.clones}
-          clonesBlockNumber={clonesBlockNumber}
-          governorName={state.governorConfig.name}
-          needsVerification={state.governorConfig.upgradable}
-        />
-      ) : (
-        <></>
-      )}
+      <Modal isOpen={isModalOpen} onClose={onModalClose}>
+        <ModalOverlay />
+        <ModalContent maxW="840px">
+          <ModalCloseButton />
+          <ModalBody>
+            {state.clones !== null ? (
+              <ClonesView
+                clones={state.clones}
+                clonesBlockNumber={clonesBlockNumber}
+                governorName={state.governorConfig.name}
+                needsVerification={state.governorConfig.upgradable}
+              />
+            ) : (
+              <></>
+            )}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
       {chainId == ChainId.Localhost ? (
         <Box maxWidth="container.sm" mt={16} ms={4}>
           <Text mb="4">This button only works on a Local Chain.</Text>

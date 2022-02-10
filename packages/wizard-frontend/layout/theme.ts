@@ -33,6 +33,28 @@ const Button = {
   },
 }
 
+const Table = {
+  variants: {
+    modalTable: {
+      table: {
+        tr: {
+          borderBottom: '5px #fff solid',
+        },
+        th: {
+          fontSize: '10px',
+          bg: 'none',
+          py: '5px',
+        },
+        td: {
+          bg: 'brandGray.500',
+          fontSize: '14px',
+          py: '8px',
+        },
+      },
+    },
+  },
+}
+
 export const theme = extendTheme({
   breakpoints: {
     md: '840px',
@@ -45,11 +67,14 @@ export const theme = extendTheme({
       300: '#725BFF',
       400: '#5243d9',
       500: '#937DFF',
+      600: '#7B61FF',
     },
     brandGray: {
       100: '#E5F1F9',
       200: '#F7FAFC',
       300: '#718096',
+      400: '#5B7083',
+      500: '#F3F9FC',
     },
     darkText: {
       100: '#0E103C',
@@ -61,6 +86,7 @@ export const theme = extendTheme({
   },
   components: {
     Button,
+    Table,
     FormLabel: {
       baseStyle: {
         fontSize: '14px',
