@@ -1,0 +1,42 @@
+[
+  {
+    "name": "ERC721DAOToken",
+    "address": "0x72fF7595399f5aAe69a4872285e2904e748220B6"
+  },
+  {
+    "name": "ERC721Timelock",
+    "address": "0xDbf71622EC8995ec69194374daBCcD3dc987d02C"
+  },
+  {
+    "name": "ERC721Governor",
+    "address": "0x501BA344e30B8D62F626EFe870251d393F25C327"
+  },
+  {
+    "name": "SVGPlaceholder",
+    "address": "0x45FC7aC7405106A978D2CD0153B85594fA57fF4c"
+  },
+  {
+    "name": "FixedPriceSequentialMinter",
+    "address": "0x06e80B9A26237b51A7DBf284ec8d0988c345E0F7"
+  },
+  {
+    "name": "FixedPriceSpecificIDMinter",
+    "address": "0xAa246b7c75cE3314ed0F5B307049171d8A663F15"
+  },
+  {
+    "name": "RequiredNFTsMintingFilter",
+    "address": "0xceb7d1D1697E700A37eB84CB1113858B329F7136"
+  },
+  {
+    "name": "RejectedNFTsMintingFilter",
+    "address": "0x084A6e248F9955e5B9E86b186000Ab519f3612B7"
+  },
+  {
+    "name": "CompositeMintingFilter",
+    "address": "0x7DD1231904D0f47dc149600d14A9720248902147"
+  },
+  {
+    "name": "ERC721DAODeployer",
+    "address": "0x93224E01Cf6daFEDF1b4dECDf4a7910b125A5C77"
+  }
+]

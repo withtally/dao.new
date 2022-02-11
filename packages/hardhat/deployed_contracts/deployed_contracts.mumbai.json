@@ -1,42 +1,42 @@
 [
   {
     "name": "ERC721DAOToken",
-    "address": "0x5958821eaC236DeEa9847277826FF0Eff7211645"
+    "address": "0x7DD1231904D0f47dc149600d14A9720248902147"
   },
   {
     "name": "ERC721Timelock",
-    "address": "0xbc00056f8e7258c308B8a3eB2e0bD51FE68A68a7"
+    "address": "0x93224E01Cf6daFEDF1b4dECDf4a7910b125A5C77"
   },
   {
     "name": "ERC721Governor",
-    "address": "0xD8aaf7d29F0EbDaeBC08774c9f7F639245C21735"
+    "address": "0x7EE68522c4E50F5Cf0966a5f00eEaEe270eA1Da4"
   },
   {
     "name": "SVGPlaceholder",
-    "address": "0x3CA8A5f8024FF330D0A6CEF6dFfF152d18dB316b"
+    "address": "0x6a9C04B487cF087B408584D70eddAab4Cf9D10ab"
   },
   {
     "name": "FixedPriceSequentialMinter",
-    "address": "0x17D6984d4E3c0b5af6d411e093e751205326C834"
+    "address": "0x15dD8EF288c10b3D73F38f8b3fD68F2b383B0a37"
   },
   {
     "name": "FixedPriceSpecificIDMinter",
-    "address": "0x72fF7595399f5aAe69a4872285e2904e748220B6"
+    "address": "0x134358E55a85B99d2C02169E9BEC1A68e928a4db"
   },
   {
     "name": "RequiredNFTsMintingFilter",
-    "address": "0xDbf71622EC8995ec69194374daBCcD3dc987d02C"
+    "address": "0xdcf3e18F1F796cF6f65EF317A44854bA96d09498"
   },
   {
     "name": "RejectedNFTsMintingFilter",
-    "address": "0x501BA344e30B8D62F626EFe870251d393F25C327"
+    "address": "0xf91fF916b3034a89948804E99591cEfF5b6dc6cF"
   },
   {
     "name": "CompositeMintingFilter",
-    "address": "0x45FC7aC7405106A978D2CD0153B85594fA57fF4c"
+    "address": "0xe478416E3E933c8F2914Ae8DAE4892e279e39a67"
   },
   {
     "name": "ERC721DAODeployer",
-    "address": "0x06e80B9A26237b51A7DBf284ec8d0988c345E0F7"
+    "address": "0x3DBAf0deB5D8340d035C3f19a4a6f4a056D6F06b"
   }
 ]

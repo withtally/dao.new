@@ -69,6 +69,7 @@ const config: HardhatUserConfig = {
       rinkeby: process.env.ETHERSCAN_API_KEY,
       optimisticKovan: process.env.ETHERSCAN_OPTIMISM_API_KEY,
       polygonMumbai: process.env.POLYGONSCAN_API_KEY,
+      arbitrumTestnet: process.env.ARBISCAN_API_KEY,
     },
   },
   typechain: {
