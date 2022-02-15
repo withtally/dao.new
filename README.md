@@ -1,4 +1,4 @@
-# create-nft-dao
+# dao.new
 
 Easily deploy your own NFT DAO
 

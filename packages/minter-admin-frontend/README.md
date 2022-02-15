@@ -1,4 +1,4 @@
-# Admin & Minting pages for your create-nft-dao
+# Admin & Minting pages for your dao.new made DAO
 
 This package contains implementation of 2 pages useful for interacting with your NFT DAO clone.
 
@@ -64,9 +64,8 @@ This is assuming you followed the steps to run locally and successfully ran in d
 
 5. Change the build command to: `./build.sh`
 
-    The settings should look like this:
+   The settings should look like this:
 
 ![vercel-settings](https://user-images.githubusercontent.com/351026/153179467-f630113d-8d33-49c0-ab39-0d967c6b9ad4.png)
-
 
 6. Deploy 🚀
