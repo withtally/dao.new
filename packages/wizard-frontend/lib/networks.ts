@@ -30,22 +30,22 @@ export const supportedNetworks: SupportedNetwork[] = [
     displayName: 'Rinkeby',
   },
   {
-    chainId: OptimismKovan.chainId,
+    chainId: Mumbai.chainId,
     isDeployed: true,
+    isTallySupported: true,
+    displayName: 'Mumbai (polygon testnet)',
+  },
+  {
+    chainId: OptimismKovan.chainId,
+    isDeployed: false,
     isTallySupported: true,
     displayName: 'Optimism Kovan',
   },
   {
     chainId: ArbitrumRinkeby.chainId,
-    isDeployed: true,
+    isDeployed: false,
     isTallySupported: false,
     displayName: 'Arbitrum Rinkeby',
-  },
-  {
-    chainId: Mumbai.chainId,
-    isDeployed: true,
-    isTallySupported: true,
-    displayName: 'Mumbai (polygon testnet)',
   },
   {
     chainId: Optimism.chainId,
