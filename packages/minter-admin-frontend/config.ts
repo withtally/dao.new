@@ -19,6 +19,7 @@ type SupportedChains =
   | ChainId.OptimismKovan
   | ChainId.ArbitrumRinkeby
   | ChainId.Mumbai
+  | ChainId.Mainnet
 
 export const CHAIN_ID: SupportedChains = ChainId.Rinkeby
 
@@ -29,6 +30,14 @@ const allConfigs: Record<SupportedChains, ContractsConfig> = {
     minterAddress: '0x40a87c555319e8bD334b209CA3fA22615b9c619e',
     governorAddress: '0xCBd5431cC04031d089c90E7c83288183A6Fe545d',
     timelockAddress: '0xdAD42D43ecE0f6e8da8c2BCbC6A25FF6b3922C58',
+    minterType: MinterType.FixedPriceSequentialMinter,
+  },
+  [ChainId.Mainnet]: {
+    deployerAddress: '0x473cCDb5B5C6378572dcd14F56BFc05220eEBD74',
+    tokenAddress: '',
+    minterAddress: '',
+    governorAddress: '',
+    timelockAddress: '',
     minterType: MinterType.FixedPriceSequentialMinter,
   },
   [ChainId.Rinkeby]: {

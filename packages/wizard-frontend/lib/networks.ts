@@ -18,6 +18,12 @@ export interface SupportedNetwork {
 
 export const supportedNetworks: SupportedNetwork[] = [
   {
+    chainId: Mainnet.chainId,
+    isDeployed: true,
+    isTallySupported: true,
+    displayName: 'Ethereum mainnet',
+  },
+  {
     chainId: Rinkeby.chainId,
     isDeployed: true,
     isTallySupported: true,
@@ -40,12 +46,6 @@ export const supportedNetworks: SupportedNetwork[] = [
     isDeployed: true,
     isTallySupported: true,
     displayName: 'Mumbai (polygon testnet)',
-  },
-  {
-    chainId: Mainnet.chainId,
-    isDeployed: false,
-    isTallySupported: true,
-    displayName: 'Ethereum mainnet',
   },
   {
     chainId: Optimism.chainId,

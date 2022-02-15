@@ -1,15 +1,11 @@
-import { ChainId, useEthers } from '@usedapp/core'
+import { useEthers } from '@usedapp/core'
 import { Link } from '@chakra-ui/react'
 import { config } from '../config'
 
 export const TallyLink = ({ linkText }) => {
   const { chainId } = useEthers()
 
-  // TODO: support mainnet
-  let tallyLink = ''
-  if (chainId === ChainId.Rinkeby) {
-    tallyLink = `https://alpha.withtally.com/governance/eip155:4:${config.governorAddress}`
-  }
+  const tallyLink = `https://withtally.com/governance/eip155:${chainId}:${config.governorAddress}`
 
   return (
     <Link isExternal href={tallyLink}>
