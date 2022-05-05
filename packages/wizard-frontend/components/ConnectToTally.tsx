@@ -89,7 +89,7 @@ export const ConnectToTally = ({
         name: orgName,
         description: orgName,
         website: `http://${orgName}`,
-        icon: 'https://static.withtally.com/e2548ac8-d99c-495a-b3c7-67ae5e4bfbe1_400x400.jpg',
+        icon: 'https://static.tally.xyz/3e2e982d-38fd-4f92-9a13-64952811ca80_original.png',
         color: '#A1DDF1',
         tokenAddress: tokenAddress,
         governanceAddress: governanceAddress,
