@@ -34,6 +34,8 @@ export const ConnectToTally = ({
   })
 
   const createGovOnTally = async (params: TallyCreateGovParams) => {
+    console.log("Params: ", params)
+
     const createOrgResponse = await client.mutate({
       mutation: gql`
         mutation {
@@ -87,7 +89,7 @@ export const ConnectToTally = ({
         name: orgName,
         description: orgName,
         website: `http://${orgName}`,
-        icon: 'https://cdn-images-1.medium.com/max/92/1*q59g_GBPQ4c_y10ORUoKhg@2x.png',
+        icon: 'https://static.withtally.com/e2548ac8-d99c-495a-b3c7-67ae5e4bfbe1_400x400.jpg',
         color: '#A1DDF1',
         tokenAddress: tokenAddress,
         governanceAddress: governanceAddress,
