@@ -61,7 +61,7 @@ export const supportedNetworks: SupportedNetwork[] = [
   },
   {
     chainId: Polygon.chainId,
-    isDeployed: false,
+    isDeployed: true,
     isTallySupported: true,
     displayName: 'Polygon',
   },

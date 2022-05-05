@@ -7,6 +7,7 @@ type SupportedChains =
   | ChainId.ArbitrumRinkeby
   | ChainId.Mumbai
   | ChainId.Mainnet
+  | ChainId.Polygon
 
 export const secrets = {
   alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
@@ -43,6 +44,10 @@ export const chainIdToContracts: Record<SupportedChains, ContractAddresses> = {
     deployerAddress: '0x473cCDb5B5C6378572dcd14F56BFc05220eEBD74',
     svgPlaceholderAddress: '0x94F09463368CeBC3FB5Fd28F71FFDB7859730003',
   },
+  [ChainId.Polygon]: {
+    deployerAddress: '0xc693e79EEBdFB5766c0E6A0c9AA1e45C58f9506c',
+    svgPlaceholderAddress: '0x5Cad586c443E42B53A99bfDb26503CB5CD498230',
+  },
 }
 
 export const chainIdToTallyApiURIConfig: Record<SupportedChains, string> = {
@@ -52,6 +57,7 @@ export const chainIdToTallyApiURIConfig: Record<SupportedChains, string> = {
   [ChainId.ArbitrumRinkeby]: 'https://api.withtally.com/query',
   [ChainId.Mumbai]: 'https://api.withtally.com/query',
   [ChainId.Mainnet]: 'https://api.withtally.com/query',
+  [ChainId.Polygon]: 'https://api.withtally.com/query',
 }
 
 export const tallyWebBaseURI = 'https://withtally.com/governance/'
@@ -66,6 +72,7 @@ export const etherscanEndpoints: Record<SupportedChains, string> = {
   [ChainId.ArbitrumRinkeby]: 'https://api-testnet.arbiscan.io/',
   [ChainId.Mumbai]: 'https://api-mumbai.polygonscan.com/',
   [ChainId.Mainnet]: 'https://api.etherscan.io/',
+  [ChainId.Polygon]: 'https://api.polygonscan.com/'
 }
 
 export const etherscanApiKeys: Record<SupportedChains, string> = {
@@ -75,4 +82,5 @@ export const etherscanApiKeys: Record<SupportedChains, string> = {
   [ChainId.ArbitrumRinkeby]: process.env.NEXT_PUBLIC_ARBISCAN_API_KEY,
   [ChainId.Mumbai]: process.env.NEXT_PUBLIC_POLYGONSCAN_API_KEY,
   [ChainId.Mainnet]: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
+  [ChainId.Polygon]: process.env.NEXT_PUBLIC_POLYGONSCAN_API_KEY
 }
