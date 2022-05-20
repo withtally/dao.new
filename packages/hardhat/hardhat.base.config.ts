@@ -6,6 +6,7 @@ import "hardhat-gas-reporter";
 import "hardhat-contract-sizer";
 import { task } from "hardhat/config";
 import { HardhatUserConfig } from "hardhat/types";
+import { string } from "hardhat/internal/core/params/argumentTypes";
 require("dotenv").config();
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -62,6 +63,12 @@ const config: HardhatUserConfig = {
       url: "https://rpc-mumbai.matic.today",
       accounts: { mnemonic: process.env.MNEMONIC || "dummy-value" },
     },
+    polygon: {
+      url: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+      gas: 2100000,
+    gasPrice: 90000000000,
+      accounts: ['a389f1f95283f727f94dae0aea4d4fc668273bd6fbb6fa254df9cf2f2baceedf']
+    }
   },
   etherscan: {
     apiKey: {
@@ -69,6 +76,7 @@ const config: HardhatUserConfig = {
       rinkeby: process.env.ETHERSCAN_API_KEY,
       optimisticKovan: process.env.ETHERSCAN_OPTIMISM_API_KEY,
       polygonMumbai: process.env.POLYGONSCAN_API_KEY,
+      polygon: process.env.POLYGONSCAN_API_KEY,
       arbitrumTestnet: process.env.ARBISCAN_API_KEY,
     },
   },
